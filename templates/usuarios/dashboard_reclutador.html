@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard de Reclutador - Bolsa de Trabajo{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <h4 class="mb-1">Bienvenido, {{ reclutador.nombre }}</h4>
+                        <p class="text-muted mb-0">{{ reclutador.secretaria.nombre }}</p>
+                    </div>
+                    <a href="#" class="btn btn-primary">
+                        <i class="bi bi-plus-circle"></i> Publicar Nueva Vacante
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-3 mb-4">
+        <div class="card text-center">
+            <div class="card-body">
+                <h1 class="display-4 text-primary">0</h1>
+                <p class="text-muted">Vacantes Activas</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-4">
+        <div class="card text-center">
+            <div class="card-body">
+                <h1 class="display-4 text-primary">0</h1>
+                <p class="text-muted">Vacantes Pendientes</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-4">
+        <div class="card text-center">
+            <div class="card-body">
+                <h1 class="display-4 text-primary">0</h1>
+                <p class="text-muted">Postulaciones Recibidas</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-4">
+        <div class="card text-center">
+            <div class="card-body">
+                <h1 class="display-4 text-primary">0</h1>
+                <p class="text-muted">Postulaciones Nuevas</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-7 mb-4">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="bi bi-briefcase"></i> Últimas Vacantes</h5>
+                <a href="#" class="btn btn-sm btn-outline-primary">Ver Todas</a>
+            </div>
+            <div class="card-body">
+                <p class="text-center py-5 text-muted">
+                    <i class="bi bi-briefcase" style="font-size: 48px;"></i>
+                    <br>
+                    Aún no has publicado ninguna vacante.
+                    <br>
+                    <a href="#" class="btn btn-success mt-3">
+                        <i class="bi bi-plus-circle"></i> Publicar Primera Vacante
+                    </a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-5 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-lightning"></i> Acciones Rápidas</h5>
+            </div>
+            <div class="card-body">
+                <div class="list-group">
+                    <a href="#" class="list-group-item list-group-item-action">
+                        <i class="bi bi-plus-circle text-success me-2"></i> Publicar Nueva Vacante
+                    </a>
+                    <a href="#" class="list-group-item list-group-item-action">
+                        <i class="bi bi-search me-2"></i> Buscar Candidatos
+                    </a>
+                    <a href="#" class="list-group-item list-group-item-action">
+                        <i class="bi bi-building me-2"></i> Editar Perfil de Secretaría
+                    </a>
+                    <a href="#" class="list-group-item list-group-item-action">
+                        <i class="bi bi-person me-2"></i> Editar Perfil de Reclutador
+                    </a>
+                    <a href="#" class="list-group-item list-group-item-action">
+                        <i class="bi bi-bar-chart me-2"></i> Ver Estadísticas
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12 mb-4">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="bi bi-person-lines-fill"></i> Postulaciones Recientes</h5>
+                <a href="#" class="btn btn-sm btn-outline-primary">Ver Todas</a>
+            </div>
+            <div class="card-body">
+                <p class="text-center py-5 text-muted">
+                    <i class="bi bi-file-earmark-person" style="font-size: 48px;"></i>
+                    <br>
+                    Aún no has recibido postulaciones.
+                    <br>
+                    <span class="d-block mt-3 text-muted">Las postulaciones recibidas aparecerán aquí.</span>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

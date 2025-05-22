@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Estado de México{% endblock %}</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+
+    <!-- Google Fonts - Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <!-- Estilos personalizados -->
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+        <div class="container">
+{#            <a class="navbar-brand" href="{% url 'index' %}">Estado de México</a>#}
+        <a class="navbar-brand" href="{% url 'index' %}">
+            <img src="{% static 'img/Mobilidad1.png' %}" alt="Logo Mobilidad" height="30" class="logo-movilidad">
+
+        </a>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    {% if user.is_authenticated %}
+                        {% if user.rol == 'interesado' %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">Buscar Vacantes</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">Mi CV</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">Mis Postulaciones</a>
+                            </li>
+                        {% elif user.rol == 'reclutador' %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'dashboard_reclutador' %}">Dashboard</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">Publicar Vacante</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">Mis Vacantes</a>
+                            </li>
+                        {% endif %}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Mi Cuenta
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                <li><a class="dropdown-item" href="#">Perfil</a></li>
+                                <li><a class="dropdown-item" href="#">Configuración</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="{% url 'logout' %}">Cerrar Sesión</a></li>
+                            </ul>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'login' %}">Iniciar Sesión</a>
+                        </li>
+                      <!--  <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="registerDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Registrarse
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="registerDropdown">
+                                <li><a class="dropdown-item" href="{% url 'registro_interesado' %}">Como Interesado</a></li>
+                                <li><a class="dropdown-item" href="{% url 'registro_reclutador' %}">Como Reclutador</a></li>
+                            </ul>
+                        </li>
+                        -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'registro_interesado' %}">Registrarse</a>
+                        </li>
+
+
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        {% block content %}{% endblock %}
+    </div>
+<!-- Footer
+    <footer class="bg-light text-center text-lg-start mt-5">
+        <div class="container p-4">
+            <div class="row">
+                <div class="col-lg-6 col-md-12 mb-4 mb-md-0">
+                    <h5 class="text-uppercase">Bolsa de Trabajo</h5>
+                    <p>Sistema para la gestión de vacantes y postulaciones.</p>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
+                    <h5 class="text-uppercase">Enlaces</h5>
+                    <ul class="list-unstyled mb-0">
+                        <li><a href="#!" class="text-dark">Acerca de</a></li>
+                        <li><a href="#!" class="text-dark">Contacto</a></li>
+                        <li><a href="#!" class="text-dark">Ayuda</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
+                    <h5 class="text-uppercase">Redes Sociales</h5>
+                    <ul class="list-unstyled mb-0">
+                        <li><a href="#!" class="text-dark"><i class="bi bi-facebook"></i> Facebook</a></li>
+                        <li><a href="#!" class="text-dark"><i class="bi bi-twitter"></i> Twitter</a></li>
+                        <li><a href="#!" class="text-dark"><i class="bi bi-linkedin"></i> LinkedIn</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.05);">
+            © 2025 Bolsa de Trabajo. Todos los derechos reservados.
+        </div>
+    </footer>
+-->
+    <footer class="footer ">
+        <div class="container py-5">
+            <div class="row text-center text-lg-start">
+                <div class="col-12 col-lg-3 mb-3 mb-lg-0 text-center">
+                    <!-- <img src="#" alt="Estado de México" class="img-fluid" style="max-width: 150px;"> -->
+                </div>
+                <div class="col-12 col-lg-3">
+                    <h6 class="fw-bold">SITIOS DE INTERÉS</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="https://edomex.gob.mx/" class="text-dark text-decoration-none">Portal del Gobierno
+                                del Estado de México</a></li>
+                        <li><a href="http://cemer.edomex.gob.mx/" class="text-dark text-decoration-none">Comisión
+                                Estatal de Mejora Regulatoria</a></li>
+                        <li><a href="https://ipomex3.ipomex.org.mx/ipo3/lgt/indice/smov.web?token=03AFcWeA5hVb_YeE-ryvsuQFK_j1e7bSUFjFt0vgqXnn-JUivcJsxqlGfzWwtU9vSkEj9pCLavp-KDRINir3fnh9n908diH_xoGJOQdMH8xvMIadOvnLspZQrhE0QsDV7SJuBVJcoh9-RFZ4b294OScCO68Jk0Rii-snGwx-m_6DOtvRqTzr71oGl0XNcbvslT3UjYrjN_zDOXKD_-CxNJAfi3f9tnYQLRPu-Ism4iPQHPhL6J96nljLgvXL1uNPhHATe-VTolY_JBqDWjUZB6kxvot1YKTPuzkeZ4klbGzoVCdYxBdk-uvgaaMQZUSHK65cEqCf21KUDTtyon_n_Yavl2D6IRs4v4vDEM39B7EqG1Figu3yHSJC4BBNSHjvg2JImRiRW5ujt0Uqm6y_SEV43POoBgfMWuSvclV_Cdiyrp7_tP0zouSYdbu7jVsFsTQpe7UL1UN5TlXeMyeitqrodag11twPPZxBU-W9QJgbaalZCZs_1VaTCB-aeO8mm_5ngmvbUO5gcNWsiUTfT9YaZLqaDZLXu9D4zS7zS3odn64QR6AOO6G5uqL3F1wxXTTcjPu-UT2Mbwk9jPQQxEyvewg2SqCmX9rto3ApBDZFi4Eu5uhfKemzBBokJaRdfR7rX7ch3plqL-76P7Pd6EpTD5UpQ8tlghKkLaPUdNIaYm92WISJN6paqMa0Dupw4SgXTwAJA8gOxE15G0s65GiUdrR4s0G8V_y17AyQU2-wy44EnjRIl8UhfyxW4kXtPnzxpatAgV0KwlpZUR_DuhBNHFXAhCxtso0-kwGaydz2kYhEaaeekFDPNDgXM7HokqezMKxjTWdh3qvYBKCNmVYR9iu_6nnUDrCccrjMDYL6Bz_IksU4DfL4ALSTnoBvFl8-sspIoDdOkhHxVXyIigsWg1nuIGmswIGQ"
+                                class="text-dark text-decoration-none">Información Pública</a></li>
+                        <li><a href="https://www.saimex.org.mx/saimex/ciudadano/login.page"
+                                class="text-dark text-decoration-none">Solicitud de Información</a></li>
+                    </ul>
+                </div>
+                <div class="col-12 col-lg-3">
+                    <h6 class="fw-bold">MAPA DEL SITIO</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="https://smovilidad.edomex.gob.mx/contactanos"
+                                class="text-dark text-decoration-none"> Contáctanos</a></li>
+                        <li><a href="https://smovilidad.edomex.gob.mx/legales" class="text-dark text-decoration-none">
+                                Avisos Legales</a></li>
+                        <li><a href="https://smovilidad.edomex.gob.mx/acerca_sitio"
+                                class="text-dark text-decoration-none"> Acerca del Sitio</a></li>
+                    </ul>
+                </div>
+                <div class="col-12 col-lg-3 text-center text-lg-start">
+                    <h6 class="fw-bold">SÍGUENOS</h6>
+                    <div class="social-icons">
+                        <a href="https://www.facebook.com/SEMOV.Edomex"><i class="fab fa-facebook-f"><ion-icon
+                                    name="logo-tumblr"></ion-icon></i></a>
+                        <a href="https://twitter.com/SEMOV_Edomex"><i class="fab fa-twitter"></i><ion-icon
+                                name="logo-twitter"></ion-icon></a>
+                        <a href="https://www.instagram.com/semov.edomex"><i class="fab fa-instagram"></i><ion-icon
+                                name="logo-instagram"></ion-icon></a>
+                    </div>
+                    <p class="mt-2">
+                        Secretaría de Movilidad <br>
+                        Av. Gustavo Baz #2160, La Loma Tlalnepantla de Baz<br>
+                        Tel. 55 53 668 200
+                    </p>
+                    <!-- <div class="d-inline-block update-box">
+                        Última actualización: 20/02/2025
+                    </div> -->
+                </div>
+            </div>
+        </div>
+    </footer>
+        <div class="footer-bottom">
+        <a href="https://smovilidad.edomex.gob.mx/legales" class="text-decoration-none">
+            <p class="text-white ">AVISO DE PRIVACIDAD</p>
+        </a>
+    </div>
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Scripts personalizados -->
+    <script src="{% static 'js/main.js' %}"></script>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

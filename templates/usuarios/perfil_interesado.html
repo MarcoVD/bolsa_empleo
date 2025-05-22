@@ -1,0 +1,149 @@
+{% extends 'base.html' %}
+
+{% block title %}Mi Perfil - Bolsa de Trabajo{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-body text-center">
+                {% if interesado.foto_perfil %}
+                    <img src="{{ interesado.foto_perfil.url }}" alt="Foto de perfil" class="img-fluid rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;">
+                {% else %}
+                    <div class="bg-light rounded-circle d-inline-flex justify-content-center align-items-center mb-3" style="width: 150px; height: 150px;">
+                        <i class="bi bi-person-fill" style="font-size: 80px;"></i>
+                    </div>
+                {% endif %}
+                <h4>{{ interesado.nombre }} {{ interesado.apellidos }}</h4>
+                <p class="text-muted">{{ user.email }}</p>
+                <button class="btn btn-outline-primary mt-3" data-bs-toggle="modal" data-bs-target="#editarPerfilModal">
+                    <i class="bi bi-pencil-square"></i> Editar Perfil
+                </button>
+            </div>
+        </div>
+        
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-info-circle"></i> Información de Contacto</h5>
+            </div>
+            <div class="card-body">
+                <p><strong><i class="bi bi-envelope"></i> Email:</strong> {{ user.email }}</p>
+                <p><strong><i class="bi bi-telephone"></i> Teléfono:</strong> {% if interesado.telefono %}{{ interesado.telefono }}{% else %}<span class="text-muted">No especificado</span>{% endif %}</p>
+                <p><strong><i class="bi bi-geo-alt"></i> Ubicación:</strong> 
+                    {% if interesado.ciudad and interesado.estado %}
+                        {{ interesado.ciudad }}, {{ interesado.estado }}
+                    {% else %}
+                        <span class="text-muted">No especificada</span>
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-8">
+        <div class="card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="bi bi-file-earmark-person"></i> Mi Currículum</h5>
+                <a href="#" class="btn btn-sm btn-primary">
+                    <i class="bi bi-plus-circle"></i> Crear/Editar mi CV
+                </a>
+            </div>
+            <div class="card-body">
+                <p class="text-center py-5">
+                    <i class="bi bi-file-earmark-text" style="font-size: 48px;"></i>
+                    <br>
+                    Aún no has creado tu currículum.
+                    <br>
+                    <a href="#" class="btn btn-success mt-3">
+                        <i class="bi bi-plus-circle"></i> Crear mi CV Ahora
+                    </a>
+                </p>
+            </div>
+        </div>
+        
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-bookmark"></i> Vacantes Guardadas</h5>
+            </div>
+            <div class="card-body">
+                <p class="text-center py-3 text-muted">
+                    <i class="bi bi-bookmark-plus" style="font-size: 32px;"></i>
+                    <br>
+                    Aún no has guardado ninguna vacante.
+                </p>
+            </div>
+        </div>
+        
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-briefcase"></i> Mis Postulaciones</h5>
+            </div>
+            <div class="card-body">
+                <p class="text-center py-3 text-muted">
+                    <i class="bi bi-send" style="font-size: 32px;"></i>
+                    <br>
+                    Aún no te has postulado a ninguna vacante.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para editar perfil -->
+<div class="modal fade" id="editarPerfilModal" tabindex="-1" aria-labelledby="editarPerfilModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editarPerfilModalLabel">Editar Perfil</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editarPerfilForm">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="nombre" class="form-label">Nombre(s)</label>
+                            <input type="text" class="form-control" id="nombre" value="{{ interesado.nombre }}" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="apellidos" class="form-label">Apellidos</label>
+                            <input type="text" class="form-control" id="apellidos" value="{{ interesado.apellidos }}" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="telefono" class="form-label">Teléfono</label>
+                            <input type="tel" class="form-control" id="telefono" value="{% if interesado.telefono %}{{ interesado.telefono }}{% endif %}">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="fecha_nacimiento" class="form-label">Fecha de Nacimiento</label>
+                            <input type="date" class="form-control" id="fecha_nacimiento" value="{% if interesado.fecha_nacimiento %}{{ interesado.fecha_nacimiento|date:'Y-m-d' }}{% endif %}">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="ciudad" class="form-label">Ciudad</label>
+                            <input type="text" class="form-control" id="ciudad" value="{% if interesado.ciudad %}{{ interesado.ciudad }}{% endif %}">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="estado" class="form-label">Estado</label>
+                            <input type="text" class="form-control" id="estado" value="{% if interesado.estado %}{{ interesado.estado }}{% endif %}">
+                        </div>
+                        <div class="col-12">
+                            <label for="direccion" class="form-label">Dirección</label>
+                            <textarea class="form-control" id="direccion" rows="2">{% if interesado.direccion %}{{ interesado.direccion }}{% endif %}</textarea>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="codigo_postal" class="form-label">Código Postal</label>
+                            <input type="text" class="form-control" id="codigo_postal" value="{% if interesado.codigo_postal %}{{ interesado.codigo_postal }}{% endif %}">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="foto_perfil" class="form-label">Foto de Perfil</label>
+                            <input type="file" class="form-control" id="foto_perfil">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" onclick="alert('Perfil actualizado (Simulación)')">Guardar Cambios</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
