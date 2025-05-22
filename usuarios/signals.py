@@ -13,7 +13,12 @@ def crear_perfil_usuario(sender, instance, created, **kwargs):
     """Crea el perfil correspondiente cuando se crea un usuario."""
     if created:
         if instance.rol == 'interesado' and not hasattr(instance, 'interesado'):
-            Interesado.objects.create(usuario=instance)
+            Interesado.objects.create(
+                usuario=instance,
+                nombre='',
+                apellido_paterno='',
+                apellido_materno=''
+            )
         # Los perfiles de reclutador se crean manualmente durante el registro
         # porque necesitan asociarse a una secretaría
 
@@ -25,7 +30,7 @@ def notificar_nueva_solicitud_reclutador(sender, instance, created, **kwargs):
         # Este es solo un ejemplo, ajustarlo según configuración de correo
         try:
             subject = 'Nueva solicitud de reclutador'
-            message = f'Se ha registrado un nuevo reclutador: {instance.nombre} {instance.apellidos} de {instance.secretaria.nombre}.'
+            message = f'Se ha registrado un nuevo reclutador: {instance.nombre_completo} de {instance.secretaria.nombre}.'
             from_email = settings.DEFAULT_FROM_EMAIL
             # Obtener lista de emails de administradores
             admin_emails = [u.email for u in Usuario.objects.filter(is_staff=True)]

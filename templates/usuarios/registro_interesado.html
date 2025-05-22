@@ -14,9 +14,9 @@
 
                 <form method="post">
                     {% csrf_token %}
-                    
+
                     <div class="row g-3">
-                        <div class="col-md-6">
+                        <div class="col-md-12"> {# Nombre completo en una fila para mejor responsividad en algunos casos #}
                             <label for="{{ form.nombre.id_for_label }}" class="form-label">Nombre(s)</label>
                             {{ form.nombre }}
                             {% if form.nombre.errors %}
@@ -25,13 +25,23 @@
                                 </div>
                             {% endif %}
                         </div>
-                        
-                        <div class="col-md-6">
-                            <label for="{{ form.apellidos.id_for_label }}" class="form-label">Apellidos</label>
-                            {{ form.apellidos }}
-                            {% if form.apellidos.errors %}
+
+                        <div class="col-md-6"> {# Apellido Paterno #}
+                            <label for="{{ form.apellido_paterno.id_for_label }}" class="form-label">Apellido Paterno</label>
+                            {{ form.apellido_paterno }}
+                            {% if form.apellido_paterno.errors %}
                                 <div class="invalid-feedback d-block">
-                                    {{ form.apellidos.errors }}
+                                    {{ form.apellido_paterno.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-6"> {# Apellido Materno #}
+                            <label for="{{ form.apellido_materno.id_for_label }}" class="form-label">Apellido Materno (Opcional)</label>
+                            {{ form.apellido_materno }}
+                            {% if form.apellido_materno.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.apellido_materno.errors }}
                                 </div>
                             {% endif %}
                         </div>
@@ -58,7 +68,7 @@
                                 Tu contraseña debe tener al menos 8 caracteres y no puede ser demasiado común.
                             </div>
                         </div>
-                        
+
                         <div class="col-md-6">
                             <label for="{{ form.password2.id_for_label }}" class="form-label">Confirmar Contraseña</label>
                             {{ form.password2 }}

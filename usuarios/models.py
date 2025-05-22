@@ -64,7 +64,8 @@ class Interesado(models.Model):
 
     usuario = models.OneToOneField(Usuario, on_delete=models.CASCADE, related_name='interesado')
     nombre = models.CharField(max_length=50)
-    apellidos = models.CharField(max_length=100)
+    apellido_paterno = models.CharField(max_length=50)
+    apellido_materno = models.CharField(max_length=50, blank=True, null=True)
     telefono = models.CharField(max_length=15, blank=True, null=True)
     fecha_nacimiento = models.DateField(blank=True, null=True)
     direccion = models.TextField(blank=True, null=True)
@@ -74,7 +75,14 @@ class Interesado(models.Model):
     foto_perfil = models.ImageField(upload_to='interesados/', blank=True, null=True)
 
     def __str__(self):
-        return f"{self.nombre} {self.apellidos}"
+        apellido_completo = f"{self.apellido_paterno} {self.apellido_materno}" if self.apellido_materno else self.apellido_paterno
+        return f"{self.nombre} {apellido_completo}"
+
+    @property
+    def nombre_completo(self):
+        """Retorna el nombre completo con apellidos."""
+        apellido_completo = f"{self.apellido_paterno} {self.apellido_materno}" if self.apellido_materno else self.apellido_paterno
+        return f"{self.nombre} {apellido_completo}"
 
 
 class Secretaria(models.Model):
@@ -112,10 +120,18 @@ class Reclutador(models.Model):
     usuario = models.OneToOneField(Usuario, on_delete=models.CASCADE, related_name='reclutador')
     secretaria = models.ForeignKey(Secretaria, on_delete=models.CASCADE, related_name='reclutadores')
     nombre = models.CharField(max_length=50)
-    apellidos = models.CharField(max_length=100)
+    apellido_paterno = models.CharField(max_length=50)
+    apellido_materno = models.CharField(max_length=50, blank=True, null=True)
     cargo = models.CharField(max_length=100, blank=True, null=True)
     telefono = models.CharField(max_length=15, blank=True, null=True)
     aprobado = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"{self.nombre} {self.apellidos} ({self.secretaria.nombre})"
+        apellido_completo = f"{self.apellido_paterno} {self.apellido_materno}" if self.apellido_materno else self.apellido_paterno
+        return f"{self.nombre} {apellido_completo} ({self.secretaria.nombre})"
+
+    @property
+    def nombre_completo(self):
+        """Retorna el nombre completo con apellidos."""
+        apellido_completo = f"{self.apellido_paterno} {self.apellido_materno}" if self.apellido_materno else self.apellido_paterno
+        return f"{self.nombre} {apellido_completo}"

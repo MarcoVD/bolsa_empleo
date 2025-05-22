@@ -14,14 +14,14 @@
                         <i class="bi bi-person-fill" style="font-size: 80px;"></i>
                     </div>
                 {% endif %}
-                <h4>{{ interesado.nombre }} {{ interesado.apellidos }}</h4>
+                <h4>{{ interesado.nombre_completo }}</h4>
                 <p class="text-muted">{{ user.email }}</p>
                 <button class="btn btn-outline-primary mt-3" data-bs-toggle="modal" data-bs-target="#editarPerfilModal">
                     <i class="bi bi-pencil-square"></i> Editar Perfil
                 </button>
             </div>
         </div>
-        
+
         <div class="card mb-4">
             <div class="card-header">
                 <h5 class="mb-0"><i class="bi bi-info-circle"></i> Información de Contacto</h5>
@@ -29,7 +29,7 @@
             <div class="card-body">
                 <p><strong><i class="bi bi-envelope"></i> Email:</strong> {{ user.email }}</p>
                 <p><strong><i class="bi bi-telephone"></i> Teléfono:</strong> {% if interesado.telefono %}{{ interesado.telefono }}{% else %}<span class="text-muted">No especificado</span>{% endif %}</p>
-                <p><strong><i class="bi bi-geo-alt"></i> Ubicación:</strong> 
+                <p><strong><i class="bi bi-geo-alt"></i> Ubicación:</strong>
                     {% if interesado.ciudad and interesado.estado %}
                         {{ interesado.ciudad }}, {{ interesado.estado }}
                     {% else %}
@@ -39,7 +39,7 @@
             </div>
         </div>
     </div>
-    
+
     <div class="col-md-8">
         <div class="card mb-4">
             <div class="card-header d-flex justify-content-between align-items-center">
@@ -60,7 +60,7 @@
                 </p>
             </div>
         </div>
-        
+
         <div class="card mb-4">
             <div class="card-header">
                 <h5 class="mb-0"><i class="bi bi-bookmark"></i> Vacantes Guardadas</h5>
@@ -73,7 +73,7 @@
                 </p>
             </div>
         </div>
-        
+
         <div class="card mb-4">
             <div class="card-header">
                 <h5 class="mb-0"><i class="bi bi-briefcase"></i> Mis Postulaciones</h5>
@@ -100,13 +100,17 @@
             <div class="modal-body">
                 <form id="editarPerfilForm">
                     <div class="row g-3">
-                        <div class="col-md-6">
+                        <div class="col-md-12">
                             <label for="nombre" class="form-label">Nombre(s)</label>
                             <input type="text" class="form-control" id="nombre" value="{{ interesado.nombre }}" required>
                         </div>
                         <div class="col-md-6">
-                            <label for="apellidos" class="form-label">Apellidos</label>
-                            <input type="text" class="form-control" id="apellidos" value="{{ interesado.apellidos }}" required>
+                            <label for="apellido_paterno" class="form-label">Apellido Paterno</label>
+                            <input type="text" class="form-control" id="apellido_paterno" value="{{ interesado.apellido_paterno }}" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="apellido_materno" class="form-label">Apellido Materno</label>
+                            <input type="text" class="form-control" id="apellido_materno" value="{% if interesado.apellido_materno %}{{ interesado.apellido_materno }}{% endif %}">
                         </div>
                         <div class="col-md-6">
                             <label for="telefono" class="form-label">Teléfono</label>

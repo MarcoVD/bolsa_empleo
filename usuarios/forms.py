@@ -25,9 +25,14 @@ class InteresadoRegistroForm(UserCreationForm):
         max_length=50,
         widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese su nombre'})
     )
-    apellidos = forms.CharField(
-        max_length=100,
-        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese sus apellidos'})
+    apellido_paterno = forms.CharField(
+        max_length=50,
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese su apellido paterno'})
+    )
+    apellido_materno = forms.CharField(
+        max_length=50,
+        required=False,
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese su apellido materno (opcional)'})
     )
     email = forms.EmailField(
         widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese su correo electrónico'})
@@ -43,22 +48,21 @@ class InteresadoRegistroForm(UserCreationForm):
         model = Usuario
         fields = ('email', 'password1', 'password2')
 
-    class InteresadoRegistroForm(UserCreationForm):
-        # ...
-        def save(self, commit=True):
-            user = super().save(commit=False)
-            user.rol = 'interesado'
-            if commit:
-                user.save()
-                # Crear el perfil solo si no existe
-                Interesado.objects.get_or_create(
-                    usuario=user,
-                    defaults={
-                        'nombre': self.cleaned_data.get('nombre'),
-                        'apellidos': self.cleaned_data.get('apellidos')
-                    }
-                )
-            return user
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        user.rol = 'interesado'
+        if commit:
+            user.save()
+            # Crear el perfil solo si no existe
+            Interesado.objects.get_or_create(
+                usuario=user,
+                defaults={
+                    'nombre': self.cleaned_data.get('nombre'),
+                    'apellido_paterno': self.cleaned_data.get('apellido_paterno'),
+                    'apellido_materno': self.cleaned_data.get('apellido_materno')
+                }
+            )
+        return user
 
 
 class SecretariaRegistroForm(forms.ModelForm):
@@ -83,9 +87,14 @@ class ReclutadorRegistroForm(UserCreationForm):
         max_length=50,
         widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese su nombre'})
     )
-    apellidos = forms.CharField(
-        max_length=100,
-        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese sus apellidos'})
+    apellido_paterno = forms.CharField(
+        max_length=50,
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese su apellido paterno'})
+    )
+    apellido_materno = forms.CharField(
+        max_length=50,
+        required=False,
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese su apellido materno (opcional)'})
     )
     cargo = forms.CharField(
         max_length=100,
@@ -121,7 +130,8 @@ class ReclutadorRegistroForm(UserCreationForm):
                 usuario=user,
                 secretaria=secretaria,
                 nombre=self.cleaned_data.get('nombre'),
-                apellidos=self.cleaned_data.get('apellidos'),
+                apellido_paterno=self.cleaned_data.get('apellido_paterno'),
+                apellido_materno=self.cleaned_data.get('apellido_materno'),
                 cargo=self.cleaned_data.get('cargo'),
                 telefono=self.cleaned_data.get('telefono'),
                 aprobado=False

@@ -71,14 +71,14 @@ class SecretariaAdmin(admin.ModelAdmin):
 
 @admin.register(Interesado)
 class InteresadoAdmin(admin.ModelAdmin):
-    list_display = ('nombre', 'apellidos', 'usuario', 'telefono')
+    list_display = ('nombre', 'apellido_paterno', 'apellido_materno', 'usuario', 'telefono')
     list_filter = ('ciudad', 'estado')
-    search_fields = ('nombre', 'apellidos', 'usuario__email')
+    search_fields = ('nombre', 'apellido_paterno', 'apellido_materno', 'usuario__email')
 
 
 @admin.register(Reclutador)
 class ReclutadorAdmin(admin.ModelAdmin):
-    list_display = ('nombre', 'apellidos', 'secretaria', 'cargo', 'aprobado')
+    list_display = ('nombre', 'apellido_paterno', 'apellido_materno', 'secretaria', 'cargo', 'aprobado')
     list_filter = ('aprobado', 'secretaria')
-    search_fields = ('nombre', 'apellidos', 'usuario__email', 'secretaria__nombre')
+    search_fields = ('nombre', 'apellido_paterno', 'apellido_materno', 'usuario__email', 'secretaria__nombre')
     list_editable = ('aprobado',)
