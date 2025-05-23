@@ -1,0 +1,255 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {% if accion == 'editar' %}Editar Vacante{% else %}Publicar Nueva Vacante{% endif %} - Bolsa de Trabajo
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="page-header mb-4">
+                <h1>
+                    <i class="bi bi-{% if accion == 'editar' %}pencil-square{% else %}plus-square-fill{% endif %}"></i>
+                    {% if accion == 'editar' %}Editar Vacante{% else %}Publicar Nueva Vacante{% endif %}
+                </h1>
+                <p class="text-muted">
+                    {% if accion == 'editar' %}
+                        Actualiza la información de tu vacante
+                    {% else %}
+                        Completa la información para crear una nueva oferta de empleo
+                    {% endif %}
+                </p>
+            </div>
+
+            <form method="post" id="vacanteForm">
+                {% csrf_token %}
+
+                <!-- Sección 1: Información General -->
+                <div class="card mb-4">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0"><i class="bi bi-info-circle-fill"></i> Información General</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-12">
+                                <label for="{{ vacante_form.titulo.id_for_label }}" class="form-label">{{ vacante_form.titulo.label }}</label>
+                                {{ vacante_form.titulo }}
+                                {% if vacante_form.titulo.errors %}
+                                    <div class="invalid-feedback d-block">{{ vacante_form.titulo.errors }}</div>
+                                {% endif %}
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="{{ vacante_form.categoria.id_for_label }}" class="form-label">{{ vacante_form.categoria.label }}</label>
+                                {{ vacante_form.categoria }}
+                                {% if vacante_form.categoria.errors %}
+                                    <div class="invalid-feedback d-block">{{ vacante_form.categoria.errors }}</div>
+                                {% endif %}
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="{{ vacante_form.tipo_empleo.id_for_label }}" class="form-label">{{ vacante_form.tipo_empleo.label }}</label>
+                                {{ vacante_form.tipo_empleo }}
+                                {% if vacante_form.tipo_empleo.errors %}
+                                    <div class="invalid-feedback d-block">{{ vacante_form.tipo_empleo.errors }}</div>
+                                {% endif %}
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="{{ vacante_form.modalidad.id_for_label }}" class="form-label">{{ vacante_form.modalidad.label }}</label>
+                                {{ vacante_form.modalidad }}
+                                {% if vacante_form.modalidad.errors %}
+                                    <div class="invalid-feedback d-block">{{ vacante_form.modalidad.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sección 2: Detalles del Puesto -->
+                <div class="card mb-4">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0"><i class="bi bi-text-paragraph"></i> Detalles del Puesto</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label for="{{ vacante_form.descripcion.id_for_label }}" class="form-label">{{ vacante_form.descripcion.label }}</label>
+                            {{ vacante_form.descripcion }}
+                            {% if vacante_form.descripcion.errors %}
+                                <div class="invalid-feedback d-block">{{ vacante_form.descripcion.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ requisito_form.descripcion_requisitos.id_for_label }}" class="form-label">{{ requisito_form.descripcion_requisitos.label }}</label>
+                            {{ requisito_form.descripcion_requisitos }}
+                            {% if requisito_form.descripcion_requisitos.errors %}
+                                <div class="invalid-feedback d-block">{{ requisito_form.descripcion_requisitos.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="{{ requisito_form.educacion_minima.id_for_label }}" class="form-label">{{ requisito_form.educacion_minima.label }}</label>
+                                {{ requisito_form.educacion_minima }}
+                                {% if requisito_form.educacion_minima.errors %}
+                                    <div class="invalid-feedback d-block">{{ requisito_form.educacion_minima.errors }}</div>
+                                {% endif %}
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="{{ requisito_form.experiencia_minima.id_for_label }}" class="form-label">{{ requisito_form.experiencia_minima.label }}</label>
+                                {{ requisito_form.experiencia_minima }}
+                                {% if requisito_form.experiencia_minima.errors %}
+                                    <div class="invalid-feedback d-block">{{ requisito_form.experiencia_minima.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sección 3: Condiciones y Ubicación -->
+                <div class="card mb-4">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0"><i class="bi bi-geo-alt-fill"></i> Condiciones y Ubicación</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="{{ vacante_form.estado.id_for_label }}" class="form-label">{{ vacante_form.estado.label }}</label>
+                                {{ vacante_form.estado }}
+                                {% if vacante_form.estado.errors %}
+                                    <div class="invalid-feedback d-block">{{ vacante_form.estado.errors }}</div>
+                                {% endif %}
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="{{ vacante_form.ciudad.id_for_label }}" class="form-label">{{ vacante_form.ciudad.label }}</label>
+                                {{ vacante_form.ciudad }}
+                                {% if vacante_form.ciudad.errors %}
+                                    <div class="invalid-feedback d-block">{{ vacante_form.ciudad.errors }}</div>
+                                {% endif %}
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="{{ vacante_form.salario_min.id_for_label }}" class="form-label">{{ vacante_form.salario_min.label }}</label>
+                                {{ vacante_form.salario_min }}
+                                {% if vacante_form.salario_min.errors %}
+                                    <div class="invalid-feedback d-block">{{ vacante_form.salario_min.errors }}</div>
+                                {% endif %}
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="{{ vacante_form.salario_max.id_for_label }}" class="form-label">{{ vacante_form.salario_max.label }}</label>
+                                {{ vacante_form.salario_max }}
+                                {% if vacante_form.salario_max.errors %}
+                                    <div class="invalid-feedback d-block">{{ vacante_form.salario_max.errors }}</div>
+                                {% endif %}
+                            </div>
+
+                            <div class="col-12">
+                                <label for="{{ vacante_form.detalles_salario.id_for_label }}" class="form-label">{{ vacante_form.detalles_salario.label }}</label>
+                                {{ vacante_form.detalles_salario }}
+                                {% if vacante_form.detalles_salario.errors %}
+                                    <div class="invalid-feedback d-block">{{ vacante_form.detalles_salario.errors }}</div>
+                                {% endif %}
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="{{ vacante_form.fecha_inicio_estimada.id_for_label }}" class="form-label">{{ vacante_form.fecha_inicio_estimada.label }}</label>
+                                {{ vacante_form.fecha_inicio_estimada }}
+                                {% if vacante_form.fecha_inicio_estimada.errors %}
+                                    <div class="invalid-feedback d-block">{{ vacante_form.fecha_inicio_estimada.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sección 4: Gestión de Postulaciones -->
+                <div class="card mb-4">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0"><i class="bi bi-calendar-check-fill"></i> Gestión de Postulaciones</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="{{ vacante_form.fecha_limite.id_for_label }}" class="form-label">{{ vacante_form.fecha_limite.label }}</label>
+                                {{ vacante_form.fecha_limite }}
+                                {% if vacante_form.fecha_limite.errors %}
+                                    <div class="invalid-feedback d-block">{{ vacante_form.fecha_limite.errors }}</div>
+                                {% endif %}
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="{{ vacante_form.max_postulantes.id_for_label }}" class="form-label">{{ vacante_form.max_postulantes.label }}</label>
+                                {{ vacante_form.max_postulantes }}
+                                {% if vacante_form.max_postulantes.errors %}
+                                    <div class="invalid-feedback d-block">{{ vacante_form.max_postulantes.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Botones de acción -->
+                <div class="d-flex justify-content-end align-items-center gap-2 mb-4">
+                    <a href="{% url 'mis_vacantes' %}" class="btn btn-outline-secondary">
+                        <i class="bi bi-x-circle"></i> Cancelar
+                    </a>
+                    <button type="submit" name="accion" value="guardar_borrador" class="btn btn-secondary">
+                        <i class="bi bi-save"></i> Guardar Borrador
+                    </button>
+                    <button type="submit" name="accion" value="publicar" class="btn btn-success btn-lg">
+                        <i class="bi bi-send-check-fill"></i>
+                        {% if accion == 'editar' %}Actualizar y Publicar{% else %}Publicar Vacante{% endif %}
+                    </button>
+                </div>
+
+                {% if accion != 'editar' %}
+                <div class="alert alert-info" role="alert">
+                    <i class="bi bi-info-circle-fill"></i> <strong>Nota:</strong> Una vez publicada, la vacante podría requerir aprobación del administrador según las políticas del sistema.
+                </div>
+                {% endif %}
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Establecer fecha mínima para los campos de fecha
+    const today = new Date().toISOString().split('T')[0];
+    const fechaLimiteInput = document.getElementById('{{ vacante_form.fecha_limite.id_for_label }}');
+    const fechaInicioInput = document.getElementById('{{ vacante_form.fecha_inicio_estimada.id_for_label }}');
+
+    if (fechaLimiteInput) {
+        fechaLimiteInput.setAttribute('min', today);
+    }
+    if (fechaInicioInput) {
+        fechaInicioInput.setAttribute('min', today);
+    }
+
+    // Validar salarios
+    const salarioMinInput = document.getElementById('{{ vacante_form.salario_min.id_for_label }}');
+    const salarioMaxInput = document.getElementById('{{ vacante_form.salario_max.id_for_label }}');
+
+    function validarSalarios() {
+        const min = parseFloat(salarioMinInput.value) || 0;
+        const max = parseFloat(salarioMaxInput.value) || 0;
+
+        if (min > 0 && max > 0 && min > max) {
+            salarioMaxInput.setCustomValidity('El salario máximo debe ser mayor al mínimo');
+        } else {
+            salarioMaxInput.setCustomValidity('');
+        }
+    }
+
+    if (salarioMinInput && salarioMaxInput) {
+        salarioMinInput.addEventListener('input', validarSalarios);
+        salarioMaxInput.addEventListener('input', validarSalarios);
+    }
+});
+</script>
+{% endblock %}

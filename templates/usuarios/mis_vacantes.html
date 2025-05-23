@@ -1,0 +1,244 @@
+{% extends 'base.html' %}
+
+{% block title %}Mis Vacantes - Bolsa de Trabajo{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="page-header d-flex justify-content-between align-items-center mb-4">
+        <h1><i class="bi bi-list-ul"></i> Mis Vacantes Publicadas</h1>
+        <a href="{% url 'publicar_vacante' %}" class="btn btn-primary">
+            <i class="bi bi-plus-circle-fill"></i> Publicar Nueva Vacante
+        </a>
+    </div>
+
+    {% if vacantes %}
+        <div class="row">
+            {% for vacante in vacantes %}
+                <div class="col-12 mb-3">
+                    <div class="card vacancy-card
+                        {% if vacante.estado_vacante == 'publicada' %}border-success
+                        {% elif vacante.estado_vacante == 'borrador' %}border-secondary
+                        {% elif vacante.estado_vacante == 'cerrada' %}border-danger
+                        {% else %}border-warning{% endif %}">
+
+                        <div class="card-body">
+                            <div class="row align-items-center">
+                                <div class="col-md-7 col-lg-8">
+                                    <h5 class="card-title text-primary">
+                                        {{ vacante.titulo }}
+                                        {% if vacante.destacada %}
+                                            <i class="bi bi-star-fill text-warning" title="Vacante Destacada"></i>
+                                        {% endif %}
+                                    </h5>
+
+                                    <div class="row text-muted small">
+                                        <div class="col-md-6">
+                                            <p class="mb-1">
+                                                <i class="bi bi-calendar-check"></i>
+                                                {% if vacante.estado_vacante == 'borrador' %}
+                                                    Creada: {{ vacante.fecha_publicacion|date:"d M, Y" }}
+                                                {% else %}
+                                                    Publicada: {{ vacante.fecha_publicacion|date:"d M, Y" }}
+                                                {% endif %}
+                                            </p>
+                                            <p class="mb-1">
+                                                <i class="bi bi-calendar-x"></i>
+                                                {% if vacante.estado_vacante == 'borrador' %}
+                                                    Cierre previsto: {{ vacante.fecha_limite|date:"d M, Y" }}
+                                                {% else %}
+                                                    Cierra: {{ vacante.fecha_limite|date:"d M, Y" }}
+                                                {% endif %}
+                                            </p>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <p class="mb-1">
+                                                <i class="bi bi-geo-alt"></i> {{ vacante.get_estado_display }}, {{ vacante.ciudad }}
+                                            </p>
+                                            <p class="mb-1">
+                                                <i class="bi bi-briefcase"></i> {{ vacante.get_tipo_empleo_display }}
+                                            </p>
+                                            <p class="mb-1">
+                                                <i class="bi bi-people-fill"></i>
+                                                Postulantes: <span class="fw-bold">0</span> / {{ vacante.max_postulantes }}
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    {% if vacante.salario_formateado != 'No especificado' %}
+                                        <p class="text-success mb-1">
+                                            <i class="bi bi-cash-stack"></i> {{ vacante.salario_formateado }}
+                                        </p>
+                                    {% endif %}
+                                </div>
+
+                                <div class="col-md-5 col-lg-4 d-flex flex-column align-items-md-end justify-content-between">
+                                    <div class="mb-2">
+                                        {% if vacante.estado_vacante == 'publicada' %}
+                                            <span class="badge bg-success">Activa</span>
+                                        {% elif vacante.estado_vacante == 'borrador' %}
+                                            <span class="badge bg-secondary">Borrador</span>
+                                        {% elif vacante.estado_vacante == 'cerrada' %}
+                                            <span class="badge bg-danger">Cerrada</span>
+                                        {% else %}
+                                            <span class="badge bg-warning text-dark">{{ vacante.get_estado_vacante_display }}</span>
+                                        {% endif %}
+                                    </div>
+
+                                    <div class="btn-group-vertical btn-group-sm w-100" role="group">
+                                        {% if vacante.estado_vacante == 'publicada' %}
+                                            <a href="#" class="btn btn-info text-white">
+                                                <i class="bi bi-person-lines-fill"></i> Ver Postulantes
+                                            </a>
+                                        {% endif %}
+
+                                        <a href="{% url 'editar_vacante' vacante.id %}" class="btn btn-warning text-dark">
+                                            <i class="bi bi-pencil-square"></i>
+                                            {% if vacante.estado_vacante == 'borrador' %}Continuar Edición{% else %}Editar{% endif %}
+                                        </a>
+
+                                        {% if vacante.estado_vacante == 'publicada' %}
+                                            <button type="button" class="btn btn-danger"
+                                                    onclick="confirmarAccion('cerrar', '{{ vacante.id }}', '{{ vacante.titulo }}')">
+                                                <i class="bi bi-lock-fill"></i> Cerrar Vacante
+                                            </button>
+                                        {% elif vacante.estado_vacante == 'cerrada' %}
+                                            <button type="button" class="btn btn-success"
+                                                    onclick="confirmarAccion('reabrir', '{{ vacante.id }}', '{{ vacante.titulo }}')">
+                                                <i class="bi bi-unlock-fill"></i> Reabrir Vacante
+                                            </button>
+                                        {% elif vacante.estado_vacante == 'borrador' %}
+                                            <button type="button" class="btn btn-danger"
+                                                    onclick="confirmarAccion('eliminar', '{{ vacante.id }}', '{{ vacante.titulo }}')">
+                                                <i class="bi bi-trash-fill"></i> Eliminar Borrador
+                                            </button>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- Paginación (si es necesaria) -->
+        <nav aria-label="Page navigation" class="mt-4">
+            <ul class="pagination justify-content-center">
+                <li class="page-item disabled">
+                    <a class="page-link" href="#" tabindex="-1" aria-disabled="true">
+                        <i class="bi bi-chevron-left"></i>
+                    </a>
+                </li>
+                <li class="page-item active" aria-current="page">
+                    <a class="page-link" href="#">1</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="#">2</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="#">
+                        <i class="bi bi-chevron-right"></i>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    {% else %}
+        <div class="text-center py-5">
+            <i class="bi bi-briefcase" style="font-size: 64px; color: #6c757d;"></i>
+            <h3 class="mt-3 text-muted">Aún no has publicado ninguna vacante</h3>
+            <p class="text-muted">Comienza publicando tu primera vacante para atraer candidatos.</p>
+            <a href="{% url 'publicar_vacante' %}" class="btn btn-primary btn-lg mt-3">
+                <i class="bi bi-plus-circle-fill"></i> Publicar Primera Vacante
+            </a>
+        </div>
+    {% endif %}
+</div>
+
+<!-- Modal de confirmación -->
+<div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmModalLabel">Confirmar Acción</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p id="confirmMessage"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" id="confirmButton">Confirmar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.vacancy-card {
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    border-left-width: 4px !important;
+}
+
+.vacancy-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.btn-group-vertical .btn {
+    margin-bottom: 5px;
+}
+
+.btn-group-vertical .btn:last-child {
+    margin-bottom: 0;
+}
+
+@media (max-width: 768px) {
+    .btn-group-vertical .btn {
+        font-size: 0.8rem;
+        padding: 0.4rem 0.8rem;
+    }
+}
+</style>
+
+<script>
+function confirmarAccion(accion, vacanteId, titulo) {
+    let mensaje = '';
+    let botonTexto = '';
+    let botonClase = 'btn-primary';
+
+    switch(accion) {
+        case 'cerrar':
+            mensaje = `¿Estás seguro de que deseas cerrar la vacante "${titulo}"? Los candidatos ya no podrán postularse.`;
+            botonTexto = 'Sí, Cerrar';
+            botonClase = 'btn-danger';
+            break;
+        case 'reabrir':
+            mensaje = `¿Estás seguro de que deseas reabrir la vacante "${titulo}"? Los candidatos podrán volver a postularse.`;
+            botonTexto = 'Sí, Reabrir';
+            botonClase = 'btn-success';
+            break;
+        case 'eliminar':
+            mensaje = `¿Estás seguro de que deseas eliminar permanentemente el borrador "${titulo}"? Esta acción no se puede deshacer.`;
+            botonTexto = 'Sí, Eliminar';
+            botonClase = 'btn-danger';
+            break;
+    }
+
+    document.getElementById('confirmMessage').textContent = mensaje;
+    const confirmButton = document.getElementById('confirmButton');
+    confirmButton.textContent = botonTexto;
+    confirmButton.className = `btn ${botonClase}`;
+
+    confirmButton.onclick = function() {
+        // Aquí implementarías la lógica para ejecutar la acción
+        // Por ahora solo mostramos una alerta
+        alert(`Acción "${accion}" ejecutada para la vacante ID: ${vacanteId} (Simulación)`);
+        const modal = bootstrap.Modal.getInstance(document.getElementById('confirmModal'));
+        modal.hide();
+    };
+
+    const modal = new bootstrap.Modal(document.getElementById('confirmModal'));
+    modal.show();
+}
+</script>
+{% endblock %}

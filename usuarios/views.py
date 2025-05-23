@@ -1,19 +1,216 @@
-from django.shortcuts import render
-
-# Create your views here.
 # usuarios/views.py
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from django.utils.decorators import method_decorator
 from django.views.generic import View
+from django.db import transaction
+from .forms import VacanteForm, RequisitoVacanteForm
+from .models import Vacante, RequisitoVacante
 from .forms import (
     LoginForm, InteresadoRegistroForm,
     SecretariaRegistroForm, ReclutadorRegistroForm
 )
 from .models import Usuario, Interesado, Reclutador, Secretaria
 
+# usuarios/views.py - Agregar estas vistas al archivo existente
+@method_decorator(login_required, name='dispatch')
+class PublicarVacanteView(View):
+    """Vista para publicar una nueva vacante."""
+
+    def get(self, request):
+        if request.user.rol != 'reclutador':
+            messages.error(request, 'No tienes permiso para acceder a esta página.')
+            return redirect('index')
+
+        if not hasattr(request.user, 'reclutador') or not request.user.reclutador.aprobado:
+            messages.error(request, 'Tu cuenta de reclutador debe estar aprobada para publicar vacantes.')
+            return redirect('dashboard_reclutador')
+
+        vacante_form = VacanteForm()
+        requisito_form = RequisitoVacanteForm()
+
+        context = {
+            'vacante_form': vacante_form,
+            'requisito_form': requisito_form,
+            'accion': 'crear'
+        }
+        return render(request, 'usuarios/publicar_vacante.html', context)
+
+    def post(self, request):
+        if request.user.rol != 'reclutador':
+            messages.error(request, 'No tienes permiso para acceder a esta página.')
+            return redirect('index')
+
+        if not hasattr(request.user, 'reclutador') or not request.user.reclutador.aprobado:
+            messages.error(request, 'Tu cuenta de reclutador debe estar aprobada para publicar vacantes.')
+            return redirect('dashboard_reclutador')
+
+        reclutador = request.user.reclutador
+        vacante_form = VacanteForm(request.POST)
+        requisito_form = RequisitoVacanteForm(request.POST)
+
+        if vacante_form.is_valid() and requisito_form.is_valid():
+            try:
+                with transaction.atomic():
+                    # Determinar la acción del usuario
+                    accion = request.POST.get('accion')
+
+                    # Crear la vacante
+                    vacante = vacante_form.save(commit=False)
+                    vacante.secretaria = reclutador.secretaria
+                    vacante.reclutador = reclutador
+
+                    # Establecer el estado según la acción
+                    if accion == 'guardar_borrador':
+                        vacante.estado_vacante = 'borrador'
+                        mensaje = 'Vacante guardada como borrador exitosamente.'
+                    elif accion == 'publicar':
+                        vacante.estado_vacante = 'publicada'
+                        vacante.aprobada = True  # Puedes cambiar esto si requieres aprobación admin
+                        mensaje = 'Vacante publicada exitosamente.'
+                    else:
+                        vacante.estado_vacante = 'borrador'
+                        mensaje = 'Vacante guardada como borrador exitosamente.'
+
+                    vacante.save()
+
+                    # Crear los requisitos
+                    requisito = requisito_form.save(commit=False)
+                    requisito.vacante = vacante
+                    requisito.save()
+
+                    messages.success(request, mensaje)
+                    return redirect('mis_vacantes')
+
+            except Exception as e:
+                messages.error(request, f'Error al guardar la vacante: {str(e)}')
+
+        context = {
+            'vacante_form': vacante_form,
+            'requisito_form': requisito_form,
+            'accion': 'crear'
+        }
+        return render(request, 'usuarios/publicar_vacante.html', context)
+
+
+@method_decorator(login_required, name='dispatch')
+class EditarVacanteView(View):
+    """Vista para editar una vacante existente."""
+
+    def get(self, request, vacante_id):
+        if request.user.rol != 'reclutador':
+            messages.error(request, 'No tienes permiso para acceder a esta página.')
+            return redirect('index')
+
+        try:
+            vacante = Vacante.objects.get(
+                id=vacante_id,
+                reclutador=request.user.reclutador
+            )
+        except Vacante.DoesNotExist:
+            messages.error(request, 'Vacante no encontrada o no tienes permiso para editarla.')
+            return redirect('mis_vacantes')
+
+        # Obtener o crear requisitos si no existen
+        requisito, created = RequisitoVacante.objects.get_or_create(
+            vacante=vacante,
+            defaults={'descripcion_requisitos': ''}
+        )
+
+        vacante_form = VacanteForm(instance=vacante)
+        requisito_form = RequisitoVacanteForm(instance=requisito)
+
+        context = {
+            'vacante_form': vacante_form,
+            'requisito_form': requisito_form,
+            'vacante': vacante,
+            'accion': 'editar'
+        }
+        return render(request, 'usuarios/publicar_vacante.html', context)
+
+    def post(self, request, vacante_id):
+        if request.user.rol != 'reclutador':
+            messages.error(request, 'No tienes permiso para acceder a esta página.')
+            return redirect('index')
+
+        try:
+            vacante = Vacante.objects.get(
+                id=vacante_id,
+                reclutador=request.user.reclutador
+            )
+        except Vacante.DoesNotExist:
+            messages.error(request, 'Vacante no encontrada o no tienes permiso para editarla.')
+            return redirect('mis_vacantes')
+
+        # Obtener o crear requisitos si no existen
+        requisito, created = RequisitoVacante.objects.get_or_create(
+            vacante=vacante,
+            defaults={'descripcion_requisitos': ''}
+        )
+
+        vacante_form = VacanteForm(request.POST, instance=vacante)
+        requisito_form = RequisitoVacanteForm(request.POST, instance=requisito)
+
+        if vacante_form.is_valid() and requisito_form.is_valid():
+            try:
+                with transaction.atomic():
+                    # Determinar la acción del usuario
+                    accion = request.POST.get('accion')
+
+                    # Actualizar la vacante
+                    vacante = vacante_form.save(commit=False)
+
+                    # Establecer el estado según la acción
+                    if accion == 'guardar_borrador':
+                        vacante.estado_vacante = 'borrador'
+                        mensaje = 'Vacante actualizada y guardada como borrador.'
+                    elif accion == 'publicar':
+                        vacante.estado_vacante = 'publicada'
+                        vacante.aprobada = True  # Puedes cambiar esto si requieres aprobación admin
+                        mensaje = 'Vacante actualizada y publicada exitosamente.'
+                    else:
+                        mensaje = 'Vacante actualizada exitosamente.'
+
+                    vacante.save()
+
+                    # Actualizar los requisitos
+                    requisito_form.save()
+
+                    messages.success(request, mensaje)
+                    return redirect('mis_vacantes')
+
+            except Exception as e:
+                messages.error(request, f'Error al actualizar la vacante: {str(e)}')
+
+        context = {
+            'vacante_form': vacante_form,
+            'requisito_form': requisito_form,
+            'vacante': vacante,
+            'accion': 'editar'
+        }
+        return render(request, 'usuarios/publicar_vacante.html', context)
+
+
+@method_decorator(login_required, name='dispatch')
+class MisVacantesView(View):
+    """Vista para listar las vacantes del reclutador."""
+
+    def get(self, request):
+        if request.user.rol != 'reclutador':
+            messages.error(request, 'No tienes permiso para acceder a esta página.')
+            return redirect('index')
+
+        vacantes = Vacante.objects.filter(
+            reclutador=request.user.reclutador
+        ).order_by('-fecha_actualizacion')
+
+        context = {
+            'vacantes': vacantes
+        }
+        return render(request, 'usuarios/mis_vacantes.html', context)
 
 def index_view(request):
     """Vista de la página de inicio."""
@@ -124,7 +321,6 @@ class PerfilInteresadoView(View):
 @method_decorator(login_required, name='dispatch')
 class DashboardReclutadorView(View):
     """Vista para dashboard del reclutador."""
-
     def get(self, request):
         if request.user.rol != 'reclutador':
             messages.error(request, 'No tienes permiso para acceder a esta página.')

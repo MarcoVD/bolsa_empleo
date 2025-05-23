@@ -12,7 +12,7 @@
                         <h4 class="mb-1">Bienvenido, {{ reclutador.nombre_completo }}</h4>
                         <p class="text-muted mb-0">{{ reclutador.secretaria.nombre }}</p>
                     </div>
-                    <a href="#" class="btn btn-primary">
+                    <a href="{% url 'publicar_vacante' %}" class="btn btn-primary">
                         <i class="bi bi-plus-circle"></i> Publicar Nueva Vacante
                     </a>
                 </div>
@@ -25,7 +25,7 @@
     <div class="col-md-3 mb-4">
         <div class="card text-center">
             <div class="card-body">
-                <h1 class="display-4 text-primary">0</h1>
+                <h1 class="display-4 text-primary">{{ reclutador.vacantes.filter(estado_vacante='publicada').count }}</h1>
                 <p class="text-muted">Vacantes Activas</p>
             </div>
         </div>
@@ -33,15 +33,15 @@
     <div class="col-md-3 mb-4">
         <div class="card text-center">
             <div class="card-body">
-                <h1 class="display-4 text-primary">0</h1>
-                <p class="text-muted">Vacantes Pendientes</p>
+                <h1 class="display-4 text-warning">{{ reclutador.vacantes.filter(estado_vacante='borrador').count }}</h1>
+                <p class="text-muted">Borradores</p>
             </div>
         </div>
     </div>
     <div class="col-md-3 mb-4">
         <div class="card text-center">
             <div class="card-body">
-                <h1 class="display-4 text-primary">0</h1>
+                <h1 class="display-4 text-info">0</h1>
                 <p class="text-muted">Postulaciones Recibidas</p>
             </div>
         </div>
@@ -49,7 +49,7 @@
     <div class="col-md-3 mb-4">
         <div class="card text-center">
             <div class="card-body">
-                <h1 class="display-4 text-primary">0</h1>
+                <h1 class="display-4 text-success">0</h1>
                 <p class="text-muted">Postulaciones Nuevas</p>
             </div>
         </div>
@@ -61,18 +61,46 @@
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h5 class="mb-0"><i class="bi bi-briefcase"></i> Últimas Vacantes</h5>
-                <a href="#" class="btn btn-sm btn-outline-primary">Ver Todas</a>
+                <a href="{% url 'mis_vacantes' %}" class="btn btn-sm btn-outline-primary">Ver Todas</a>
             </div>
             <div class="card-body">
-                <p class="text-center py-5 text-muted">
-                    <i class="bi bi-briefcase" style="font-size: 48px;"></i>
-                    <br>
-                    Aún no has publicado ninguna vacante.
-                    <br>
-                    <a href="#" class="btn btn-success mt-3">
-                        <i class="bi bi-plus-circle"></i> Publicar Primera Vacante
-                    </a>
-                </p>
+                {% if reclutador.vacantes.all %}
+                    {% for vacante in reclutador.vacantes.all|slice:":3" %}
+                        <div class="d-flex justify-content-between align-items-center py-2 {% if not forloop.last %}border-bottom{% endif %}">
+                            <div>
+                                <h6 class="mb-1">{{ vacante.titulo }}</h6>
+                                <small class="text-muted">
+                                    {% if vacante.estado_vacante == 'borrador' %}
+                                        Creada: {{ vacante.fecha_publicacion|date:"d/m/Y" }}
+                                    {% else %}
+                                        Publicada: {{ vacante.fecha_publicacion|date:"d/m/Y" }}
+                                    {% endif %}
+                                </small>
+                            </div>
+                            <div class="text-end">
+                                {% if vacante.estado_vacante == 'publicada' %}
+                                    <span class="badge bg-success">Activa</span>
+                                {% elif vacante.estado_vacante == 'borrador' %}
+                                    <span class="badge bg-secondary">Borrador</span>
+                                {% elif vacante.estado_vacante == 'cerrada' %}
+                                    <span class="badge bg-danger">Cerrada</span>
+                                {% endif %}
+                                <br>
+                                <small class="text-muted">0 postulantes</small>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="text-center py-5 text-muted">
+                        <i class="bi bi-briefcase" style="font-size: 48px;"></i>
+                        <br>
+                        Aún no has publicado ninguna vacante.
+                        <br>
+                        <a href="{% url 'publicar_vacante' %}" class="btn btn-success mt-3">
+                            <i class="bi bi-plus-circle"></i> Publicar Primera Vacante
+                        </a>
+                    </p>
+                {% endif %}
             </div>
         </div>
     </div>
@@ -84,8 +112,11 @@
             </div>
             <div class="card-body">
                 <div class="list-group">
-                    <a href="#" class="list-group-item list-group-item-action">
+                    <a href="{% url 'publicar_vacante' %}" class="list-group-item list-group-item-action">
                         <i class="bi bi-plus-circle text-success me-2"></i> Publicar Nueva Vacante
+                    </a>
+                    <a href="{% url 'mis_vacantes' %}" class="list-group-item list-group-item-action">
+                        <i class="bi bi-list-ul me-2"></i> Ver Mis Vacantes
                     </a>
                     <a href="#" class="list-group-item list-group-item-action">
                         <i class="bi bi-search me-2"></i> Buscar Candidatos

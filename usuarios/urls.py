@@ -10,4 +10,8 @@ urlpatterns = [
     path('registro/reclutador/', views.ReclutadorRegistroView.as_view(), name='registro_reclutador'),
     path('perfil/interesado/', views.PerfilInteresadoView.as_view(), name='perfil_interesado'),
     path('dashboard/reclutador/', views.DashboardReclutadorView.as_view(), name='dashboard_reclutador'),
+    # URLs para vacantes
+    path('publicar-vacante/', views.PublicarVacanteView.as_view(), name='publicar_vacante'),
+    path('editar-vacante/<int:vacante_id>/', views.EditarVacanteView.as_view(), name='editar_vacante'),
+    path('mis-vacantes/', views.MisVacantesView.as_view(), name='mis_vacantes'),
 ]
