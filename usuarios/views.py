@@ -321,13 +321,37 @@ class PerfilInteresadoView(View):
 @method_decorator(login_required, name='dispatch')
 class DashboardReclutadorView(View):
     """Vista para dashboard del reclutador."""
+
     def get(self, request):
         if request.user.rol != 'reclutador':
             messages.error(request, 'No tienes permiso para acceder a esta página.')
             return redirect('index')
 
         reclutador = request.user.reclutador
+
+        # Calcular estadísticas de vacantes
+        vacantes_activas = reclutador.vacantes.filter(estado_vacante='publicada').count()
+        vacantes_borradores = reclutador.vacantes.filter(estado_vacante='borrador').count()
+        vacantes_cerradas = reclutador.vacantes.filter(estado_vacante='cerrada').count()
+        total_vacantes = reclutador.vacantes.count()
+
+        # Obtener las últimas 3 vacantes para mostrar en el dashboard
+        ultimas_vacantes = reclutador.vacantes.all().order_by('-fecha_actualizacion')[:3]
+
+        # TODO: Cuando implementemos postulaciones, calcular estas estadísticas
+        postulaciones_recibidas = 0  # Placeholder
+        postulaciones_nuevas = 0  # Placeholder
+
         context = {
-            'reclutador': reclutador
+            'reclutador': reclutador,
+            'vacantes_activas': vacantes_activas,
+            'vacantes_borradores': vacantes_borradores,
+            'vacantes_cerradas': vacantes_cerradas,
+            'total_vacantes': total_vacantes,
+            'ultimas_vacantes': ultimas_vacantes,
+            'postulaciones_recibidas': postulaciones_recibidas,
+            'postulaciones_nuevas': postulaciones_nuevas,
         }
+        # return render(request, 'usuarios/dashboard_reclutador.html', context)'usuarios/dashboard_reclutador.html', context)
+
         return render(request, 'usuarios/dashboard_reclutador.html', context)
