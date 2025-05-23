@@ -135,3 +135,162 @@ class Reclutador(models.Model):
         """Retorna el nombre completo con apellidos."""
         apellido_completo = f"{self.apellido_paterno} {self.apellido_materno}" if self.apellido_materno else self.apellido_paterno
         return f"{self.nombre} {apellido_completo}"
+
+
+#Agregar estos modelos al archivo existente
+
+class Categoria(models.Model):
+    """Modelo para las categorías de trabajo."""
+    nombre = models.CharField(max_length=100)
+    descripcion = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return self.nombre
+
+    class Meta:
+        verbose_name = "Categoría"
+        verbose_name_plural = "Categorías"
+
+
+class Vacante(models.Model):
+    """Modelo para las vacantes de trabajo."""
+
+    TIPOS_EMPLEO = (
+        ('tiempo_completo', 'Tiempo Completo'),
+        ('medio_tiempo', 'Medio Tiempo'),
+        ('proyecto', 'Por Proyecto'),
+        ('temporal', 'Temporal'),
+        ('practicas', 'Prácticas Profesionales'),
+    )
+
+    MODALIDAD = (
+        ('presencial', 'Presencial'),
+        ('remoto', 'Remoto'),
+        ('hibrido', 'Híbrido'),
+    )
+
+    ESTADOS_VACANTE = (
+        ('borrador', 'Borrador'),
+        ('publicada', 'Publicada'),
+        ('cerrada', 'Cerrada'),
+        ('eliminada', 'Eliminada'),
+    )
+
+    ESTADOS_MEXICO = (
+        ('aguascalientes', 'Aguascalientes'),
+        ('baja_california', 'Baja California'),
+        ('baja_california_sur', 'Baja California Sur'),
+        ('campeche', 'Campeche'),
+        ('chiapas', 'Chiapas'),
+        ('chihuahua', 'Chihuahua'),
+        ('ciudad_de_mexico', 'Ciudad de México'),
+        ('coahuila', 'Coahuila'),
+        ('colima', 'Colima'),
+        ('durango', 'Durango'),
+        ('estado_de_mexico', 'Estado de México'),
+        ('guanajuato', 'Guanajuato'),
+        ('guerrero', 'Guerrero'),
+        ('hidalgo', 'Hidalgo'),
+        ('jalisco', 'Jalisco'),
+        ('michoacan', 'Michoacán'),
+        ('morelos', 'Morelos'),
+        ('nayarit', 'Nayarit'),
+        ('nuevo_leon', 'Nuevo León'),
+        ('oaxaca', 'Oaxaca'),
+        ('puebla', 'Puebla'),
+        ('queretaro', 'Querétaro'),
+        ('quintana_roo', 'Quintana Roo'),
+        ('san_luis_potosi', 'San Luis Potosí'),
+        ('sinaloa', 'Sinaloa'),
+        ('sonora', 'Sonora'),
+        ('tabasco', 'Tabasco'),
+        ('tamaulipas', 'Tamaulipas'),
+        ('tlaxcala', 'Tlaxcala'),
+        ('veracruz', 'Veracruz'),
+        ('yucatan', 'Yucatán'),
+        ('zacatecas', 'Zacatecas'),
+    )
+
+    # Información básica
+    secretaria = models.ForeignKey(Secretaria, on_delete=models.CASCADE, related_name='vacantes')
+    reclutador = models.ForeignKey(Reclutador, on_delete=models.CASCADE, related_name='vacantes')
+    titulo = models.CharField(max_length=200)
+    descripcion = models.TextField()
+    categoria = models.ForeignKey(Categoria, on_delete=models.CASCADE, related_name='vacantes')
+
+    # Condiciones de trabajo
+    tipo_empleo = models.CharField(max_length=20, choices=TIPOS_EMPLEO)
+    modalidad = models.CharField(max_length=15, choices=MODALIDAD, default='presencial')
+
+    # Ubicación
+    estado = models.CharField(max_length=30, choices=ESTADOS_MEXICO)
+    ciudad = models.CharField(max_length=100)
+
+    # Salario
+    salario_min = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+    salario_max = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+    detalles_salario = models.CharField(max_length=200, blank=True, null=True,
+                                        help_text="Ej: A tratar, Según aptitudes, Más bonos")
+
+    # Fechas
+    fecha_inicio_estimada = models.DateField(blank=True, null=True)
+    fecha_publicacion = models.DateTimeField(auto_now_add=True)
+    fecha_limite = models.DateField()
+    fecha_actualizacion = models.DateTimeField(auto_now=True)
+
+    # Control de estado
+    estado_vacante = models.CharField(max_length=15, choices=ESTADOS_VACANTE, default='borrador')
+    aprobada = models.BooleanField(default=False)
+    destacada = models.BooleanField(default=False)
+
+    # Límites de postulación
+    max_postulantes = models.IntegerField(choices=[(5, '5'), (10, '10'), (20, '20'), (50, '50')], default=20)
+    max_postulaciones_por_interesado = models.IntegerField(default=1)
+
+    def __str__(self):
+        return f"{self.titulo} - {self.secretaria.nombre}"
+
+    @property
+    def es_borrador(self):
+        return self.estado_vacante == 'borrador'
+
+    @property
+    def es_publicada(self):
+        return self.estado_vacante == 'publicada'
+
+    @property
+    def salario_formateado(self):
+        """Retorna el salario formateado para mostrar."""
+        if self.salario_min and self.salario_max:
+            return f"${self.salario_min:,.0f} - ${self.salario_max:,.0f} MXN"
+        elif self.salario_min:
+            return f"Desde ${self.salario_min:,.0f} MXN"
+        elif self.salario_max:
+            return f"Hasta ${self.salario_max:,.0f} MXN"
+        elif self.detalles_salario:
+            return self.detalles_salario
+        else:
+            return "No especificado"
+
+    class Meta:
+        verbose_name = "Vacante"
+        verbose_name_plural = "Vacantes"
+        ordering = ['-fecha_publicacion']
+
+
+class RequisitoVacante(models.Model):
+    """Modelo para los requisitos específicos de una vacante."""
+
+    vacante = models.OneToOneField(Vacante, on_delete=models.CASCADE, related_name='requisitos')
+    educacion_minima = models.CharField(max_length=200, blank=True, null=True)
+    experiencia_minima = models.CharField(max_length=200, blank=True, null=True)
+    descripcion_requisitos = models.TextField(
+        help_text="Detalla los requisitos específicos, habilidades técnicas, etc."
+    )
+
+    def __str__(self):
+        return f"Requisitos - {self.vacante.titulo}"
+
+    class Meta:
+        verbose_name = "Requisito de Vacante"
+        verbose_name_plural = "Requisitos de Vacantes"
