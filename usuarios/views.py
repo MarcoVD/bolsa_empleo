@@ -30,6 +30,35 @@ from .forms import (
     HabilidadInteresadoForm,
     IdiomaInteresadoForm
 )
+class LoginView(View):
+    def get(self, request):
+        form = LoginForm()  # Ahora LoginForm estará definido
+        return render(request, 'login.html', {'form': form})
+
+    def post(self, request):
+        form = LoginForm(request.POST) # Y aquí también
+        if form.is_valid():
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
+            user = authenticate(request, username=username, password=password)
+            if user is not None:
+                login(request, user)
+                messages.success(request, f'Bienvenido {username}!')
+                # Redirigir según el tipo de usuario
+                if hasattr(user, 'empresa'):
+                    return redirect('usuarios:dashboard_empresa')
+                elif hasattr(user, 'postulante'):
+                    return redirect('usuarios:dashboard_postulante')
+                else:
+                    # Manejar caso de superusuario u otro tipo de usuario sin perfil específico
+                    return redirect('pagina_principal') # O alguna vista por defecto
+            else:
+                messages.error(request, 'Usuario o contraseña incorrectos.')
+        else:
+            # Si el formulario no es válido, mostrar errores
+            # (Django renderizará los errores automáticamente en la plantilla si usas {{ form.errors }})
+            messages.error(request, 'Por favor corrige los errores en el formulario.')
+        return render(request, 'login.html', {'form': form})
 @method_decorator(login_required, name='dispatch')
 class CrearEditarCVView(View):
     """Vista para crear o editar el CV del interesado."""
