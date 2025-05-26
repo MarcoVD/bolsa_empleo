@@ -1,0 +1,672 @@
+{% extends 'base.html' %}
+
+{% block title %}Mi Currículum Vitae - Bolsa de Trabajo{% endblock %}
+
+{% block content %}
+<div class="container cv-container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Mi Currículum Vitae</h1>
+        <div>
+            <a href="{% url 'previsualizar_cv' %}" class="btn btn-outline-primary me-2" target="_blank">
+                <i class="bi bi-eye"></i> Previsualizar CV
+            </a>
+            <button type="submit" form="cvForm" class="btn btn-primary">
+                <i class="bi bi-save"></i> Guardar Cambios
+            </button>
+        </div>
+    </div>
+
+    <form id="cvForm" method="post">
+        {% csrf_token %}
+
+        <!-- Información de Contacto -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5><i class="bi bi-person-fill"></i> Información de Contacto</h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label for="{{ perfil_form.nombre.id_for_label }}" class="form-label">{{ perfil_form.nombre.label }}</label>
+                        {{ perfil_form.nombre }}
+                        {% if perfil_form.nombre.errors %}
+                            <div class="invalid-feedback d-block">{{ perfil_form.nombre.errors }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-6">
+                        <label for="{{ perfil_form.apellido_paterno.id_for_label }}" class="form-label">{{ perfil_form.apellido_paterno.label }}</label>
+                        {{ perfil_form.apellido_paterno }}
+                        {% if perfil_form.apellido_paterno.errors %}
+                            <div class="invalid-feedback d-block">{{ perfil_form.apellido_paterno.errors }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-6">
+                        <label for="{{ perfil_form.apellido_materno.id_for_label }}" class="form-label">{{ perfil_form.apellido_materno.label }}</label>
+                        {{ perfil_form.apellido_materno }}
+                        {% if perfil_form.apellido_materno.errors %}
+                            <div class="invalid-feedback d-block">{{ perfil_form.apellido_materno.errors }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-6">
+                        <label for="{{ perfil_form.telefono.id_for_label }}" class="form-label">{{ perfil_form.telefono.label }}</label>
+                        {{ perfil_form.telefono }}
+                        {% if perfil_form.telefono.errors %}
+                            <div class="invalid-feedback d-block">{{ perfil_form.telefono.errors }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-6">
+                        <label for="{{ perfil_form.fecha_nacimiento.id_for_label }}" class="form-label">{{ perfil_form.fecha_nacimiento.label }}</label>
+                        {{ perfil_form.fecha_nacimiento }}
+                        {% if perfil_form.fecha_nacimiento.errors %}
+                            <div class="invalid-feedback d-block">{{ perfil_form.fecha_nacimiento.errors }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="col-12">
+                        <label for="{{ perfil_form.direccion.id_for_label }}" class="form-label">{{ perfil_form.direccion.label }}</label>
+                        {{ perfil_form.direccion }}
+                        {% if perfil_form.direccion.errors %}
+                            <div class="invalid-feedback d-block">{{ perfil_form.direccion.errors }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-6">
+                        <label for="{{ perfil_form.ciudad.id_for_label }}" class="form-label">{{ perfil_form.ciudad.label }}</label>
+                        {{ perfil_form.ciudad }}
+                        {% if perfil_form.ciudad.errors %}
+                            <div class="invalid-feedback d-block">{{ perfil_form.ciudad.errors }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-6">
+                        <label for="{{ perfil_form.estado.id_for_label }}" class="form-label">{{ perfil_form.estado.label }}</label>
+                        {{ perfil_form.estado }}
+                        {% if perfil_form.estado.errors %}
+                            <div class="invalid-feedback d-block">{{ perfil_form.estado.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Resumen Profesional -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5><i class="bi bi-file-person"></i> Resumen Profesional / Objetivo</h5>
+            </div>
+            <div class="card-body">
+                <label for="{{ curriculum_form.resumen_profesional.id_for_label }}" class="form-label">{{ curriculum_form.resumen_profesional.label }}</label>
+                {{ curriculum_form.resumen_profesional }}
+                {% if curriculum_form.resumen_profesional.errors %}
+                    <div class="invalid-feedback d-block">{{ curriculum_form.resumen_profesional.errors }}</div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Experiencia Laboral -->
+        <div class="card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5><i class="bi bi-briefcase-fill"></i> Experiencia Laboral</h5>
+                <button type="button" class="btn btn-sm btn-outline-primary" onclick="mostrarModalExperiencia()">
+                    <i class="bi bi-plus-circle"></i> Agregar Experiencia
+                </button>
+            </div>
+            <div class="card-body">
+                <div id="experienciaContainer">
+                    {% for experiencia in experiencias %}
+                        <div class="experiencia-item mb-3 p-3 border rounded" data-id="{{ experiencia.id }}">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1">{{ experiencia.puesto }}</h6>
+                                    <p class="mb-1 text-muted">{{ experiencia.empresa }}</p>
+                                    <p class="mb-1 small">{{ experiencia.periodo_trabajo }}</p>
+                                    <p class="mb-0 small">{{ experiencia.descripcion|truncatewords:20 }}</p>
+                                </div>
+                                <button type="button" class="btn btn-sm btn-outline-danger" onclick="eliminarExperiencia({{ experiencia.id }})">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    {% empty %}
+                        <p class="text-muted text-center">No hay experiencias laborales registradas.</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Educación -->
+        <div class="card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5><i class="bi bi-mortarboard-fill"></i> Educación y Formación</h5>
+                <button type="button" class="btn btn-sm btn-outline-primary" onclick="mostrarModalEducacion()">
+                    <i class="bi bi-plus-circle"></i> Agregar Formación
+                </button>
+            </div>
+            <div class="card-body">
+                <div id="educacionContainer">
+                    {% for educacion in educaciones %}
+                        <div class="educacion-item mb-3 p-3 border rounded" data-id="{{ educacion.id }}">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1">{{ educacion.titulo }}</h6>
+                                    <p class="mb-1 text-muted">{{ educacion.institucion }}</p>
+                                    <p class="mb-0 small">{{ educacion.periodo_estudio }}</p>
+                                </div>
+                                <button type="button" class="btn btn-sm btn-outline-danger" onclick="eliminarEducacion({{ educacion.id }})">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    {% empty %}
+                        <p class="text-muted text-center">No hay educación registrada.</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Habilidades -->
+        <div class="card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5><i class="bi bi-tools"></i> Habilidades Técnicas y Blandas</h5>
+                <button type="button" class="btn btn-sm btn-outline-primary" onclick="mostrarModalHabilidad()">
+                    <i class="bi bi-plus-circle"></i> Agregar Habilidad
+                </button>
+            </div>
+            <div class="card-body">
+                <div id="habilidadesContainer">
+                    {% for habilidad in habilidades %}
+                        <span class="badge bg-primary me-2 mb-2 p-2" data-id="{{ habilidad.id }}">
+                            {{ habilidad.habilidad.nombre }} - {{ habilidad.get_nivel_display }}
+                            <button type="button" class="btn-close btn-close-white ms-2" onclick="eliminarHabilidad({{ habilidad.id }})"></button>
+                        </span>
+                    {% empty %}
+                        <p class="text-muted text-center">No hay habilidades registradas.</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Idiomas -->
+        <div class="card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5><i class="bi bi-translate"></i> Idiomas</h5>
+                <button type="button" class="btn btn-sm btn-outline-primary" onclick="mostrarModalIdioma()">
+                    <i class="bi bi-plus-circle"></i> Agregar Idioma
+                </button>
+            </div>
+            <div class="card-body">
+                <div id="idiomasContainer">
+                    {% for idioma in idiomas %}
+                        <div class="idioma-item mb-2 p-2 border rounded d-flex justify-content-between align-items-center" data-id="{{ idioma.id }}">
+                            <div>
+                                <strong>{{ idioma.idioma }}</strong> - {{ idioma.nivel_general }}
+                                <small class="text-muted d-block">
+                                    Lectura: {{ idioma.get_nivel_lectura_display }},
+                                    Escritura: {{ idioma.get_nivel_escritura_display }},
+                                    Conversación: {{ idioma.get_nivel_conversacion_display }}
+                                </small>
+                            </div>
+                            <button type="button" class="btn btn-sm btn-outline-danger" onclick="eliminarIdioma({{ idioma.id }})">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                    {% empty %}
+                        <p class="text-muted text-center">No hay idiomas registrados.</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <div class="text-end mt-4 mb-5">
+            <a href="{% url 'perfil_interesado' %}" class="btn btn-outline-secondary me-2">Volver al Perfil</a>
+            <button type="submit" class="btn btn-primary btn-lg">
+                <i class="bi bi-save"></i> Guardar CV Completo
+            </button>
+        </div>
+    </form>
+</div>
+
+<!-- Modal para Experiencia Laboral -->
+<div class="modal fade" id="experienciaModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Agregar Experiencia Laboral</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="experienciaForm">
+                    {% csrf_token %}
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Puesto / Cargo</label>
+                            <input type="text" class="form-control" name="puesto" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Empresa</label>
+                            <input type="text" class="form-control" name="empresa" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Fecha de Inicio</label>
+                            <input type="month" class="form-control" name="fecha_inicio" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Fecha de Fin</label>
+                            <input type="month" class="form-control" name="fecha_fin">
+                        </div>
+                        <div class="col-12">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="actual" id="actualCheck">
+                                <label class="form-check-label" for="actualCheck">
+                                    Es mi trabajo actual
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Funciones y Responsabilidades</label>
+                            <textarea class="form-control" name="descripcion" rows="3" required></textarea>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" onclick="guardarExperiencia()">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para Educación -->
+<div class="modal fade" id="educacionModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Agregar Educación</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="educacionForm">
+                    {% csrf_token %}
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Título Obtenido / Nivel</label>
+                            <input type="text" class="form-control" name="titulo" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Institución Educativa</label>
+                            <input type="text" class="form-control" name="institucion" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Fecha de Inicio</label>
+                            <input type="month" class="form-control" name="fecha_inicio" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Fecha de Fin</label>
+                            <input type="month" class="form-control" name="fecha_fin">
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Descripción (opcional)</label>
+                            <textarea class="form-control" name="descripcion" rows="2"></textarea>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" onclick="guardarEducacion()">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para Habilidades -->
+<div class="modal fade" id="habilidadModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Agregar Habilidad</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="habilidadForm">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label">Habilidad</label>
+                        <input type="text" class="form-control" name="nombre_habilidad" placeholder="Ej: JavaScript, Liderazgo" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Nivel de Dominio</label>
+                        <select class="form-select" name="nivel" required>
+                            <option value="">Selecciona un nivel...</option>
+                            <option value="basico">Básico</option>
+                            <option value="intermedio">Intermedio</option>
+                            <option value="avanzado">Avanzado</option>
+                            <option value="experto">Experto</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" onclick="guardarHabilidad()">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para Idiomas -->
+<div class="modal fade" id="idiomaModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Agregar Idioma</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="idiomaForm">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label">Idioma</label>
+                        <input type="text" class="form-control" name="idioma" placeholder="Ej: Inglés" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Nivel de Lectura</label>
+                        <select class="form-select" name="nivel_lectura" required>
+                            <option value="">Selecciona un nivel...</option>
+                            <option value="A1">A1 - Principiante</option>
+                            <option value="A2">A2 - Elemental</option>
+                            <option value="B1">B1 - Intermedio</option>
+                            <option value="B2">B2 - Intermedio Alto</option>
+                            <option value="C1">C1 - Avanzado</option>
+                            <option value="C2">C2 - Maestría</option>
+                            <option value="nativo">Nativo</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Nivel de Escritura</label>
+                        <select class="form-select" name="nivel_escritura" required>
+                            <option value="">Selecciona un nivel...</option>
+                            <option value="A1">A1 - Principiante</option>
+                            <option value="A2">A2 - Elemental</option>
+                            <option value="B1">B1 - Intermedio</option>
+                            <option value="B2">B2 - Intermedio Alto</option>
+                            <option value="C1">C1 - Avanzado</option>
+                            <option value="C2">C2 - Maestría</option>
+                            <option value="nativo">Nativo</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Nivel de Conversación</label>
+                        <select class="form-select" name="nivel_conversacion" required>
+                            <option value="">Selecciona un nivel...</option>
+                            <option value="A1">A1 - Principiante</option>
+                            <option value="A2">A2 - Elemental</option>
+                            <option value="B1">B1 - Intermedio</option>
+                            <option value="B2">B2 - Intermedio Alto</option>
+                            <option value="C1">C1 - Avanzado</option>
+                            <option value="C2">C2 - Maestría</option>
+                            <option value="nativo">Nativo</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" onclick="guardarIdioma()">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.cv-container {
+    max-width: 960px;
+    margin-top: 20px;
+    margin-bottom: 50px;
+}
+
+.card {
+    border-radius: 15px;
+    margin-bottom: 25px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+}
+
+.card-header {
+    background-color: #e9ecef;
+    border-bottom: 1px solid #dee2e6;
+    font-weight: 500;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+}
+
+.form-label {
+    font-weight: 500;
+}
+
+.form-control, .form-select {
+    border-radius: 8px;
+}
+
+.btn {
+    border-radius: 8px;
+}
+
+.experiencia-item, .educacion-item, .idioma-item {
+    transition: background-color 0.2s;
+}
+
+.experiencia-item:hover, .educacion-item:hover, .idioma-item:hover {
+    background-color: #f8f9fa;
+}
+</style>
+
+<script>
+// Funciones para mostrar modales
+function mostrarModalExperiencia() {
+    new bootstrap.Modal(document.getElementById('experienciaModal')).show();
+}
+
+function mostrarModalEducacion() {
+    new bootstrap.Modal(document.getElementById('educacionModal')).show();
+}
+
+function mostrarModalHabilidad() {
+    new bootstrap.Modal(document.getElementById('habilidadModal')).show();
+}
+
+function mostrarModalIdioma() {
+    new bootstrap.Modal(document.getElementById('idiomaModal')).show();
+}
+
+// Funciones para guardar datos via AJAX
+function guardarExperiencia() {
+    const form = document.getElementById('experienciaForm');
+    const formData = new FormData(form);
+
+    fetch('{% url "agregar_experiencia_ajax" %}', {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            bootstrap.Modal.getInstance(document.getElementById('experienciaModal')).hide();
+            location.reload(); // Recargar para mostrar la nueva experiencia
+        } else {
+            alert('Error al guardar: ' + JSON.stringify(data.errors));
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error al guardar la experiencia');
+    });
+}
+
+function guardarEducacion() {
+    const form = document.getElementById('educacionForm');
+    const formData = new FormData(form);
+
+    fetch('{% url "agregar_educacion_ajax" %}', {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            bootstrap.Modal.getInstance(document.getElementById('educacionModal')).hide();
+            location.reload();
+        } else {
+            alert('Error al guardar: ' + JSON.stringify(data.errors));
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error al guardar la educación');
+    });
+}
+
+function guardarHabilidad() {
+    const form = document.getElementById('habilidadForm');
+    const formData = new FormData(form);
+
+    fetch('{% url "agregar_habilidad_ajax" %}', {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            bootstrap.Modal.getInstance(document.getElementById('habilidadModal')).hide();
+            location.reload();
+        } else {
+            alert('Error al guardar: ' + JSON.stringify(data.errors || data.error));
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error al guardar la habilidad');
+    });
+}
+
+function guardarIdioma() {
+    const form = document.getElementById('idiomaForm');
+    const formData = new FormData(form);
+
+    fetch('{% url "agregar_idioma_ajax" %}', {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            bootstrap.Modal.getInstance(document.getElementById('idiomaModal')).hide();
+            location.reload();
+        } else {
+            alert('Error al guardar: ' + JSON.stringify(data.errors));
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error al guardar el idioma');
+    });
+}
+
+// Funciones para eliminar elementos
+function eliminarExperiencia(id) {
+    if (confirm('¿Estás seguro de que deseas eliminar esta experiencia?')) {
+        fetch(`{% url "eliminar_experiencia_ajax" 0 %}`.replace('0', id), {
+            method: 'DELETE',
+            headers: {
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            } else {
+                alert('Error al eliminar: ' + data.error);
+            }
+        });
+    }
+}
+
+function eliminarEducacion(id) {
+    if (confirm('¿Estás seguro de que deseas eliminar esta educación?')) {
+        fetch(`{% url "eliminar_educacion_ajax" 0 %}`.replace('0', id), {
+            method: 'DELETE',
+            headers: {
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            } else {
+                alert('Error al eliminar: ' + data.error);
+            }
+        });
+    }
+}
+
+function eliminarHabilidad(id) {
+    if (confirm('¿Estás seguro de que deseas eliminar esta habilidad?')) {
+        fetch(`{% url "eliminar_habilidad_ajax" 0 %}`.replace('0', id), {
+            method: 'DELETE',
+            headers: {
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            } else {
+                alert('Error al eliminar: ' + data.error);
+            }
+        });
+    }
+}
+
+function eliminarIdioma(id) {
+    if (confirm('¿Estás seguro de que deseas eliminar este idioma?')) {
+        fetch(`{% url "eliminar_idioma_ajax" 0 %}`.replace('0', id), {
+            method: 'DELETE',
+            headers: {
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            } else {
+                alert('Error al eliminar: ' + data.error);
+            }
+        });
+    }
+}
+
+// Lógica para deshabilitar fecha fin cuando es trabajo actual
+document.getElementById('actualCheck').addEventListener('change', function() {
+    const fechaFin = document.querySelector('#experienciaForm input[name="fecha_fin"]');
+    if (this.checked) {
+        fechaFin.disabled = true;
+        fechaFin.value = '';
+    } else {
+        fechaFin.disabled = false;
+    }
+});
+</script>
+{% endblock %}

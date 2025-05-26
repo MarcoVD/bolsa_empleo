@@ -2,7 +2,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import get_user_model
-from .models import Interesado, Reclutador, Secretaria, Vacante, RequisitoVacante
+from .models import Interesado, Reclutador, Secretaria, Vacante, RequisitoVacante, Curriculum, ExperienciaLaboral, Educacion, HabilidadInteresado, IdiomaInteresado
 # from .models import Vacante, RequisitoVacante, Categoria
 Usuario = get_user_model()
 
@@ -20,19 +20,19 @@ class LoginForm(AuthenticationForm):
 class InteresadoRegistroForm(UserCreationForm):
     """Formulario para registro de interesados."""
 
-    nombre = forms.CharField(
-        max_length=50,
-        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese su nombre'})
-    )
-    apellido_paterno = forms.CharField(
-        max_length=50,
-        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese su apellido paterno'})
-    )
-    apellido_materno = forms.CharField(
-        max_length=50,
-        required=False,
-        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese su apellido materno (opcional)'})
-    )
+    # nombre = forms.CharField(
+    #     max_length=50,
+    #     widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese su nombre'})
+    # )
+    # apellido_paterno = forms.CharField(
+    #     max_length=50,
+    #     widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese su apellido paterno'})
+    # )
+    # apellido_materno = forms.CharField(
+    #     max_length=50,
+    #     required=False,
+    #     widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese su apellido materno (opcional)'})
+    # )
     email = forms.EmailField(
         widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese su correo electrónico'})
     )
@@ -42,7 +42,6 @@ class InteresadoRegistroForm(UserCreationForm):
     password2 = forms.CharField(
         widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Confirme su contraseña'})
     )
-
     class Meta:
         model = Usuario
         fields = ('email', 'password1', 'password2')
@@ -52,16 +51,220 @@ class InteresadoRegistroForm(UserCreationForm):
         user.rol = 'interesado'
         if commit:
             user.save()
-            # Crear el perfil solo si no existe
+            # Crear el perfil de interesado con campos básicos vacíos
             Interesado.objects.get_or_create(
                 usuario=user,
                 defaults={
-                    'nombre': self.cleaned_data.get('nombre'),
-                    'apellido_paterno': self.cleaned_data.get('apellido_paterno'),
-                    'apellido_materno': self.cleaned_data.get('apellido_materno')
+                    'nombre': '',
+                    'apellido_paterno': '',
+                    'apellido_materno': ''
                 }
             )
         return user
+
+
+# Formularios para CV
+
+class CurriculumForm(forms.ModelForm):
+    """Formulario para la información básica del CV."""
+
+    class Meta:
+        model = Curriculum
+        fields = ['resumen_profesional']
+        widgets = {
+            'resumen_profesional': forms.Textarea(attrs={
+                'class': 'form-control',
+                'rows': 4,
+                'placeholder': 'Ej: Profesional con 5 años de experiencia en desarrollo web...'
+            })
+        }
+        labels = {
+            'resumen_profesional': 'Resumen Profesional / Objetivo'
+        }
+
+
+class InteresadoPerfilForm(forms.ModelForm):
+    """Formulario para editar la información personal del interesado."""
+
+    class Meta:
+        model = Interesado
+        fields = [
+            'nombre', 'apellido_paterno', 'apellido_materno', 'telefono',
+            'fecha_nacimiento', 'direccion', 'ciudad', 'estado', 'codigo_postal'
+        ]
+        widgets = {
+            'nombre': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Ingrese su nombre'
+            }),
+            'apellido_paterno': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Ingrese su apellido paterno'
+            }),
+            'apellido_materno': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Ingrese su apellido materno (opcional)'
+            }),
+            'telefono': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Ej: 55 1234 5678'
+            }),
+            'fecha_nacimiento': forms.DateInput(attrs={
+                'class': 'form-control',
+                'type': 'date'
+            }),
+            'direccion': forms.Textarea(attrs={
+                'class': 'form-control',
+                'rows': 2,
+                'placeholder': 'Calle, Número, Colonia'
+            }),
+            'ciudad': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Ciudad'
+            }),
+            'estado': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Estado'
+            }),
+            'codigo_postal': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'C.P.'
+            })
+        }
+
+
+class ExperienciaLaboralForm(forms.ModelForm):
+    """Formulario para experiencias laborales."""
+
+    class Meta:
+        model = ExperienciaLaboral
+        fields = ['empresa', 'puesto', 'descripcion', 'fecha_inicio', 'fecha_fin', 'actual']
+        widgets = {
+            'empresa': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Ej: Tecnologías Acme S.A. de C.V.'
+            }),
+            'puesto': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Ej: Desarrollador Web'
+            }),
+            'descripcion': forms.Textarea(attrs={
+                'class': 'form-control',
+                'rows': 3,
+                'placeholder': 'Describe tus actividades principales...'
+            }),
+            'fecha_inicio': forms.DateInput(attrs={
+                'class': 'form-control',
+                'type': 'month'
+            }),
+            'fecha_fin': forms.DateInput(attrs={
+                'class': 'form-control',
+                'type': 'month'
+            }),
+            'actual': forms.CheckboxInput(attrs={
+                'class': 'form-check-input'
+            })
+        }
+        labels = {
+            'empresa': 'Empresa',
+            'puesto': 'Puesto / Cargo',
+            'descripcion': 'Funciones y Responsabilidades',
+            'fecha_inicio': 'Fecha de Inicio',
+            'fecha_fin': 'Fecha de Fin',
+            'actual': 'Trabajo actual'
+        }
+
+
+class EducacionForm(forms.ModelForm):
+    """Formulario para educación."""
+
+    class Meta:
+        model = Educacion
+        fields = ['titulo', 'institucion', 'fecha_inicio', 'fecha_fin', 'descripcion']
+        widgets = {
+            'titulo': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Ej: Ingeniería en Sistemas'
+            }),
+            'institucion': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Ej: Universidad Nacional'
+            }),
+            'fecha_inicio': forms.DateInput(attrs={
+                'class': 'form-control',
+                'type': 'month'
+            }),
+            'fecha_fin': forms.DateInput(attrs={
+                'class': 'form-control',
+                'type': 'month'
+            }),
+            'descripcion': forms.Textarea(attrs={
+                'class': 'form-control',
+                'rows': 2,
+                'placeholder': 'Descripción adicional (opcional)'
+            })
+        }
+        labels = {
+            'titulo': 'Título Obtenido / Nivel',
+            'institucion': 'Institución Educativa',
+            'fecha_inicio': 'Fecha de Inicio',
+            'fecha_fin': 'Fecha de Fin',
+            'descripcion': 'Descripción'
+        }
+
+
+class HabilidadInteresadoForm(forms.ModelForm):
+    """Formulario para habilidades del interesado."""
+
+    nombre_habilidad = forms.CharField(
+        max_length=100,
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Ej: JavaScript, Liderazgo'
+        }),
+        label='Habilidad'
+    )
+
+    class Meta:
+        model = HabilidadInteresado
+        fields = ['nivel']
+        widgets = {
+            'nivel': forms.Select(attrs={
+                'class': 'form-select'
+            })
+        }
+        labels = {
+            'nivel': 'Nivel de Dominio'
+        }
+
+
+class IdiomaInteresadoForm(forms.ModelForm):
+    """Formulario para idiomas del interesado."""
+
+    class Meta:
+        model = IdiomaInteresado
+        fields = ['idioma', 'nivel_lectura', 'nivel_escritura', 'nivel_conversacion']
+        widgets = {
+            'idioma': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Ej: Inglés'
+            }),
+            'nivel_lectura': forms.Select(attrs={
+                'class': 'form-select'
+            }),
+            'nivel_escritura': forms.Select(attrs={
+                'class': 'form-select'
+            }),
+            'nivel_conversacion': forms.Select(attrs={
+                'class': 'form-select'
+            })
+        }
+        labels = {
+            'idioma': 'Idioma',
+            'nivel_lectura': 'Nivel de Lectura',
+            'nivel_escritura': 'Nivel de Escritura',
+            'nivel_conversacion': 'Nivel de Conversación'
+        }
 
 
 class SecretariaRegistroForm(forms.ModelForm):
@@ -120,7 +323,6 @@ class ReclutadorRegistroForm(UserCreationForm):
     def save(self, commit=True, secretaria=None):
         if not secretaria:
             raise ValueError("Se requiere una secretaría para el registro de reclutador")
-
         user = super().save(commit=False)
         user.rol = 'reclutador'
         if commit:
@@ -138,10 +340,6 @@ class ReclutadorRegistroForm(UserCreationForm):
         return user
 
 # usuarios/forms.py - Agregar estos formularios al archivo existente
-
-
-
-
 class VacanteForm(forms.ModelForm):
     """Formulario para crear/editar vacantes."""
 
