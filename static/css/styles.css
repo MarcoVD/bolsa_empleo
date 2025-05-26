@@ -35,7 +35,6 @@
     --coloratencion: #6C6C6C;
     --colbotonidentidad: #6E6F72;
 }
-
 body {
     /* overflow: hidden; */
     font-family: 'Muli', san-serif;
@@ -45,7 +44,6 @@ body {
 }
 
 /* FOCUS STYLING - Bootstrap will override some of these */
-
 .form-control:focus,
 input[type=radio]:focus,
 .btn:focus {
