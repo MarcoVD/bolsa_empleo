@@ -8,13 +8,27 @@ from django.views.generic import View
 from django.db import transaction
 from django.http import JsonResponse
 from django.forms import modelformset_factory
+from django.contrib.auth import authenticate, login, logout
+
 from .models import (
+    Usuario, Interesado, Reclutador, Secretaria, # Añadido por si se usan directamente en vistas
     Curriculum, ExperienciaLaboral, Educacion,
-    HabilidadInteresado, IdiomaInteresado, Habilidad
+    HabilidadInteresado, IdiomaInteresado, Habilidad,
+    Vacante, RequisitoVacante, Categoria # Añadido por si se usan directamente
 )
 from .forms import (
-    CurriculumForm, InteresadoPerfilForm, ExperienciaLaboralForm,
-    EducacionForm, HabilidadInteresadoForm, IdiomaInteresadoForm
+    LoginForm,  # <--- Importación añadida
+    InteresadoRegistroForm, # Añadido para la vista de registro de interesados
+    SecretariaRegistroForm, # Añadido para la vista de registro de reclutadores
+    ReclutadorRegistroForm, # Añadido para la vista de registro de reclutadores
+    VacanteForm,            # Añadido para las vistas de publicar/editar vacante
+    RequisitoVacanteForm,   # Añadido para las vistas de publicar/editar vacante
+    CurriculumForm,
+    InteresadoPerfilForm,
+    ExperienciaLaboralForm,
+    EducacionForm,
+    HabilidadInteresadoForm,
+    IdiomaInteresadoForm
 )
 @method_decorator(login_required, name='dispatch')
 class CrearEditarCVView(View):

@@ -2,7 +2,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import get_user_model
-from .models import Interesado, Reclutador, Secretaria, Vacante, RequisitoVacante, Curriculum, ExperienciaLaboral, Educacion, HabilidadInteresado, IdiomaInteresado
+from .models import Interesado, Reclutador, Secretaria, Vacante, RequisitoVacante, Curriculum, ExperienciaLaboral, Educacion, HabilidadInteresado, IdiomaInteresado, Categoria
 # from .models import Vacante, RequisitoVacante, Categoria
 Usuario = get_user_model()
 
