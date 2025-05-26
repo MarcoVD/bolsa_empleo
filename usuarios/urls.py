@@ -1,7 +1,7 @@
 # usuarios/urls.py
 from django.urls import path
 from . import views
-
+# usuarios/urls.py - AGREGAR estas URLs al final de urlpatterns
 urlpatterns = [
     path('', views.index_view, name='index'),
     path('login/', views.LoginView.as_view(), name='login'),
@@ -14,4 +14,19 @@ urlpatterns = [
     path('publicar-vacante/', views.PublicarVacanteView.as_view(), name='publicar_vacante'),
     path('editar-vacante/<int:vacante_id>/', views.EditarVacanteView.as_view(), name='editar_vacante'),
     path('mis-vacantes/', views.MisVacantesView.as_view(), name='mis_vacantes'),
+
+    # AGREGAR ESTAS LÍNEAS PARA EL CV:
+    path('mi-cv/', views.CrearEditarCVView.as_view(), name='crear_editar_cv'),
+    path('mi-cv/previsualizar/', views.previsualizar_cv, name='previsualizar_cv'),
+
+    # URLs AJAX para CV
+    path('ajax/experiencia/agregar/', views.agregar_experiencia_ajax, name='agregar_experiencia_ajax'),
+    path('ajax/experiencia/eliminar/<int:experiencia_id>/', views.eliminar_experiencia_ajax,
+         name='eliminar_experiencia_ajax'),
+    path('ajax/educacion/agregar/', views.agregar_educacion_ajax, name='agregar_educacion_ajax'),
+    path('ajax/educacion/eliminar/<int:educacion_id>/', views.eliminar_educacion_ajax, name='eliminar_educacion_ajax'),
+    path('ajax/habilidad/agregar/', views.agregar_habilidad_ajax, name='agregar_habilidad_ajax'),
+    path('ajax/habilidad/eliminar/<int:habilidad_id>/', views.eliminar_habilidad_ajax, name='eliminar_habilidad_ajax'),
+    path('ajax/idioma/agregar/', views.agregar_idioma_ajax, name='agregar_idioma_ajax'),
+    path('ajax/idioma/eliminar/<int:idioma_id>/', views.eliminar_idioma_ajax, name='eliminar_idioma_ajax'),
 ]

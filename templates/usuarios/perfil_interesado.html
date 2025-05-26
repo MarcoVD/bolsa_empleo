@@ -44,9 +44,9 @@
         <div class="card mb-4">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h5 class="mb-0"><i class="bi bi-file-earmark-person"></i> Mi Currículum</h5>
-                <a href="#" class="btn btn-sm btn-primary">
+                <a href="{% url 'crear_editar_cv' %}" class="btn btn-sm btn-primary">
                     <i class="bi bi-plus-circle"></i> Crear/Editar mi CV
-                </a>
+                </>
             </div>
             <div class="card-body">
                 <p class="text-center py-5">
@@ -54,7 +54,7 @@
                     <br>
                     Aún no has creado tu currículum.
                     <br>
-                    <a href="#" class="btn btn-success mt-3">
+                    <a href="{% url 'crear_editar_cv' %}" class="btn btn-success mt-3">
                         <i class="bi bi-plus-circle"></i> Crear mi CV Ahora
                     </a>
                 </p>
