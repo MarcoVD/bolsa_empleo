@@ -1,20 +1,3 @@
-# usuarios/views.py
-# from django.shortcuts import render, redirect
-# from django.contrib.auth import login, authenticate, logout
-# from django.contrib.auth.decorators import login_required
-# from django.contrib.auth.mixins import LoginRequiredMixin
-# from django.contrib import messages
-# from django.utils.decorators import method_decorator
-# from django.views.generic import View
-# from django.db import transaction
-# from .forms import VacanteForm, RequisitoVacanteForm
-# from .models import Vacante, RequisitoVacante
-# from .forms import (
-#     LoginForm, InteresadoRegistroForm,
-#     SecretariaRegistroForm, ReclutadorRegistroForm
-# )
-
-
 # from .models import Usuario, Interesado, Reclutador, Secretaria
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
@@ -33,8 +16,6 @@ from .forms import (
     CurriculumForm, InteresadoPerfilForm, ExperienciaLaboralForm,
     EducacionForm, HabilidadInteresadoForm, IdiomaInteresadoForm
 )
-
-
 @method_decorator(login_required, name='dispatch')
 class CrearEditarCVView(View):
     """Vista para crear o editar el CV del interesado."""
