@@ -140,7 +140,39 @@ class CrearEditarCVView(View):
         }
         return render(request, 'usuarios/crear_editar_cv.html', context)
 
+@login_required
+def editar_experiencia_ajax(request, experiencia_id):
+    """Vista AJAX para editar experiencia laboral."""
+    if request.method != 'POST' or request.user.rol != 'interesado':
+        return JsonResponse({'success': False, 'error': 'Método no permitido'})
 
+    try:
+        curriculum = request.user.interesado.curriculum
+        experiencia = get_object_or_404(ExperienciaLaboral, id=experiencia_id, curriculum=curriculum)
+        form = ExperienciaLaboralForm(request.POST, instance=experiencia)
+
+        if form.is_valid():
+            experiencia = form.save()
+            return JsonResponse({
+                'success': True,
+                'message': 'Experiencia actualizada exitosamente',
+                'experiencia': {
+                    'id': experiencia.id,
+                    'empresa': experiencia.empresa,
+                    'puesto': experiencia.puesto,
+                    'periodo': experiencia.periodo_trabajo
+                }
+            })
+        else:
+            return JsonResponse({
+                'success': False,
+                'errors': form.errors
+            })
+    except Exception as e:
+        return JsonResponse({
+            'success': False,
+            'error': str(e)
+        })
 @login_required
 def agregar_experiencia_ajax(request):
     """Vista AJAX para agregar experiencia laboral."""

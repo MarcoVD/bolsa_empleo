@@ -112,17 +112,23 @@
                 <div id="experienciaContainer">
                     {% for experiencia in experiencias %}
                         <div class="experiencia-item mb-3 p-3 border rounded" data-id="{{ experiencia.id }}">
-                            <div class="d-flex justify-content-between align-items-start">
-                                <div class="flex-grow-1">
-                                    <h6 class="mb-1">{{ experiencia.puesto }}</h6>
-                                    <p class="mb-1 text-muted">{{ experiencia.empresa }}</p>
-                                    <p class="mb-1 small">{{ experiencia.periodo_trabajo }}</p>
-                                    <p class="mb-0 small">{{ experiencia.descripcion|truncatewords:20 }}</p>
-                                </div>
-                                <button type="button" class="btn btn-sm btn-outline-danger" onclick="eliminarExperiencia({{ experiencia.id }})">
-                                    <i class="bi bi-trash"></i>
-                                </button>
-                            </div>
+                        <div class="d-flex justify-content-between align-items-start">
+                        <div class="flex-grow-1">
+                            <h6 class="mb-1">{{ experiencia.puesto }}</h6>
+                            <p class="mb-1 text-muted">{{ experiencia.empresa }}</p>
+                            <p class="mb-1 small">{{ experiencia.periodo_trabajo }}</p>
+                            <p class="mb-0 small">{{ experiencia.descripcion|truncatewords:20 }}</p>
+                        </div>
+                        <div class="btn-group-vertical">
+                            <button type="button" class="btn btn-sm btn-outline-primary mb-1" onclick="editarExperiencia({{ experiencia.id }}, '{{ experiencia.puesto }}', '{{ experiencia.empresa }}', '{{ experiencia.fecha_inicio|date:"Y-m-d" }}', '{% if experiencia.fecha_fin %}{{ experiencia.fecha_fin|date:"Y-m-d" }}{% endif %}', {{ experiencia.actual|yesno:"true,false" }}, '{{ experiencia.descripcion|escapejs }}')">
+            <i class="bi bi-pencil"></i>
+        </button>
+        <button type="button" class="btn btn-sm btn-outline-danger" onclick="eliminarExperiencia({{ experiencia.id }})">
+            <i class="bi bi-trash"></i>
+        </button>
+    </div>
+</div>
+
                         </div>
                     {% empty %}
                         <p class="text-muted text-center">No hay experiencias laborales registradas.</p>
@@ -144,14 +150,8 @@
                     {% for educacion in educaciones %}
                         <div class="educacion-item mb-3 p-3 border rounded" data-id="{{ educacion.id }}">
                             <div class="d-flex justify-content-between align-items-start">
-                                <div class="flex-grow-1">
-                                    <h6 class="mb-1">{{ educacion.titulo }}</h6>
-                                    <p class="mb-1 text-muted">{{ educacion.institucion }}</p>
-                                    <p class="mb-0 small">{{ educacion.periodo_estudio }}</p>
-                                </div>
-                                <button type="button" class="btn btn-sm btn-outline-danger" onclick="eliminarEducacion({{ educacion.id }})">
-                                    <i class="bi bi-trash"></i>
-                                </button>
+
+
                             </div>
                         </div>
                     {% empty %}
@@ -458,7 +458,70 @@
 }
 </style>
 
+
+
 <script>
+// Variables para controlar el modo de edición
+let experienciaEditandoId = null;
+
+function editarExperiencia(id, puesto, empresa, fechaInicio, fechaFin, actual, descripcion) {
+    experienciaEditandoId = id;
+
+    // Llenar el formulario con los datos existentes
+    document.querySelector('#experienciaForm input[name="puesto"]').value = puesto;
+    document.querySelector('#experienciaForm input[name="empresa"]').value = empresa;
+    document.querySelector('#experienciaForm input[name="fecha_inicio"]').value = fechaInicio;
+    document.querySelector('#experienciaForm input[name="fecha_fin"]').value = fechaFin || '';
+    document.querySelector('#experienciaForm input[name="actual"]').checked = actual;
+    document.querySelector('#experienciaForm textarea[name="descripcion"]').value = descripcion;
+
+    // Cambiar el título del modal
+    document.querySelector('#experienciaModal .modal-title').textContent = 'Editar Experiencia Laboral';
+
+    // Mostrar el modal
+    new bootstrap.Modal(document.getElementById('experienciaModal')).show();
+}
+
+// MODIFICAR la función guardarExperiencia
+function guardarExperiencia() {
+    const form = document.getElementById('experienciaForm');
+    const formData = new FormData(form);
+
+    let url = '{% url "agregar_experiencia_ajax" %}';
+
+    // Si estamos editando, cambiar la URL
+    if (experienciaEditandoId) {
+        url = `/ajax/experiencia/editar/${experienciaEditandoId}/`;
+    }
+
+    fetch(url, {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            bootstrap.Modal.getInstance(document.getElementById('experienciaModal')).hide();
+            location.reload();
+        } else {
+            alert('Error al guardar: ' + JSON.stringify(data.errors));
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error al guardar la experiencia');
+    });
+}
+
+// Limpiar variables cuando se cierra el modal
+document.getElementById('experienciaModal').addEventListener('hidden.bs.modal', function () {
+    experienciaEditandoId = null;
+    document.querySelector('#experienciaModal .modal-title').textContent = 'Agregar Experiencia Laboral';
+    document.getElementById('experienciaForm').reset();
+});
 // Funciones para mostrar modales
 function mostrarModalExperiencia() {
     new bootstrap.Modal(document.getElementById('experienciaModal')).show();

@@ -112,7 +112,7 @@ class InteresadoPerfilForm(forms.ModelForm):
             'fecha_nacimiento': forms.DateInput(attrs={
                 'class': 'form-control',
                 'type': 'date'
-            }),
+            }, format='%Y-%m-%d'),
             'direccion': forms.Textarea(attrs={
                 'class': 'form-control',
                 'rows': 2,
@@ -155,12 +155,12 @@ class ExperienciaLaboralForm(forms.ModelForm):
             }),
             'fecha_inicio': forms.DateInput(attrs={
                 'class': 'form-control',
-                'type': 'month'
-            }),
+                'type': 'date'
+            }, format='%Y-%m-%d'),
             'fecha_fin': forms.DateInput(attrs={
                 'class': 'form-control',
-                'type': 'month'
-            }),
+                'type': 'date'
+            }, format='%Y-%m-%d'),
             'actual': forms.CheckboxInput(attrs={
                 'class': 'form-check-input'
             })
