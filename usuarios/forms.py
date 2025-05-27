@@ -396,7 +396,7 @@ class VacanteForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
 
         super().__init__(*args, **kwargs)
-        self.fields['fecha_nacimiento'].input_formats = ['%Y-%m-%d']
+        # self.fields['fecha_nacimiento'].input_formats = ['%Y-%m-%d']
         # Marcar campos obligatorios
         self.fields['titulo'].required = True
         self.fields['categoria'].required = True

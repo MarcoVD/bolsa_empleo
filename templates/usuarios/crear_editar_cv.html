@@ -158,8 +158,23 @@
                     {% for educacion in educaciones %}
                         <div class="educacion-item mb-3 p-3 border rounded" data-id="{{ educacion.id }}">
                             <div class="d-flex justify-content-between align-items-start">
-
-
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1">{{ educacion.titulo }}</h6>
+                                    <p class="mb-1 text-muted">{{ educacion.institucion }}</p>
+                                    <p class="mb-1 small">{{ educacion.periodo_estudio }}</p>
+                                    {% if educacion.descripcion %}
+                                        <p class="mb-0 small">{{ educacion.descripcion|truncatewords:20 }}</p>
+                                    {% endif %}
+                                </div>
+                                <div class="btn-group-vertical">
+                                    <button type="button" class="btn btn-sm btn-outline-primary mb-1"
+                                        onclick="editarEducacion({{ educacion.id }}, '{{ educacion.titulo|escapejs }}', '{{ educacion.institucion|escapejs }}', '{{ educacion.fecha_inicio|date:"Y-m-d" }}', '{% if educacion.fecha_fin %}{{ educacion.fecha_fin|date:"Y-m-d" }}{% endif %}', '{{ educacion.descripcion|escapejs }}')">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-outline-danger" onclick="eliminarEducacion({{ educacion.id }})">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     {% empty %}
@@ -253,7 +268,7 @@
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">Fecha de Inicio</label>
-                            <input type="month" class="form-control" name="c" required>
+                            <input type="month" class="form-control" name="fecha_inicio" required>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">Fecha de Fin</label>
@@ -466,23 +481,25 @@
 }
 </style>
 
-
-
 <script>
-// Variables para controlar el modo de edición
+// Variables globales para controlar edición
 let experienciaEditandoId = null;
+let educacionEditandoId = null;
 
+// =========================
+// EXPERIENCIA LABORAL
+// =========================
 function mostrarModalExperiencia() {
     experienciaEditandoId = null;
     document.querySelector('#experienciaModal .modal-title').textContent = 'Agregar Experiencia Laboral';
     document.getElementById('experienciaForm').reset();
+    document.querySelector('#experienciaForm input[name="fecha_fin"]').disabled = false;
     new bootstrap.Modal(document.getElementById('experienciaModal')).show();
 }
 
 function editarExperiencia(id, puesto, empresa, fechaInicio, fechaFin, actual, descripcion) {
     experienciaEditandoId = id;
 
-    // Llenar el formulario con los datos existentes
     document.querySelector('#experienciaForm input[name="puesto"]').value = puesto;
     document.querySelector('#experienciaForm input[name="empresa"]').value = empresa;
     document.querySelector('#experienciaForm input[name="fecha_inicio"]').value = fechaInicio;
@@ -490,14 +507,10 @@ function editarExperiencia(id, puesto, empresa, fechaInicio, fechaFin, actual, d
     document.querySelector('#experienciaForm input[name="actual"]').checked = actual;
     document.querySelector('#experienciaForm textarea[name="descripcion"]').value = descripcion;
 
-    // Habilitar/deshabilitar fecha_fin según el estado de "actual"
     const fechaFinInput = document.querySelector('#experienciaForm input[name="fecha_fin"]');
     fechaFinInput.disabled = actual;
 
-    // Cambiar el título del modal
     document.querySelector('#experienciaModal .modal-title').textContent = 'Editar Experiencia Laboral';
-
-    // Mostrar el modal
     new bootstrap.Modal(document.getElementById('experienciaModal')).show();
 }
 
@@ -505,20 +518,12 @@ function guardarExperiencia() {
     const form = document.getElementById('experienciaForm');
     const formData = new FormData(form);
 
-    let url, method;
-
-    if (experienciaEditandoId) {
-        // Modo edición
-        url = `{% url "editar_experiencia_ajax" 0 %}`.replace('0', experienciaEditandoId);
-        method = 'POST';
-    } else {
-        // Modo creación
-        url = '{% url "agregar_experiencia_ajax" %}';
-        method = 'POST';
-    }
+    let url = experienciaEditandoId ?
+        `/ajax/experiencia/editar/${experienciaEditandoId}/` :
+        '/ajax/experiencia/agregar/';
 
     fetch(url, {
-        method: method,
+        method: 'POST',
         body: formData,
         headers: {
             'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
@@ -530,7 +535,7 @@ function guardarExperiencia() {
             bootstrap.Modal.getInstance(document.getElementById('experienciaModal')).hide();
             location.reload();
         } else {
-            alert('Error al guardar: ' + JSON.stringify(data.errors));
+            alert('Error: ' + JSON.stringify(data.errors || data.error));
         }
     })
     .catch(error => {
@@ -539,22 +544,229 @@ function guardarExperiencia() {
     });
 }
 
-// Limpiar variables cuando se cierra el modal
-document.getElementById('experienciaModal').addEventListener('hidden.bs.modal', function () {
-    experienciaEditandoId = null;
-    document.querySelector('#experienciaModal .modal-title').textContent = 'Agregar Experiencia Laboral';
-    document.getElementById('experienciaForm').reset();
-});
-
-// Lógica para deshabilitar fecha fin cuando es trabajo actual
-document.getElementById('actualCheck').addEventListener('change', function() {
-    const fechaFin = document.querySelector('#experienciaForm input[name="fecha_fin"]');
-    if (this.checked) {
-        fechaFin.disabled = true;
-        fechaFin.value = '';
-    } else {
-        fechaFin.disabled = false;
+function eliminarExperiencia(id) {
+    if (confirm('¿Estás seguro de eliminar esta experiencia?')) {
+        fetch(`/ajax/experiencia/eliminar/${id}/`, {
+            method: 'DELETE',
+            headers: {
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            } else {
+                alert('Error al eliminar: ' + data.error);
+            }
+        });
     }
+}
+
+// =========================
+// EDUCACIÓN
+// =========================
+function mostrarModalEducacion() {
+    educacionEditandoId = null;
+    document.querySelector('#educacionModal .modal-title').textContent = 'Agregar Educación';
+    document.getElementById('educacionForm').reset();
+    new bootstrap.Modal(document.getElementById('educacionModal')).show();
+}
+
+function editarEducacion(id, titulo, institucion, fechaInicio, fechaFin, descripcion) {
+    educacionEditandoId = id;
+
+    document.querySelector('#educacionForm input[name="titulo"]').value = titulo;
+    document.querySelector('#educacionForm input[name="institucion"]').value = institucion;
+    document.querySelector('#educacionForm input[name="fecha_inicio"]').value = fechaInicio;
+    document.querySelector('#educacionForm input[name="fecha_fin"]').value = fechaFin || '';
+    document.querySelector('#educacionForm textarea[name="descripcion"]').value = descripcion || '';
+
+    document.querySelector('#educacionModal .modal-title').textContent = 'Editar Educación';
+    new bootstrap.Modal(document.getElementById('educacionModal')).show();
+}
+
+function guardarEducacion() {
+    const form = document.getElementById('educacionForm');
+    const formData = new FormData(form);
+
+    let url = '/ajax/educacion/agregar/'; // Solo creación por ahora
+
+    fetch(url, {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            bootstrap.Modal.getInstance(document.getElementById('educacionModal')).hide();
+            location.reload();
+        } else {
+            alert('Error: ' + JSON.stringify(data.errors || data.error));
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error al guardar la educación');
+    });
+}
+
+function eliminarEducacion(id) {
+    if (confirm('¿Estás seguro de eliminar esta educación?')) {
+        fetch(`/ajax/educacion/eliminar/${id}/`, {
+            method: 'DELETE',
+            headers: {
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            } else {
+                alert('Error al eliminar: ' + data.error);
+            }
+        });
+    }
+}
+
+// =========================
+// HABILIDADES
+// =========================
+function mostrarModalHabilidad() {
+    document.getElementById('habilidadForm').reset();
+    new bootstrap.Modal(document.getElementById('habilidadModal')).show();
+}
+
+function guardarHabilidad() {
+    const form = document.getElementById('habilidadForm');
+    const formData = new FormData(form);
+
+    fetch('/ajax/habilidad/agregar/', {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            bootstrap.Modal.getInstance(document.getElementById('habilidadModal')).hide();
+            location.reload();
+        } else {
+            alert('Error: ' + JSON.stringify(data.errors || data.error));
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error al guardar la habilidad');
+    });
+}
+
+function eliminarHabilidad(id) {
+    if (confirm('¿Estás seguro de eliminar esta habilidad?')) {
+        fetch(`/ajax/habilidad/eliminar/${id}/`, {
+            method: 'DELETE',
+            headers: {
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            } else {
+                alert('Error al eliminar: ' + data.error);
+            }
+        });
+    }
+}
+
+// =========================
+// IDIOMAS
+// =========================
+function mostrarModalIdioma() {
+    document.getElementById('idiomaForm').reset();
+    new bootstrap.Modal(document.getElementById('idiomaModal')).show();
+}
+
+function guardarIdioma() {
+    const form = document.getElementById('idiomaForm');
+    const formData = new FormData(form);
+
+    fetch('/ajax/idioma/agregar/', {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            bootstrap.Modal.getInstance(document.getElementById('idiomaModal')).hide();
+            location.reload();
+        } else {
+            alert('Error: ' + JSON.stringify(data.errors || data.error));
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error al guardar el idioma');
+    });
+}
+
+function eliminarIdioma(id) {
+    if (confirm('¿Estás seguro de eliminar este idioma?')) {
+        fetch(`/ajax/idioma/eliminar/${id}/`, {
+            method: 'DELETE',
+            headers: {
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            } else {
+                alert('Error al eliminar: ' + data.error);
+            }
+        });
+    }
+}
+
+// =========================
+// EVENT LISTENERS
+// =========================
+document.addEventListener('DOMContentLoaded', function() {
+    // Control de trabajo actual para experiencia
+    const actualCheck = document.getElementById('actualCheck');
+    if (actualCheck) {
+        actualCheck.addEventListener('change', function() {
+            const fechaFin = document.querySelector('#experienciaForm input[name="fecha_fin"]');
+            if (this.checked) {
+                fechaFin.disabled = true;
+                fechaFin.value = '';
+            } else {
+                fechaFin.disabled = false;
+            }
+        });
+    }
+
+    // Limpiar modales al cerrar
+    document.getElementById('experienciaModal')?.addEventListener('hidden.bs.modal', function () {
+        experienciaEditandoId = null;
+        document.querySelector('#experienciaModal .modal-title').textContent = 'Agregar Experiencia Laboral';
+    });
+
+    document.getElementById('educacionModal')?.addEventListener('hidden.bs.modal', function () {
+        educacionEditandoId = null;
+        document.querySelector('#educacionModal .modal-title').textContent = 'Agregar Educación';
+    });
 });
 </script>
 {% endblock %}
