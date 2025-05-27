@@ -1,0 +1,484 @@
+:root {
+    --primary: #9F2241;
+    --secondary: #bc955b;
+    --info: #cc3255;
+    --light: #ffffff;
+    --grey: #efefef;
+    --yellow: #FFFF00;
+    --black: #3C3935;
+    --dark_grey: #4C5168;
+
+    --letramenuprincipal: #212529;
+    --letrablanca: #fff;
+    --fondomenu: #fff;
+    --colorboton: #8A2036;
+    --colorfooter: #56212f;
+    --letreroinicial: 17px;
+    --letrerofinal: 28px;
+    --marquesina: #9f2241;
+    --colorfinal: #4C5168;
+    --fondofooter: #F8F9FA;
+    --titulofooter: #0FA4DE;
+    --bordefooter: #DEE2E6;
+    --enlaceverde: #A4EB05;
+    --btndetalle: #A8A8A8;
+    --ultima: #E9ECEF;
+    --sombra1: rgba(0, 0, 0, 0.20);
+    --sombra2: rgba(0, 0, 0, 0.2);
+    --peso700: 700;
+    --linea-video: #E43883;
+    --titulo-pag: #706F6F;
+    --colordorado: #BC965C;
+    --colordependecias: #555073;
+    --colorubicacion: #ea4335;
+    --colorlink: #19a4dd;
+    --coloratencion: #6C6C6C;
+    --colbotonidentidad: #6E6F72;
+}
+body {
+     overflow: hidden;
+    font-family: 'Muli', san-serif, serif;
+    font-weight: 300;
+    color: var(--primary);
+    background-color: var(--grey);
+}
+
+/* FOCUS STYLING - Bootstrap will override some of these */
+.form-control:focus,
+input[type=radio]:focus,
+.btn:focus {
+    outline-color: var(--secondary);
+    outline-width: 4px;
+    outline-style: solid;
+}
+
+a:hover {
+    text-decoration: none;
+}
+
+.bg-primary {
+    background-color: var(--primary) !important;
+}
+
+        .menuprincipal {
+            background-color: #9F2241;
+        }
+
+        /* Animaciones para los enlaces */
+        .navbar-nav .nav-link {
+            position: relative;
+            color: #333;
+            transition: all 0.3s ease;
+            padding: 0.5rem 1rem;
+            margin: 0 0.25rem;
+        }
+
+        .navbar-nav .nav-link:hover {
+            color: #9F2241;
+            /* color: #BC955B !important; */
+            transform: translateY(-2px);
+        }
+
+        .navbar-nav .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 0;
+            background-color: #BC955B;
+            transition: width 0.3s ease;
+        }
+
+        .navbar-nav .nav-link:hover::after {
+            width: 100%;
+        }
+
+
+        .nav-link.active {
+            /* color: #9F2241 !important; */
+            font-weight: 500;
+        }
+
+        .logo-movilidad {
+            width: 500px;
+        }
+
+        .custom-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+            position: relative;
+        }
+
+        .custom-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px #BC955B;
+        }
+
+        .custom-card:hover::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 4px;
+            width: 100%;
+        }
+
+        .custom-icon {
+            font-size: 3.5rem;
+            transition: all 0.3s ease;
+            margin-right: 1rem;
+            color: #BC955B;
+        }
+
+        .card:hover .custom-icon {
+            transform: scale(1.1);
+            color: #9F2241 !important;
+        }
+
+        .social-icons a {
+            color: #4a192c;
+            font-size: 20px;
+            margin: 0 10px;
+            text-decoration: none;
+        }
+
+        .update-box {
+            background: #4a192c;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+.bg-info {
+    background-color: var(--info) !important;
+}
+
+.bg-grey {
+    background-color: var(--grey) !important;
+}
+
+.bg-light {
+    background-color: var(--light) !important;
+}
+
+.text-dark-grey {
+    color: var(--dark_grey);
+}
+
+.bg-mix {
+    background: linear-gradient(180deg, var(--light) 50%, var(--grey) 0);
+}
+
+.text-primary {
+    color: var(--primary) !important;
+}
+
+.text-secondary {
+    color: var(--secondary) !important;
+}
+
+.text-info {
+    color: var(--info) !important;
+}
+
+.text-dark {
+    color: var(--black);
+}
+
+.btn {
+    border: 0;
+}
+
+.btn-primary {
+    background-color: var(--primary);
+}
+
+.btn-primary:hover {
+    background-color: var(--primary);
+}
+
+/*#sidebar-container {*/
+/*    min-height: 100vh;*/
+/*}*/
+
+/*#sidebar-container .logo {*/
+/*    padding: .875rem 1.25rem;*/
+/*}*/
+
+/*#sidebar-container .menu {*/
+/*    width: 18rem;*/
+/*}*/
+
+/*.btn-search {*/
+/*    right: 5px;*/
+/*}*/
+
+/*.avatar {*/
+/*    max-width: 35px;*/
+/*}*/
+
+/*#content {*/
+/*    overflow: auto;*/
+/*    height: 100vh;*/
+/*    padding-bottom: 5rem;*/
+/*}*/
+
+/*.stretched-link::after {*/
+/*    position: absolute;*/
+/*    top: 0;*/
+/*    right: 0;*/
+/*    bottom: 0;*/
+/*    left: 0;*/
+/*    z-index: 1;*/
+/*    content: "";*/
+/*}*/
+
+/*#lomas .tarjeta h5.card-title {*/
+/*    font-size: 20px;*/
+/*    font-weight: 600;*/
+/*    color: var(--colorboton);*/
+/*}*/
+
+/*#lomasbuscado .card-title a,*/
+/*#lomasbuscado .card-title a:visited,*/
+/*#atencionciu a,*/
+/*#atencionciu a:visited {*/
+/*    color: var(--colorboton);*/
+/*}*/
+
+/*.tarjeta .card a {*/
+/*    text-decoration: none;*/
+/*}*/
+/*.tarjeta .card:hover,*/
+/*.tarjeta-enlace img:hover,*/
+/*.tarjeta-enlace .card:hover,*/
+/*.node__content .tarjeta-municipio img:hover,*/
+/*.node__content .serviciosinternos img:hover,*/
+/*.node__content .descripcion-municipio .card:hover {*/
+
+/*    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25) inset, 0px 4px 4px 0px rgba(0, 0, 0, 0.25);*/
+/*    border-bottom: 4px var(--colorboton) solid;*/
+/*}*/
+
+/**,*/
+/*::after,*/
+/*::before {*/
+/*    box-sizing: border-box;*/
+/*}*/
+
+/*.h1,*/
+/*.h2,*/
+/*.h3,*/
+/*.h4,*/
+/*.h5,*/
+/*.h6,*/
+/*h1,*/
+/*h2,*/
+/*h3,*/
+/*h4,*/
+/*h5,*/
+/*h6 {*/
+/*    margin-top: 0;*/
+/*    margin-bottom: .5rem;*/
+/*    font-weight: 500;*/
+/*    line-height: 1.2;*/
+/*}*/
+
+/*.tarjeta .card,*/
+/*.tarjeta-enlace .card,*/
+/*.node__content .serviciosinternos .card,*/
+/*.node__content .descripcion-municipio .card {*/
+/*    box-shadow: 0px 0px 10px 0px var(--sombra1);*/
+/*    border-radius: 10px;*/
+/*    transition: border-bottom 0.5s;*/
+/*    margin-bottom: 20px;*/
+/*    margin-left: auto;*/
+/*    margin-right: auto;*/
+/*    border-bottom: 4px var(--colordorado) solid;*/
+
+/*}*/
+
+/*.card {*/
+/*    position: relative;*/
+/*    display: flex;*/
+/*    flex-direction: column;*/
+/*    min-width: 0;*/
+/*    word-wrap: break-word;*/
+/*    background-color: #fff;*/
+/*    background-clip: border-box;*/
+/*    border-bottom: 4px solid var(--secondary);*/
+/*    border-radius: .25rem;*/
+/*}*/
+/*.card-body {*/
+/*    display: flex;*/
+/*    align-items: center;*/
+/*    justify-content: start;*/
+/*    padding: 1.5rem !important;*/
+/*    background: linear-gradient(to bottom, #ffffff, #f8f9fa);*/
+/*    transition: background 0.3s ease;*/
+/*    text-align: left;*/
+/*}*/
+
+/*.row {*/
+/*    --bs-gutter-x: 1.5rem;*/
+/*    --bs-gutter-y: 1.5rem;*/
+/*    display: flex;*/
+/*    flex-wrap: wrap;*/
+/*    margin-top: calc(-1* var(--bs-gutter-y));*/
+/*    margin-right: calc(-.5* var(--bs-gutter-x));*/
+/*    margin-left: calc(-.5* var(--bs-gutter-x));*/
+/*}*/
+
+
+/*.stat {*/
+/*    border-right: 1px solid var(--grey);*/
+/*}*/
+
+/*@media (max-width: 768px) {*/
+/*    #sidebar-container {*/
+/*        display: none;*/
+/*    }*/
+
+/*    .stat {*/
+/*        border: 0;*/
+/*    }*/
+/*}*/
+
+/* -----------------------------------------
+ Estilos generales */
+/*body {*/
+/*    font-family: 'Inter', sans-serif;*/
+/*    background-color: #f8f9fa;*/
+/*}*/
+
+/*!* Botones y formularios *!*/
+/*.btn {*/
+/*    border-radius: 8px;*/
+/*}*/
+
+/*.form-control, .form-select {*/
+/*    border-radius: 8px;*/
+/*}*/
+
+/* Tarjetas - borrar
+.card {
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    margin-bottom: 20px;
+}
+*/
+/*.card-header {*/
+/*    background-color: #f8f9fa;*/
+/*    font-weight: 500;*/
+/*    padding: 15px 20px;*/
+/*}*/
+
+/*!* Contenedores específicos *!*/
+/*.login-container {*/
+/*    padding: 35px;*/
+/*    border-radius: 15px;*/
+/*    box-shadow: 0 0 20px rgba(0,0,0,0.1);*/
+/*}*/
+
+/*.registration-container {*/
+/*    padding: 35px;*/
+/*    border-radius: 15px;*/
+/*    box-shadow: 0 0 20px rgba(0,0,0,0.1);*/
+/*}*/
+
+/* Estilos para navbar */
+/*
+.navbar {
+    border-bottom: 1px solid #e9ecef;
+    background-color: white !important;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+*/
+/*!* Footer *!*/
+/*footer {*/
+/*    border-top: 1px solid #e9ecef;*/
+/*    margin-top: 50px;*/
+/*}*/
+
+/*!* Estilos para avatares *!*/
+/*.avatar-circle {*/
+/*    border-radius: 50%;*/
+/*    overflow: hidden;*/
+/*    width: 150px;*/
+/*    height: 150px;*/
+/*    margin: 0 auto 15px;*/
+/*    border: 3px solid #9F2241;*/
+/*}*/
+
+/*!* Estilos para badges *!*/
+/*.badge {*/
+/*    font-weight: 500;*/
+/*    padding: 0.4em 0.6em;*/
+/*}*/
+
+/*!* Estilos para las cards de funcionalidades en la página de inicio *!*/
+/*.feature-card {*/
+/*    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;*/
+/*}*/
+
+/*.feature-card:hover {*/
+/*    transform: translateY(-5px);*/
+/*    box-shadow: 0 8px 15px rgba(0,0,0,0.1);*/
+/*}*/
+
+/*!* Modo oscuro para el panel de admin *!*/
+/*body.admin-theme {*/
+/*    background-color: #343a40;*/
+/*    color: #f8f9fa;*/
+/*}*/
+
+/*.admin-theme .card {*/
+/*    background-color: #495057;*/
+/*    border-color: #6c757d;*/
+/*}*/
+
+/*.admin-theme .card-header {*/
+/*    background-color: #5a6268;*/
+/*    color: #f8f9fa;*/
+/*    border-bottom: 1px solid #6c757d;*/
+/*}*/
+
+/*.footer {*/
+/*            background-color: #f8f9fa;*/
+/*            padding: 20px 0;*/
+/*        }*/
+
+/*        .footer-bottom {*/
+/*            background-color: #4a192c;*/
+/*            color: white;*/
+/*            text-align: center;*/
+/*            padding: 5px 0;*/
+/*        }*/
+
+/*        @media (max-width: 768px) {*/
+/*            .custom-icon {*/
+/*                font-size: 2rem;*/
+/*                margin-right: 0.8rem;*/
+/*            }*/
+
+/*            .card-body {*/
+/*                padding: 1rem !important;*/
+/*            }*/
+
+/*            .card-title {*/
+/*                font-size: 1rem;*/
+/*            }*/
+/*        }*/
+
+/*        @media (max-width: 768px) {*/
+/*            .logo-movilidad {*/
+/*                width: 400px;*/
+/*            }*/
+/*        }*/
+
+/*        @media (max-width: 425px) {*/
+/*            .logo-movilidad {*/
+/*                width: 300px;*/
+/*            }*/
+/*        }*/

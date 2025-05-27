@@ -1,4 +1,4 @@
-:root {
+:root{
     --primary: #9F2241;
     --secondary: #bc955b;
     --info: #cc3255;
@@ -7,7 +7,6 @@
     --yellow: #FFFF00;
     --black: #3C3935;
     --dark_grey: #4C5168;
-
     --letramenuprincipal: #212529;
     --letrablanca: #fff;
     --fondomenu: #fff;
@@ -36,7 +35,7 @@
     --colbotonidentidad: #6E6F72;
 }
 body {
-     overflow: hidden;
+
     font-family: 'Muli', san-serif;
     font-weight: 300;
     color: var(--primary);
@@ -190,160 +189,161 @@ a:hover {
     border: 0;
 }
 
-/*.btn-primary {*/
-/*    background-color: var(--primary);*/
-/*}*/
+.btn-primary {
+    background-color: var(--primary);
+}
 
-/*.btn-primary:hover {*/
-/*    background-color: var(--primary);*/
-/*}*/
+.btn-primary:hover {
+    background-color: var(--primary);
+}
 
-/*#sidebar-container {*/
-/*    min-height: 100vh;*/
-/*}*/
+#sidebar-container {
+    min-height: 100vh;
+}
 
-/*#sidebar-container .logo {*/
-/*    padding: .875rem 1.25rem;*/
-/*}*/
+#sidebar-container .logo {
+    padding: .875rem 1.25rem;
+}
 
-/*#sidebar-container .menu {*/
-/*    width: 18rem;*/
-/*}*/
+#sidebar-container .menu {
+    width: 18rem;
+}
 
-/*.btn-search {*/
-/*    right: 5px;*/
-/*}*/
+.btn-search {
+    right: 5px;
+}
 
-/*.avatar {*/
-/*    max-width: 35px;*/
-/*}*/
+.avatar {
+    max-width: 35px;
+}
 
-/*#content {*/
-/*    overflow: auto;*/
-/*    height: 100vh;*/
-/*    padding-bottom: 5rem;*/
-/*}*/
+#content {
+    overflow: auto;
+    height: 100vh;
+    padding-bottom: 5rem;
+}
 
-/*.stretched-link::after {*/
-/*    position: absolute;*/
-/*    top: 0;*/
-/*    right: 0;*/
-/*    bottom: 0;*/
-/*    left: 0;*/
-/*    z-index: 1;*/
-/*    content: "";*/
-/*}*/
+.stretched-link::after {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1;
+    content: "";
+}
 
-/*#lomas .tarjeta h5.card-title {*/
-/*    font-size: 20px;*/
-/*    font-weight: 600;*/
-/*    color: var(--colorboton);*/
-/*}*/
+#lomas .tarjeta h5.card-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--colorboton);
+}
 
-/*#lomasbuscado .card-title a,*/
-/*#lomasbuscado .card-title a:visited,*/
-/*#atencionciu a,*/
-/*#atencionciu a:visited {*/
-/*    color: var(--colorboton);*/
-/*}*/
+#lomasbuscado .card-title a,
+#lomasbuscado .card-title a:visited,
+#atencionciu a,
+#atencionciu a:visited {
+    color: var(--colorboton);
+}
 
-/*.tarjeta .card a {*/
-/*    text-decoration: none;*/
-/*}*/
-/*.tarjeta .card:hover,*/
-/*.tarjeta-enlace img:hover,*/
-/*.tarjeta-enlace .card:hover,*/
-/*.node__content .tarjeta-municipio img:hover,*/
-/*.node__content .serviciosinternos img:hover,*/
-/*.node__content .descripcion-municipio .card:hover {*/
+.tarjeta .card a {
+    text-decoration: none;
+}
+.tarjeta .card:hover,
+.tarjeta-enlace img:hover,
+.tarjeta-enlace .card:hover,
+.node__content .tarjeta-municipio img:hover,
+.node__content .serviciosinternos img:hover,
+.node__content .descripcion-municipio .card:hover {
 
-/*    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25) inset, 0px 4px 4px 0px rgba(0, 0, 0, 0.25);*/
-/*    border-bottom: 4px var(--colorboton) solid;*/
-/*}*/
+    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25) inset, 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+    border-bottom: 4px var(--colorboton) solid;
+}
 
-/**,*/
-/*::after,*/
-/*::before {*/
-/*    box-sizing: border-box;*/
-/*}*/
+*,
+::after,
+::before {
+    box-sizing: border-box;
+}
 
-/*.h1,*/
-/*.h2,*/
-/*.h3,*/
-/*.h4,*/
-/*.h5,*/
-/*.h6,*/
-/*h1,*/
-/*h2,*/
-/*h3,*/
-/*h4,*/
-/*h5,*/
-/*h6 {*/
-/*    margin-top: 0;*/
-/*    margin-bottom: .5rem;*/
-/*    font-weight: 500;*/
-/*    line-height: 1.2;*/
-/*}*/
+.h1,
+.h2,
+.h3,
+.h4,
+.h5,
+.h6,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    margin-top: 0;
+    margin-bottom: .5rem;
+    font-weight: 500;
+    line-height: 1.2;
+}
 
-/*.tarjeta .card,*/
-/*.tarjeta-enlace .card,*/
-/*.node__content .serviciosinternos .card,*/
-/*.node__content .descripcion-municipio .card {*/
-/*    box-shadow: 0px 0px 10px 0px var(--sombra1);*/
-/*    border-radius: 10px;*/
-/*    transition: border-bottom 0.5s;*/
-/*    margin-bottom: 20px;*/
-/*    margin-left: auto;*/
-/*    margin-right: auto;*/
-/*    border-bottom: 4px var(--colordorado) solid;*/
+.tarjeta .card,
+.tarjeta-enlace .card,
+.node__content .serviciosinternos .card,
+.node__content .descripcion-municipio .card {
+    box-shadow: 0px 0px 10px 0px var(--sombra1);
+    border-radius: 10px;
+    transition: border-bottom 0.5s;
+    margin-bottom: 20px;
+    margin-left: auto;
+    margin-right: auto;
+    border-bottom: 4px var(--colordorado) solid;
 
-/*}*/
+    /*}*/
 
-/*.card {*/
-/*    position: relative;*/
-/*    display: flex;*/
-/*    flex-direction: column;*/
-/*    min-width: 0;*/
-/*    word-wrap: break-word;*/
-/*    background-color: #fff;*/
-/*    background-clip: border-box;*/
-/*    border-bottom: 4px solid var(--secondary);*/
-/*    border-radius: .25rem;*/
-/*}*/
-/*.card-body {*/
-/*    display: flex;*/
-/*    align-items: center;*/
-/*    justify-content: start;*/
-/*    padding: 1.5rem !important;*/
-/*    background: linear-gradient(to bottom, #ffffff, #f8f9fa);*/
-/*    transition: background 0.3s ease;*/
-/*    text-align: left;*/
-/*}*/
+    /*.card {*/
+    /*    position: relative;*/
+    /*    display: flex;*/
+    /*    flex-direction: column;*/
+    /*    min-width: 0;*/
+    /*    word-wrap: break-word;*/
+    /*    background-color: #fff;*/
+    /*    background-clip: border-box;*/
+    /*    border-bottom: 4px solid var(--secondary);*/
+    /*    border-radius: .25rem;*/
+    /*}*/
+    /*.card-body {*/
+    /*    display: flex;*/
+    /*    align-items: center;*/
+    /*    justify-content: start;*/
+    /*    padding: 1.5rem !important;*/
+    /*    background: linear-gradient(to bottom, #ffffff, #f8f9fa);*/
+    /*    transition: background 0.3s ease;*/
+    /*    text-align: left;*/
+    /*}*/
 
-/*.row {*/
-/*    --bs-gutter-x: 1.5rem;*/
-/*    --bs-gutter-y: 1.5rem;*/
-/*    display: flex;*/
-/*    flex-wrap: wrap;*/
-/*    margin-top: calc(-1* var(--bs-gutter-y));*/
-/*    margin-right: calc(-.5* var(--bs-gutter-x));*/
-/*    margin-left: calc(-.5* var(--bs-gutter-x));*/
-/*}*/
+    /*.row {*/
+    /*    --bs-gutter-x: 1.5rem;*/
+    /*    --bs-gutter-y: 1.5rem;*/
+    /*    display: flex;*/
+    /*    flex-wrap: wrap;*/
+    /*    margin-top: calc(-1* var(--bs-gutter-y));*/
+    /*    margin-right: calc(-.5* var(--bs-gutter-x));*/
+    /*    margin-left: calc(-.5* var(--bs-gutter-x));*/
+    /*}*/
 
 
-/*.stat {*/
-/*    border-right: 1px solid var(--grey);*/
-/*}*/
+    .stat {
+        border-right: 1px solid var(--grey);
+    }
 
-/*@media (max-width: 768px) {*/
-/*    #sidebar-container {*/
-/*        display: none;*/
-/*    }*/
+    @media (max-width: 768px) {
+        #sidebar-container {
+            display: none;
+        }
 
-/*    .stat {*/
-/*        border: 0;*/
-/*    }*/
-/*}*/
+        .stat {
+            border: 0;
+        }
+    }
+}
 
 /* -----------------------------------------
  Estilos generales */

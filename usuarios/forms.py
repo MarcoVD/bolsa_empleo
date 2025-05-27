@@ -19,20 +19,6 @@ class LoginForm(AuthenticationForm):
 
 class InteresadoRegistroForm(UserCreationForm):
     """Formulario para registro de interesados."""
-
-    # nombre = forms.CharField(
-    #     max_length=50,
-    #     widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese su nombre'})
-    # )
-    # apellido_paterno = forms.CharField(
-    #     max_length=50,
-    #     widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese su apellido paterno'})
-    # )
-    # apellido_materno = forms.CharField(
-    #     max_length=50,
-    #     required=False,
-    #     widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese su apellido materno (opcional)'})
-    # )
     email = forms.EmailField(
         widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese su correo electrónico'})
     )
@@ -61,8 +47,6 @@ class InteresadoRegistroForm(UserCreationForm):
                 }
             )
         return user
-
-
 # Formularios para CV
 
 class CurriculumForm(forms.ModelForm):
@@ -173,8 +157,7 @@ class ExperienciaLaboralForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['fecha_inicio'].input_formats = ['%Y-%m-%d']
-        self.fields['fecha_fin'].input_formats = ['%Y-%m-%d']
+
 
 
 class EducacionForm(forms.ModelForm):
