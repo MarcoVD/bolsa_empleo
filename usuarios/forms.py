@@ -78,9 +78,6 @@ class CurriculumForm(forms.ModelForm):
                 'placeholder': 'Ej: Profesional con 5 años de experiencia en desarrollo web...'
             })
         }
-        labels = {
-            'resumen_profesional': 'Resumen Profesional / Objetivo'
-        }
 
 
 class InteresadoPerfilForm(forms.ModelForm):
