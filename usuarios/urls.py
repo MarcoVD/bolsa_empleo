@@ -30,4 +30,5 @@ urlpatterns = [
     path('ajax/idioma/agregar/', views.agregar_idioma_ajax, name='agregar_idioma_ajax'),
     path('ajax/idioma/eliminar/<int:idioma_id>/', views.eliminar_idioma_ajax, name='eliminar_idioma_ajax'),
     path('ajax/experiencia/editar/<int:experiencia_id>/', views.editar_experiencia_ajax, name='editar_experiencia_ajax'),
+    # path('ajax/experiencia/editar/<int:experiencia_id>/', views.editar_experiencia_ajax, name='editar_experiencia_ajax'),
 ]

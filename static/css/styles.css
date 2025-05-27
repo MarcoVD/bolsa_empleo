@@ -36,7 +36,7 @@
     --colbotonidentidad: #6E6F72;
 }
 body {
-    /* overflow: hidden; */
+     overflow: hidden;
     font-family: 'Muli', san-serif;
     font-weight: 300;
     color: var(--primary);
@@ -190,33 +190,33 @@ a:hover {
     border: 0;
 }
 
-.btn-primary {
-    background-color: var(--primary);
-}
+/*.btn-primary {*/
+/*    background-color: var(--primary);*/
+/*}*/
 
-.btn-primary:hover {
-    background-color: var(--primary);
-}
+/*.btn-primary:hover {*/
+/*    background-color: var(--primary);*/
+/*}*/
 
-#sidebar-container {
-    min-height: 100vh;
-}
+/*#sidebar-container {*/
+/*    min-height: 100vh;*/
+/*}*/
 
-#sidebar-container .logo {
-    padding: .875rem 1.25rem;
-}
+/*#sidebar-container .logo {*/
+/*    padding: .875rem 1.25rem;*/
+/*}*/
 
-#sidebar-container .menu {
-    width: 18rem;
-}
+/*#sidebar-container .menu {*/
+/*    width: 18rem;*/
+/*}*/
 
-.btn-search {
-    right: 5px;
-}
+/*.btn-search {*/
+/*    right: 5px;*/
+/*}*/
 
-.avatar {
-    max-width: 35px;
-}
+/*.avatar {*/
+/*    max-width: 35px;*/
+/*}*/
 
 /*#content {*/
 /*    overflow: auto;*/
@@ -299,26 +299,26 @@ a:hover {
 
 /*}*/
 
-.card {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    min-width: 0;
-    word-wrap: break-word;
-    background-color: #fff;
-    background-clip: border-box;
-    border-bottom: 4px solid var(--secondary);
-    border-radius: .25rem;
-}
-.card-body {
-    display: flex;
-    align-items: center;
-    justify-content: start;
-    padding: 1.5rem !important;
-    background: linear-gradient(to bottom, #ffffff, #f8f9fa);
-    transition: background 0.3s ease;
-    text-align: left;
-}
+/*.card {*/
+/*    position: relative;*/
+/*    display: flex;*/
+/*    flex-direction: column;*/
+/*    min-width: 0;*/
+/*    word-wrap: break-word;*/
+/*    background-color: #fff;*/
+/*    background-clip: border-box;*/
+/*    border-bottom: 4px solid var(--secondary);*/
+/*    border-radius: .25rem;*/
+/*}*/
+/*.card-body {*/
+/*    display: flex;*/
+/*    align-items: center;*/
+/*    justify-content: start;*/
+/*    padding: 1.5rem !important;*/
+/*    background: linear-gradient(to bottom, #ffffff, #f8f9fa);*/
+/*    transition: background 0.3s ease;*/
+/*    text-align: left;*/
+/*}*/
 
 /*.row {*/
 /*    --bs-gutter-x: 1.5rem;*/
@@ -331,36 +331,35 @@ a:hover {
 /*}*/
 
 
+/*.stat {*/
+/*    border-right: 1px solid var(--grey);*/
+/*}*/
 
-.stat {
-    border-right: 1px solid var(--grey);
-}
+/*@media (max-width: 768px) {*/
+/*    #sidebar-container {*/
+/*        display: none;*/
+/*    }*/
 
-@media (max-width: 768px) {
-    #sidebar-container {
-        display: none;
-    }
-
-    .stat {
-        border: 0;
-    }
-}
+/*    .stat {*/
+/*        border: 0;*/
+/*    }*/
+/*}*/
 
 /* -----------------------------------------
  Estilos generales */
-body {
-    font-family: 'Inter', sans-serif;
-    background-color: #f8f9fa;
-}
+/*body {*/
+/*    font-family: 'Inter', sans-serif;*/
+/*    background-color: #f8f9fa;*/
+/*}*/
 
-/* Botones y formularios */
-.btn {
-    border-radius: 8px;
-}
+/*!* Botones y formularios *!*/
+/*.btn {*/
+/*    border-radius: 8px;*/
+/*}*/
 
-.form-control, .form-select {
-    border-radius: 8px;
-}
+/*.form-control, .form-select {*/
+/*    border-radius: 8px;*/
+/*}*/
 
 /* Tarjetas - borrar
 .card {
@@ -369,24 +368,24 @@ body {
     margin-bottom: 20px;
 }
 */
-.card-header {
-    background-color: #f8f9fa;
-    font-weight: 500;
-    padding: 15px 20px;
-}
+/*.card-header {*/
+/*    background-color: #f8f9fa;*/
+/*    font-weight: 500;*/
+/*    padding: 15px 20px;*/
+/*}*/
 
-/* Contenedores específicos */
-.login-container {
-    padding: 35px;
-    border-radius: 15px;
-    box-shadow: 0 0 20px rgba(0,0,0,0.1);
-}
+/*!* Contenedores específicos *!*/
+/*.login-container {*/
+/*    padding: 35px;*/
+/*    border-radius: 15px;*/
+/*    box-shadow: 0 0 20px rgba(0,0,0,0.1);*/
+/*}*/
 
-.registration-container {
-    padding: 35px;
-    border-radius: 15px;
-    box-shadow: 0 0 20px rgba(0,0,0,0.1);
-}
+/*.registration-container {*/
+/*    padding: 35px;*/
+/*    border-radius: 15px;*/
+/*    box-shadow: 0 0 20px rgba(0,0,0,0.1);*/
+/*}*/
 
 /* Estilos para navbar */
 /*
@@ -396,90 +395,90 @@ body {
     box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 */
-/* Footer */
-footer {
-    border-top: 1px solid #e9ecef;
-    margin-top: 50px;
-}
+/*!* Footer *!*/
+/*footer {*/
+/*    border-top: 1px solid #e9ecef;*/
+/*    margin-top: 50px;*/
+/*}*/
 
-/* Estilos para avatares */
-.avatar-circle {
-    border-radius: 50%;
-    overflow: hidden;
-    width: 150px;
-    height: 150px;
-    margin: 0 auto 15px;
-    border: 3px solid #9F2241;
-}
+/*!* Estilos para avatares *!*/
+/*.avatar-circle {*/
+/*    border-radius: 50%;*/
+/*    overflow: hidden;*/
+/*    width: 150px;*/
+/*    height: 150px;*/
+/*    margin: 0 auto 15px;*/
+/*    border: 3px solid #9F2241;*/
+/*}*/
 
-/* Estilos para badges */
-.badge {
-    font-weight: 500;
-    padding: 0.4em 0.6em;
-}
+/*!* Estilos para badges *!*/
+/*.badge {*/
+/*    font-weight: 500;*/
+/*    padding: 0.4em 0.6em;*/
+/*}*/
 
-/* Estilos para las cards de funcionalidades en la página de inicio */
-.feature-card {
-    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-}
+/*!* Estilos para las cards de funcionalidades en la página de inicio *!*/
+/*.feature-card {*/
+/*    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;*/
+/*}*/
 
-.feature-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 15px rgba(0,0,0,0.1);
-}
+/*.feature-card:hover {*/
+/*    transform: translateY(-5px);*/
+/*    box-shadow: 0 8px 15px rgba(0,0,0,0.1);*/
+/*}*/
 
-/* Modo oscuro para el panel de admin */
-body.admin-theme {
-    background-color: #343a40;
-    color: #f8f9fa;
-}
+/*!* Modo oscuro para el panel de admin *!*/
+/*body.admin-theme {*/
+/*    background-color: #343a40;*/
+/*    color: #f8f9fa;*/
+/*}*/
 
-.admin-theme .card {
-    background-color: #495057;
-    border-color: #6c757d;
-}
+/*.admin-theme .card {*/
+/*    background-color: #495057;*/
+/*    border-color: #6c757d;*/
+/*}*/
 
-.admin-theme .card-header {
-    background-color: #5a6268;
-    color: #f8f9fa;
-    border-bottom: 1px solid #6c757d;
-}
+/*.admin-theme .card-header {*/
+/*    background-color: #5a6268;*/
+/*    color: #f8f9fa;*/
+/*    border-bottom: 1px solid #6c757d;*/
+/*}*/
 
-.footer {
-            background-color: #f8f9fa;
-            padding: 20px 0;
-        }
+/*.footer {*/
+/*            background-color: #f8f9fa;*/
+/*            padding: 20px 0;*/
+/*        }*/
 
-        .footer-bottom {
-            background-color: #4a192c;
-            color: white;
-            text-align: center;
-            padding: 5px 0;
-        }
+/*        .footer-bottom {*/
+/*            background-color: #4a192c;*/
+/*            color: white;*/
+/*            text-align: center;*/
+/*            padding: 5px 0;*/
+/*        }*/
 
-        @media (max-width: 768px) {
-            .custom-icon {
-                font-size: 2rem;
-                margin-right: 0.8rem;
-            }
+/*        @media (max-width: 768px) {*/
+/*            .custom-icon {*/
+/*                font-size: 2rem;*/
+/*                margin-right: 0.8rem;*/
+/*            }*/
 
-            .card-body {
-                padding: 1rem !important;
-            }
+/*            .card-body {*/
+/*                padding: 1rem !important;*/
+/*            }*/
 
-            .card-title {
-                font-size: 1rem;
-            }
-        }
+/*            .card-title {*/
+/*                font-size: 1rem;*/
+/*            }*/
+/*        }*/
 
-        @media (max-width: 768px) {
-            .logo-movilidad {
-                width: 400px;
-            }
-        }
+/*        @media (max-width: 768px) {*/
+/*            .logo-movilidad {*/
+/*                width: 400px;*/
+/*            }*/
+/*        }*/
 
-        @media (max-width: 425px) {
-            .logo-movilidad {
-                width: 300px;
-            }
-        }
+/*        @media (max-width: 425px) {*/
+/*            .logo-movilidad {*/
+/*                width: 300px;*/
+/*            }*/
+/*        }*/

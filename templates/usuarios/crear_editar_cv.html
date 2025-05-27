@@ -112,24 +112,32 @@
                 <div id="experienciaContainer">
                     {% for experiencia in experiencias %}
                         <div class="experiencia-item mb-3 p-3 border rounded" data-id="{{ experiencia.id }}">
-                        <div class="d-flex justify-content-between align-items-start">
-                        <div class="flex-grow-1">
-                            <h6 class="mb-1">{{ experiencia.puesto }}</h6>
-                            <p class="mb-1 text-muted">{{ experiencia.empresa }}</p>
-                            <p class="mb-1 small">{{ experiencia.periodo_trabajo }}</p>
-                            <p class="mb-0 small">{{ experiencia.descripcion|truncatewords:20 }}</p>
-                        </div>
-                        <div class="btn-group-vertical">
-                            <button type="button" class="btn btn-sm btn-outline-primary mb-1" onclick="editarExperiencia({{ experiencia.id }}, '{{ experiencia.puesto }}', '{{ experiencia.empresa }}', '{{ experiencia.fecha_inicio|date:"Y-m-d" }}', '{% if experiencia.fecha_fin %}{{ experiencia.fecha_fin|date:"Y-m-d" }}{% endif %}', {{ experiencia.actual|yesno:"true,false" }}, '{{ experiencia.descripcion|escapejs }}')">
-            <i class="bi bi-pencil"></i>
-        </button>
-        <button type="button" class="btn btn-sm btn-outline-danger" onclick="eliminarExperiencia({{ experiencia.id }})">
-            <i class="bi bi-trash"></i>
-        </button>
+    <div class="d-flex justify-content-between align-items-start">
+        <div class="flex-grow-1">
+            <h6 class="mb-1">{{ experiencia.puesto }}</h6>
+            <p class="mb-1 text-muted">{{ experiencia.empresa }}</p>
+            <p class="mb-1 small">{{ experiencia.periodo_trabajo }}</p>
+            <p class="mb-0 small">{{ experiencia.descripcion|truncatewords:20 }}</p>
+        </div>
+        <div class="btn-group-vertical">
+            <button type="button" class="btn btn-sm btn-outline-primary mb-1"
+                onclick="editarExperiencia(
+                    {{ experiencia.id }},
+                    '{{ experiencia.puesto|escapejs }}',
+                    '{{ experiencia.empresa|escapejs }}',
+                    '{{ experiencia.fecha_inicio|date:"Y-m-d" }}',
+                    '{% if experiencia.fecha_fin %}{{ experiencia.fecha_fin|date:"Y-m-d" }}{% endif %}',
+                    {{ experiencia.actual|yesno:"true,false" }},
+                    '{{ experiencia.descripcion|escapejs }}'
+                )">
+                <i class="bi bi-pencil"></i>
+            </button>
+            <button type="button" class="btn btn-sm btn-outline-danger" onclick="eliminarExperiencia({{ experiencia.id }})">
+                <i class="bi bi-trash"></i>
+            </button>
+        </div>
     </div>
 </div>
-
-                        </div>
                     {% empty %}
                         <p class="text-muted text-center">No hay experiencias laborales registradas.</p>
                     {% endfor %}
@@ -464,6 +472,13 @@
 // Variables para controlar el modo de edición
 let experienciaEditandoId = null;
 
+function mostrarModalExperiencia() {
+    experienciaEditandoId = null;
+    document.querySelector('#experienciaModal .modal-title').textContent = 'Agregar Experiencia Laboral';
+    document.getElementById('experienciaForm').reset();
+    new bootstrap.Modal(document.getElementById('experienciaModal')).show();
+}
+
 function editarExperiencia(id, puesto, empresa, fechaInicio, fechaFin, actual, descripcion) {
     experienciaEditandoId = id;
 
@@ -475,6 +490,10 @@ function editarExperiencia(id, puesto, empresa, fechaInicio, fechaFin, actual, d
     document.querySelector('#experienciaForm input[name="actual"]').checked = actual;
     document.querySelector('#experienciaForm textarea[name="descripcion"]').value = descripcion;
 
+    // Habilitar/deshabilitar fecha_fin según el estado de "actual"
+    const fechaFinInput = document.querySelector('#experienciaForm input[name="fecha_fin"]');
+    fechaFinInput.disabled = actual;
+
     // Cambiar el título del modal
     document.querySelector('#experienciaModal .modal-title').textContent = 'Editar Experiencia Laboral';
 
@@ -482,20 +501,24 @@ function editarExperiencia(id, puesto, empresa, fechaInicio, fechaFin, actual, d
     new bootstrap.Modal(document.getElementById('experienciaModal')).show();
 }
 
-// MODIFICAR la función guardarExperiencia
 function guardarExperiencia() {
     const form = document.getElementById('experienciaForm');
     const formData = new FormData(form);
 
-    let url = '{% url "agregar_experiencia_ajax" %}';
+    let url, method;
 
-    // Si estamos editando, cambiar la URL
     if (experienciaEditandoId) {
-        url = `/ajax/experiencia/editar/${experienciaEditandoId}/`;
+        // Modo edición
+        url = `{% url "editar_experiencia_ajax" 0 %}`.replace('0', experienciaEditandoId);
+        method = 'POST';
+    } else {
+        // Modo creación
+        url = '{% url "agregar_experiencia_ajax" %}';
+        method = 'POST';
     }
 
     fetch(url, {
-        method: 'POST',
+        method: method,
         body: formData,
         headers: {
             'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
@@ -522,204 +545,7 @@ document.getElementById('experienciaModal').addEventListener('hidden.bs.modal', 
     document.querySelector('#experienciaModal .modal-title').textContent = 'Agregar Experiencia Laboral';
     document.getElementById('experienciaForm').reset();
 });
-// Funciones para mostrar modales
-function mostrarModalExperiencia() {
-    new bootstrap.Modal(document.getElementById('experienciaModal')).show();
-}
 
-function mostrarModalEducacion() {
-    new bootstrap.Modal(document.getElementById('educacionModal')).show();
-}
-
-function mostrarModalHabilidad() {
-    new bootstrap.Modal(document.getElementById('habilidadModal')).show();
-}
-
-function mostrarModalIdioma() {
-    new bootstrap.Modal(document.getElementById('idiomaModal')).show();
-}
-
-// Funciones para guardar datos via AJAX
-function guardarExperiencia() {
-    const form = document.getElementById('experienciaForm');
-    const formData = new FormData(form);
-
-    fetch('{% url "agregar_experiencia_ajax" %}', {
-        method: 'POST',
-        body: formData,
-        headers: {
-            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            bootstrap.Modal.getInstance(document.getElementById('experienciaModal')).hide();
-            location.reload(); // Recargar para mostrar la nueva experiencia
-        } else {
-            alert('Error al guardar: ' + JSON.stringify(data.errors));
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('Error al guardar la experiencia');
-    });
-}
-
-function guardarEducacion() {
-    const form = document.getElementById('educacionForm');
-    const formData = new FormData(form);
-
-    fetch('{% url "agregar_educacion_ajax" %}', {
-        method: 'POST',
-        body: formData,
-        headers: {
-            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            bootstrap.Modal.getInstance(document.getElementById('educacionModal')).hide();
-            location.reload();
-        } else {
-            alert('Error al guardar: ' + JSON.stringify(data.errors));
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('Error al guardar la educación');
-    });
-}
-
-function guardarHabilidad() {
-    const form = document.getElementById('habilidadForm');
-    const formData = new FormData(form);
-
-    fetch('{% url "agregar_habilidad_ajax" %}', {
-        method: 'POST',
-        body: formData,
-        headers: {
-            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            bootstrap.Modal.getInstance(document.getElementById('habilidadModal')).hide();
-            location.reload();
-        } else {
-            alert('Error al guardar: ' + JSON.stringify(data.errors || data.error));
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('Error al guardar la habilidad');
-    });
-}
-
-function guardarIdioma() {
-    const form = document.getElementById('idiomaForm');
-    const formData = new FormData(form);
-
-    fetch('{% url "agregar_idioma_ajax" %}', {
-        method: 'POST',
-        body: formData,
-        headers: {
-            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            bootstrap.Modal.getInstance(document.getElementById('idiomaModal')).hide();
-            location.reload();
-        } else {
-            alert('Error al guardar: ' + JSON.stringify(data.errors));
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('Error al guardar el idioma');
-    });
-}
-
-// Funciones para eliminar elementos
-function eliminarExperiencia(id) {
-    if (confirm('¿Estás seguro de que deseas eliminar esta experiencia?')) {
-        fetch(`{% url "eliminar_experiencia_ajax" 0 %}`.replace('0', id), {
-            method: 'DELETE',
-            headers: {
-                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                location.reload();
-            } else {
-                alert('Error al eliminar: ' + data.error);
-            }
-        });
-    }
-}
-
-function eliminarEducacion(id) {
-    if (confirm('¿Estás seguro de que deseas eliminar esta educación?')) {
-        fetch(`{% url "eliminar_educacion_ajax" 0 %}`.replace('0', id), {
-            method: 'DELETE',
-            headers: {
-                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                location.reload();
-            } else {
-                alert('Error al eliminar: ' + data.error);
-            }
-        });
-    }
-}
-
-function eliminarHabilidad(id) {
-    if (confirm('¿Estás seguro de que deseas eliminar esta habilidad?')) {
-        fetch(`{% url "eliminar_habilidad_ajax" 0 %}`.replace('0', id), {
-            method: 'DELETE',
-            headers: {
-                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                location.reload();
-            } else {
-                alert('Error al eliminar: ' + data.error);
-            }
-        });
-    }
-}
-
-function eliminarIdioma(id) {
-    if (confirm('¿Estás seguro de que deseas eliminar este idioma?')) {
-        fetch(`{% url "eliminar_idioma_ajax" 0 %}`.replace('0', id), {
-            method: 'DELETE',
-            headers: {
-                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                location.reload();
-            } else {
-                alert('Error al eliminar: ' + data.error);
-            }
-        });
-    }
-}
 // Lógica para deshabilitar fecha fin cuando es trabajo actual
 document.getElementById('actualCheck').addEventListener('change', function() {
     const fechaFin = document.querySelector('#experienciaForm input[name="fecha_fin"]');

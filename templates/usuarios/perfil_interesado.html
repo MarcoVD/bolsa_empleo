@@ -3,128 +3,196 @@
 {% block title %}Mi Perfil - Bolsa de Trabajo{% endblock %}
 
 {% block content %}
-<div class="row">
-    <div class="col-md-4">
-        <div class="card mb-4">
-            <div class="card-body text-center">
-                {% if interesado.foto_perfil %}
-                    <img src="{{ interesado.foto_perfil.url }}" alt="Foto de perfil" class="img-fluid rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;">
-                {% else %}
-                    <div class="bg-light rounded-circle d-inline-flex justify-content-center align-items-center mb-3" style="width: 150px; height: 150px;">
-                        <i class="bi bi-person-fill" style="font-size: 80px;"></i>
+<div class="container-fluid px-2 px-sm-3">
+    <div class="row g-3 g-md-4">
+        <!-- Columna del perfil -->
+        <div class="col-12 col-lg-4 order-1">
+            <!-- Card de foto y datos básicos -->
+            <div class="card mb-3 mb-md-4">
+                <div class="card-body text-center p-3 p-md-4">
+                    <div class="profile-photo-container mb-3">
+                        {% if interesado.foto_perfil %}
+                            <img src="{{ interesado.foto_perfil.url }}"
+                                 alt="Foto de perfil"
+                                 class="profile-photo img-fluid rounded-circle">
+                        {% else %}
+                            <div class="profile-photo-placeholder bg-light rounded-circle d-inline-flex justify-content-center align-items-center">
+                                <i class="bi bi-person-fill profile-icon"></i>
+                            </div>
+                        {% endif %}
                     </div>
-                {% endif %}
-                <h4>{{ interesado.nombre_completo }}</h4>
-                <p class="text-muted">{{ user.email }}</p>
-                <button class="btn btn-outline-primary mt-3" data-bs-toggle="modal" data-bs-target="#editarPerfilModal">
-                    <i class="bi bi-pencil-square"></i> Editar Perfil
-                </button>
+                    <h4 class="h5 h-md-4 mb-2">{{ interesado.nombre_completo }}</h4>
+                    <p class="text-muted small mb-3">{{ user.email }}</p>
+                    <button class="btn btn-outline-primary btn-sm w-100 w-sm-auto"
+                            data-bs-toggle="modal"
+                            data-bs-target="#editarPerfilModal">
+                        <i class="bi bi-pencil-square"></i>
+                        <span class="d-none d-sm-inline">Editar Perfil</span>
+                        <span class="d-sm-none">Editar</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Card de información de contacto -->
+            <div class="card mb-3 mb-md-4">
+                <div class="card-header py-2 py-md-3">
+                    <h5 class="mb-0 h6 h-md-5">
+                        <i class="bi bi-info-circle"></i>
+                        <span class="d-none d-sm-inline">Información de Contacto</span>
+                        <span class="d-sm-none">Contacto</span>
+                    </h5>
+                </div>
+                <div class="card-body p-3">
+                    <div class="contact-info">
+                        <div class="contact-item mb-2 mb-md-3">
+                            <div class="d-flex align-items-start">
+                                <i class="bi bi-envelope me-2 mt-1 text-primary"></i>
+                                <div class="flex-grow-1">
+                                    <strong class="d-block d-sm-inline small">Email:</strong>
+                                    <span class="text-break">{{ user.email }}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="contact-item mb-2 mb-md-3">
+                            <div class="d-flex align-items-start">
+                                <i class="bi bi-telephone me-2 mt-1 text-primary"></i>
+                                <div class="flex-grow-1">
+                                    <strong class="d-block d-sm-inline small">Teléfono:</strong>
+                                    {% if interesado.telefono %}
+                                        <span>{{ interesado.telefono }}</span>
+                                    {% else %}
+                                        <span class="text-muted">No especificado</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="contact-item">
+                            <div class="d-flex align-items-start">
+                                <i class="bi bi-geo-alt me-2 mt-1 text-primary"></i>
+                                <div class="flex-grow-1">
+                                    <strong class="d-block d-sm-inline small">Ubicación:</strong>
+                                    {% if interesado.ciudad and interesado.estado %}
+                                        <span>{{ interesado.ciudad }}, {{ interesado.estado }}</span>
+                                    {% else %}
+                                        <span class="text-muted">No especificada</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <div class="card mb-4">
-            <div class="card-header">
-                <h5 class="mb-0"><i class="bi bi-info-circle"></i> Información de Contacto</h5>
-            </div>
-            <div class="card-body">
-                <p><strong><i class="bi bi-envelope"></i> Email:</strong> {{ user.email }}</p>
-                <p><strong><i class="bi bi-telephone"></i> Teléfono:</strong> {% if interesado.telefono %}{{ interesado.telefono }}{% else %}<span class="text-muted">No especificado</span>{% endif %}</p>
-                <p><strong><i class="bi bi-geo-alt"></i> Ubicación:</strong>
-                    {% if interesado.ciudad and interesado.estado %}
-                        {{ interesado.ciudad }}, {{ interesado.estado }}
-                    {% else %}
-                        <span class="text-muted">No especificada</span>
-                    {% endif %}
-                </p>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-md-8">
-        <div class="card mb-4">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h5 class="mb-0"><i class="bi bi-file-earmark-person"></i> Mi Currículum</h5>
-                <a href="{% url 'crear_editar_cv' %}" class="btn btn-sm btn-primary">
-                    <i class="bi bi-plus-circle"></i> Crear/Editar mi CV
-                </>
-            </div>
-            <div class="card-body">
-                <p class="text-center py-5">
-                    <i class="bi bi-file-earmark-text" style="font-size: 48px;"></i>
-                    <br>
-                    Aún no has creado tu currículum.
-                    <br>
-                    <a href="{% url 'crear_editar_cv' %}" class="btn btn-success mt-3">
-                        <i class="bi bi-plus-circle"></i> Crear mi CV Ahora
+        <!-- Columna del contenido principal -->
+        <div class="col-12 col-lg-8 order-2">
+            <!-- Card de currículum -->
+            <div class="card mb-3 mb-md-4">
+                <div class="card-header d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center py-2 py-md-3">
+                    <h5 class="mb-2 mb-sm-0 h6 h-md-5">
+                        <i class="bi bi-file-earmark-person"></i> Mi Currículum
+                    </h5>
+                    <a href="{% url 'crear_editar_cv' %}" class="btn btn-sm btn-primary w-100 w-sm-auto">
+                        <i class="bi bi-plus-circle"></i>
+                        <span class="d-none d-sm-inline">Crear/Editar mi CV</span>
+                        <span class="d-sm-none">Crear CV</span>
                     </a>
-                </p>
+                </div>
+                <div class="card-body text-center p-3 p-md-4">
+                    <div class="empty-state py-3 py-md-5">
+                        <i class="bi bi-file-earmark-text empty-icon mb-3"></i>
+                        <p class="mb-3">Aún no has creado tu currículum.</p>
+<!--                        <a href="{% url 'crear_editar_cv' %}" class="btn btn-success">-->
+<!--                            <i class="bi bi-plus-circle"></i>-->
+<!--                            <span class="d-none d-sm-inline">Crear mi CV Ahora</span>-->
+<!--                            <span class="d-sm-none">Crear CV</span>-->
+<!--                        </a>-->
+                    </div>
+                </div>
             </div>
-        </div>
-        <div class="card mb-4">
-            <div class="card-header">
-                <h5 class="mb-0"><i class="bi bi-bookmark"></i> Vacantes Guardadas</h5>
-            </div>
-            <div class="card-body">
-                <p class="text-center py-3 text-muted">
-                    <i class="bi bi-bookmark-plus" style="font-size: 32px;"></i>
-                    <br>
-                    Aún no has guardado ninguna vacante.
-                </p>
-            </div>
-        </div>
 
-        <div class="card mb-4">
-            <div class="card-header">
-                <h5 class="mb-0"><i class="bi bi-briefcase"></i> Mis Postulaciones</h5>
-            </div>
-            <div class="card-body">
-                <p class="text-center py-3 text-muted">
-                    <i class="bi bi-send" style="font-size: 32px;"></i>
-                    <br>
-                    Aún no te has postulado a ninguna vacante.
-                </p>
+            <!-- Cards de vacantes y postulaciones -->
+            <div class="row g-3 g-md-4">
+                <!-- Vacantes guardadas -->
+                <div class="col-12 col-md-6">
+                    <div class="card h-100">
+                        <div class="card-header py-2 py-md-3">
+                            <h5 class="mb-0 h6 h-md-5">
+                                <i class="bi bi-bookmark"></i>
+                                <span class="d-none d-sm-inline">Vacantes Guardadas</span>
+                                <span class="d-sm-none">Guardadas</span>
+                            </h5>
+                        </div>
+                        <div class="card-body text-center p-3">
+                            <div class="empty-state py-2 py-md-3">
+                                <i class="bi bi-bookmark-plus empty-icon-sm mb-2"></i>
+                                <p class="small text-muted mb-0">Aún no has guardado ninguna vacante.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mis postulaciones -->
+                <div class="col-12 col-md-6">
+                    <div class="card h-100">
+                        <div class="card-header py-2 py-md-3">
+                            <h5 class="mb-0 h6 h-md-5">
+                                <i class="bi bi-briefcase"></i>
+                                <span class="d-none d-sm-inline">Mis Postulaciones</span>
+                                <span class="d-sm-none">Postulaciones</span>
+                            </h5>
+                        </div>
+                        <div class="card-body text-center p-3">
+                            <div class="empty-state py-2 py-md-3">
+                                <i class="bi bi-send empty-icon-sm mb-2"></i>
+                                <p class="small text-muted mb-0">Aún no te has postulado a ninguna vacante.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Modal para editar perfil -->
+<!-- Modal para editar perfil (responsive) -->
 <div class="modal fade" id="editarPerfilModal" tabindex="-1" aria-labelledby="editarPerfilModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title " id="editarPerfilModalLabel">Editar Perfil</h5>
-{#                <input type="file" class="form-control" id="foto_perfil">#}
+                <h5 class="modal-title h6 h-md-5" id="editarPerfilModalLabel">Editar Perfil</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <form id="editarPerfilForm">
                     <div class="row g-3">
-                        <div class="col-md-12">
+                        <div class="col-12">
                             <label for="nombre" class="form-label">Nombre(s)</label>
                             <input type="text" class="form-control" id="nombre" value="{{ interesado.nombre }}" required>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-12 col-md-6">
                             <label for="apellido_paterno" class="form-label">Apellido Paterno</label>
                             <input type="text" class="form-control" id="apellido_paterno" value="{{ interesado.apellido_paterno }}" required>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-12 col-md-6">
                             <label for="apellido_materno" class="form-label">Apellido Materno</label>
                             <input type="text" class="form-control" id="apellido_materno" value="{% if interesado.apellido_materno %}{{ interesado.apellido_materno }}{% endif %}">
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-12 col-md-6">
                             <label for="telefono" class="form-label">Teléfono</label>
                             <input type="tel" class="form-control" id="telefono" value="{% if interesado.telefono %}{{ interesado.telefono }}{% endif %}">
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-12 col-md-6">
                             <label for="fecha_nacimiento" class="form-label">Fecha de Nacimiento</label>
                             <input type="date" class="form-control" id="fecha_nacimiento" value="{% if interesado.fecha_nacimiento %}{{ interesado.fecha_nacimiento|date:'Y-m-d' }}{% endif %}">
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-12 col-md-6">
                             <label for="ciudad" class="form-label">Ciudad</label>
                             <input type="text" class="form-control" id="ciudad" value="{% if interesado.ciudad %}{{ interesado.ciudad }}{% endif %}">
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-12 col-md-6">
                             <label for="estado" class="form-label">Estado</label>
                             <input type="text" class="form-control" id="estado" value="{% if interesado.estado %}{{ interesado.estado }}{% endif %}">
                         </div>
@@ -132,22 +200,119 @@
                             <label for="direccion" class="form-label">Dirección</label>
                             <textarea class="form-control" id="direccion" rows="2">{% if interesado.direccion %}{{ interesado.direccion }}{% endif %}</textarea>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-12 col-md-6">
                             <label for="codigo_postal" class="form-label">Código Postal</label>
                             <input type="text" class="form-control" id="codigo_postal" value="{% if interesado.codigo_postal %}{{ interesado.codigo_postal }}{% endif %}">
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-12 col-md-6">
                             <label for="foto_perfil" class="form-label">Foto de Perfil</label>
-                            <input type="file" class="form-control" id="foto_perfil">
+                            <input type="file" class="form-control" id="foto_perfil" accept="image/*">
                         </div>
                     </div>
                 </form>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-primary" onclick="alert('Perfil actualizado (Simulación)')">Guardar Cambios</button>
+            <div class="modal-footer flex-column flex-sm-row">
+                <button type="button" class="btn btn-secondary w-100 w-sm-auto mb-2 mb-sm-0 me-sm-2" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary w-100 w-sm-auto" onclick="alert('Perfil actualizado (Simulación)')">Guardar Cambios</button>
             </div>
         </div>
     </div>
 </div>
+
+<!-- Estilos CSS adicionales para mejorar la responsividad -->
+<!--<style>-->
+<!--/* Estilos para la foto de perfil responsive */-->
+<!--.profile-photo-container {-->
+<!--    position: relative;-->
+<!--    display: inline-block;-->
+<!--}-->
+
+<!--.profile-photo,-->
+<!--.profile-photo-placeholder {-->
+<!--    width: 120px;-->
+<!--    height: 120px;-->
+<!--    object-fit: cover;-->
+<!--}-->
+
+<!--.profile-icon {-->
+<!--    font-size: 60px;-->
+<!--    color: #6c757d;-->
+<!--}-->
+
+<!--/* Iconos de estado vacío */-->
+<!--.empty-icon {-->
+<!--    font-size: 48px;-->
+<!--    color: #6c757d;-->
+<!--}-->
+
+<!--.empty-icon-sm {-->
+<!--    font-size: 32px;-->
+<!--    color: #6c757d;-->
+<!--}-->
+
+<!--/* Mejoras para información de contacto */-->
+<!--.contact-info .contact-item {-->
+<!--    border-bottom: 1px solid #f8f9fa;-->
+<!--    padding-bottom: 0.5rem;-->
+<!--}-->
+
+<!--.contact-info .contact-item:last-child {-->
+<!--    border-bottom: none;-->
+<!--    padding-bottom: 0;-->
+<!--}-->
+
+<!--/* Breakpoints para tablet */-->
+<!--@media (min-width: 576px) {-->
+<!--    .profile-photo,-->
+<!--    .profile-photo-placeholder {-->
+<!--        width: 150px;-->
+<!--        height: 150px;-->
+<!--    }-->
+
+<!--    .profile-icon {-->
+<!--        font-size: 80px;-->
+<!--    }-->
+
+<!--    .empty-icon {-->
+<!--        font-size: 48px;-->
+<!--    }-->
+<!--}-->
+
+<!--/* Breakpoints para desktop */-->
+<!--@media (min-width: 992px) {-->
+<!--    .container-fluid {-->
+<!--        max-width: 1200px;-->
+<!--        margin: 0 auto;-->
+<!--    }-->
+<!--}-->
+
+<!--/* Mejoras para el modal en móviles */-->
+<!--@media (max-width: 575.98px) {-->
+<!--    .modal-dialog {-->
+<!--        margin: 0.5rem;-->
+<!--    }-->
+
+<!--    .modal-content {-->
+<!--        border-radius: 0.375rem;-->
+<!--    }-->
+
+<!--    .modal-body {-->
+<!--        padding: 1rem;-->
+<!--    }-->
+<!--}-->
+
+<!--/* Text break para emails largos */-->
+<!--.text-break {-->
+<!--    word-break: break-word;-->
+<!--    overflow-wrap: break-word;-->
+<!--}-->
+
+<!--/* Mejoras para botones en móvil */-->
+<!--@media (max-width: 575.98px) {-->
+<!--    .btn-sm {-->
+<!--        font-size: 0.875rem;-->
+<!--        padding: 0.375rem 0.75rem;-->
+<!--    }-->
+<!--}-->
+<!--</style>-->
 {% endblock %}
