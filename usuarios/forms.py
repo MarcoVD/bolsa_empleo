@@ -268,16 +268,21 @@ class SecretariaRegistroForm(forms.ModelForm):
 
     class Meta:
         model = Secretaria
-        fields = ('nombre', 'rfc', 'descripcion', 'sitio_web', 'direccion')
+        fields = ('rfc', 'descripcion', 'sitio_web', 'direccion')  # Removido 'nombre'
         widgets = {
-            'nombre': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nombre de la secretaría'}),
             'rfc': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'RFC de la secretaría'}),
             'descripcion': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Descripción breve'}),
             'sitio_web': forms.URLInput(attrs={'class': 'form-control', 'placeholder': 'https://www.example.com'}),
             'direccion': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Dirección completa'})
         }
 
-
+    def save(self, commit=True):
+        secretaria = super().save(commit=False)
+        # Forzar el nombre de la secretaría
+        secretaria.nombre = 'Secretaría de Movilidad'
+        if commit:
+            secretaria.save()
+        return secretaria
 class ReclutadorRegistroForm(UserCreationForm):
     """Formulario para registro de reclutadores."""
 

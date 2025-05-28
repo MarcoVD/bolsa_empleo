@@ -7,26 +7,21 @@
             <div class="card-body">
                 <div class="text-center mb-4">
                     <h2>Registro para Reclutadores</h2>
-                    <p class="text-muted">Crea una cuenta para tu secretaría y empieza a publicar vacantes</p>
+                    <p class="text-muted">Crea una cuenta para la Secretaría de Movilidad y empieza a publicar vacantes</p>
                 </div>
                 <form method="post">
                     {% csrf_token %}
                     <div class="card mb-4">
                         <div class="card-header bg-light">
-                            <h5 class="mb-0"><i class="bi bi-building"></i> Información de la Secretaría/Organización</h5>
+                            <h5 class="mb-0"><i class="bi bi-building"></i> Información de la Secretaría de Movilidad</h5>
                         </div>
                         <div class="card-body">
+                            <!-- Mostrar que será "Secretaría de Movilidad" automáticamente -->
+                            <div class="alert alert-info mb-3">
+                                <i class="bi bi-info-circle"></i> <strong>Organización:</strong> Secretaría de Movilidad del Estado de México
+                            </div>
+
                             <div class="row g-3">
-                                <div class="col-md-12">
-                                    <label for="{{ secretaria_form.nombre.id_for_label }}" class="form-label">Nombre de la Secretaría/Organización</label>
-                                    {{ secretaria_form.nombre }}
-                                    {% if secretaria_form.nombre.errors %}
-                                        <div class="invalid-feedback d-block">
-                                            {{ secretaria_form.nombre.errors }}
-                                        </div>
-                                    {% endif %}
-                                </div>
-                                
                                 <div class="col-md-12">
                                     <label for="{{ secretaria_form.rfc.id_for_label }}" class="form-label">RFC de la Secretaría</label>
                                     {{ secretaria_form.rfc }}
@@ -36,7 +31,7 @@
                                         </div>
                                     {% endif %}
                                 </div>
-                                
+
                                 <div class="col-md-12">
                                     <label for="{{ secretaria_form.direccion.id_for_label }}" class="form-label">Dirección Completa</label>
                                     {{ secretaria_form.direccion }}
@@ -46,7 +41,7 @@
                                         </div>
                                     {% endif %}
                                 </div>
-                                
+
                                 <div class="col-md-6">
                                     <label for="{{ secretaria_form.sitio_web.id_for_label }}" class="form-label">Sitio Web (Opcional)</label>
                                     {{ secretaria_form.sitio_web }}
@@ -56,7 +51,7 @@
                                         </div>
                                     {% endif %}
                                 </div>
-                                
+
                                 <div class="col-md-6">
                                     <label for="{{ secretaria_form.descripcion.id_for_label }}" class="form-label">Descripción Breve</label>
                                     {{ secretaria_form.descripcion }}
@@ -69,7 +64,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="card mb-4">
                         <div class="card-header bg-light">
                             <h5 class="mb-0"><i class="bi bi-person-fill"></i> Datos del Contacto (Reclutador)</h5>
@@ -105,7 +100,7 @@
                                         </div>
                                     {% endif %}
                                 </div>
-                                
+
                                 <div class="col-md-6">
                                     <label for="{{ reclutador_form.cargo.id_for_label }}" class="form-label">Cargo</label>
                                     {{ reclutador_form.cargo }}
@@ -115,7 +110,7 @@
                                         </div>
                                     {% endif %}
                                 </div>
-                                
+
                                 <div class="col-md-6">
                                     <label for="{{ reclutador_form.telefono.id_for_label }}" class="form-label">Teléfono</label>
                                     {{ reclutador_form.telefono }}
@@ -125,7 +120,7 @@
                                         </div>
                                     {% endif %}
                                 </div>
-                                
+
                                 <div class="col-md-12">
                                     <label for="{{ reclutador_form.email.id_for_label }}" class="form-label">Correo Electrónico</label>
                                     {{ reclutador_form.email }}
@@ -135,7 +130,7 @@
                                         </div>
                                     {% endif %}
                                 </div>
-                                
+
                                 <div class="col-md-6">
                                     <label for="{{ reclutador_form.password1.id_for_label }}" class="form-label">Contraseña</label>
                                     {{ reclutador_form.password1 }}
@@ -148,7 +143,7 @@
                                         Tu contraseña debe tener al menos 8 caracteres y no puede ser demasiado común.
                                     </div>
                                 </div>
-                                
+
                                 <div class="col-md-6">
                                     <label for="{{ reclutador_form.password2.id_for_label }}" class="form-label">Confirmar Contraseña</label>
                                     {{ reclutador_form.password2 }}
