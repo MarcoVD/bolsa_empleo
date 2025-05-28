@@ -31,34 +31,37 @@ from .forms import (
     IdiomaInteresadoForm
 )
 class LoginView(View):
+    """Vista para inicio de sesión de usuarios."""
+
     def get(self, request):
         form = LoginForm()
         return render(request, 'usuarios/login.html', {'form': form})
 
     def post(self, request):
-        form = LoginForm(request.POST) # Y aquí también
+        form = LoginForm(data=request.POST)
         if form.is_valid():
-            username = form.cleaned_data.get('username')
+            email = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password')
-            user = authenticate(request, username=username, password=password)
+            user = authenticate(username=email, password=password)
             if user is not None:
                 login(request, user)
-                messages.success(request, f'Bienvenido {username}!')
-                # Redirigir según el tipo de usuario
-                if hasattr(user, 'empresa'):
-                    return redirect('usuarios:dashboard_empresa')
-                elif hasattr(user, 'postulante'):
-                    return redirect('usuarios:dashboard_postulante')
-                else:
-                    # Manejar caso de superusuario u otro tipo de usuario sin perfil específico
-                    return redirect('pagina_principal') # O alguna vista por defecto
+                # Redirigir según el rol
+                if user.rol == 'interesado':
+                    return redirect('perfil_interesado')
+                elif user.rol == 'reclutador':
+                    # Verificar si el reclutador está aprobado
+                    if hasattr(user, 'reclutador') and user.reclutador.aprobado:
+                        return redirect('dashboard_reclutador')
+                    else:
+                        messages.warning(request, 'Tu cuenta de reclutador está pendiente de aprobación.')
+                        logout(request)
+                        return redirect('login')
+                elif user.rol == 'administrador':
+                    return redirect('admin:index')
             else:
-                messages.error(request, 'Usuario o contraseña incorrectos.')
-        else:
-            # Si el formulario no es válido, mostrar errores
-            # (Django renderizará los errores automáticamente en la plantilla si usas {{ form.errors }})
-            messages.error(request, 'Por favor corrige los errores en el formulario.')
-        return render(request, 'login.html', {'form': form})
+                messages.error(request, 'Correo o contraseña incorrectos. Intenta nuevamente.')
+        return render(request, 'usuarios/login.html', {'form': form})
+
 @method_decorator(login_required, name='dispatch')
 class CrearEditarCVView(View):
     """Vista para crear o editar el CV del interesado."""
@@ -667,42 +670,11 @@ def index_view(request):
     return render(request, 'usuarios/index.html', context)
 
 
-class LoginView(View):
-    """Vista para inicio de sesión de usuarios."""
-
-    def get(self, request):
-        form = LoginForm()
-        return render(request, 'usuarios/login.html', {'form': form})
-
-    def post(self, request):
-        form = LoginForm(data=request.POST)
-        if form.is_valid():
-            email = form.cleaned_data.get('username')
-            password = form.cleaned_data.get('password')
-            user = authenticate(username=email, password=password)
-            if user is not None:
-                login(request, user)
-                # Redirigir según el rol
-                if user.rol == 'interesado':
-                    return redirect('perfil_interesado')
-                elif user.rol == 'reclutador':
-                    # Verificar si el reclutador está aprobado
-                    if hasattr(user, 'reclutador') and user.reclutador.aprobado:
-                        return redirect('dashboard_reclutador')
-                    else:
-                        messages.warning(request, 'Tu cuenta de reclutador está pendiente de aprobación.')
-                        logout(request)
-                        return redirect('login')
-                elif user.rol == 'administrador':
-                    return redirect('admin:index')
-            else:
-                messages.error(request, 'Correo electrónico o contraseña incorrectos.')
-        return render(request, 'usuarios/login.html', {'form': form})
-
 
 def logout_view(request):
     """Vista para cerrar sesión."""
     logout(request)
+    messages.info(request, 'Has cerrado sesión exitosamente.')
     return redirect('index')
 
 
@@ -829,3 +801,4 @@ def detalle_vacante_view(request, vacante_id):
         'requisitos': requisitos,
     }
     return render(request, 'usuarios/detalle_vacante.html', context)
+
