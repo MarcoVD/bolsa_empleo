@@ -32,8 +32,8 @@ from .forms import (
 )
 class LoginView(View):
     def get(self, request):
-        form = LoginForm()  # Ahora LoginForm estará definido
-        return render(request, 'login.html', {'form': form})
+        form = LoginForm()
+        return render(request, 'usuarios/login.html', {'form': form})
 
     def post(self, request):
         form = LoginForm(request.POST) # Y aquí también
