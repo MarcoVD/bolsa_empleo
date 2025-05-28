@@ -98,33 +98,6 @@ class CrearEditarCVView(View):
         }
         return render(request, 'usuarios/crear_editar_cv.html', context)
 
-    def detalle_vacante_view(request, vacante_id):
-        """
-        Muestra los detalles de una vacante específica.
-        """
-        vacante = get_object_or_404(
-            Vacante.objects.select_related('secretaria', 'categoria', 'requisitos'),
-            id=vacante_id,
-            estado_vacante='publicada',  # Solo mostrar vacantes publicadas
-            aprobada=True  # Y aprobadas
-        )
-
-        # El modelo RequisitoVacante tiene una relación OneToOne con Vacante,
-        # por lo que podemos acceder a él directamente desde vacante.requisitos.
-        # Usamos try-except en caso de que 'requisitos' no exista para una vacante.
-        try:
-            # Si usaste related_name='requisitos' en el OneToOneField de RequisitoVacante a Vacante
-            requisitos = vacante.requisitos
-        except RequisitoVacante.DoesNotExist:
-            requisitos = None
-        except AttributeError:  # En caso que la relación no se llame 'requisitos' o no exista el campo.
-            requisitos = None
-
-        context = {
-            'vacante': vacante,
-            'requisitos': requisitos,  # Pasas los requisitos al contexto
-        }
-        return render(request, 'usuarios/detalle_vacante.html', context)
 
     def post(self, request):
         if request.user.rol != 'interesado':
@@ -833,3 +806,26 @@ class DashboardReclutadorView(View):
 
         return render(request, 'usuarios/dashboard_reclutador.html', context)
 
+def detalle_vacante_view(request, vacante_id):
+    """
+    Muestra los detalles de una vacante específica.
+    """
+    vacante = get_object_or_404(
+        Vacante.objects.select_related('secretaria', 'categoria', 'requisitos'),
+        id=vacante_id,
+        estado_vacante='publicada',
+        aprobada=True
+    )
+
+    try:
+        requisitos = vacante.requisitos
+    except RequisitoVacante.DoesNotExist:
+        requisitos = None
+    except AttributeError:
+        requisitos = None
+
+    context = {
+        'vacante': vacante,
+        'requisitos': requisitos,
+    }
+    return render(request, 'usuarios/detalle_vacante.html', context)
