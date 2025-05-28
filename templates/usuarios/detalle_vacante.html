@@ -127,12 +127,12 @@
                 {% endif %}
 
                 {% if requisitos and requisitos.educacion_minima %}
-                <h5 class="mt-4">Educación Mínima Requerida</h5>
+                <h5 class="mt-4">Educación Requerida</h5>
                 <p>{{ requisitos.educacion_minima }}</p>
                 {% endif %}
 
                 {% if requisitos and requisitos.experiencia_minima %}
-                <h5 class="mt-4">Experiencia Mínima Requerida</h5>
+                <h5 class="mt-4">Experiencia Requerida</h5>
                 <p>{{ requisitos.experiencia_minima }}</p>
                 {% endif %}
 
@@ -158,11 +158,11 @@
 
                 <div class="company-info-card">
                     <h5>Sobre {{ vacante.secretaria.nombre }}</h5>
-                    {% if vacante.secretaria.logo %}
-                    <img src="{{ vacante.secretaria.logo.url }}" alt="Logo de {{ vacante.secretaria.nombre }}" class="img-fluid rounded mb-3" style="max-height: 100px; object-fit: contain;">
-                    {% else %}
-                    <img src="https://placehold.co/200x100/6c757d/ffffff?text={{ vacante.secretaria.nombre|slice:':15' }}&font=inter" alt="Banner de la empresa" class="img-fluid rounded mb-3">
-                    {% endif %}
+{#                    {% if vacante.secretaria.logo %}#}
+{#                    <img src="{{ vacante.secretaria.logo.url }}" alt="Logo de {{ vacante.secretaria.nombre }}" class="img-fluid rounded mb-3" style="max-height: 100px; object-fit: contain;">#}
+{#                    {% else %}#}
+{#                    <img src="https://placehold.co/200x100/6c757d/ffffff?text={{ vacante.secretaria.nombre|slice:':15' }}&font=inter" alt="Banner de la empresa" class="img-fluid rounded mb-3">#}
+{#                    {% endif %}#}
 
                     {% if vacante.secretaria.descripcion %}
                     <p class="small">{{ vacante.secretaria.descripcion|truncatewords:50 }}</p>
