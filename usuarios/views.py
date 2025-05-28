@@ -649,8 +649,21 @@ class MisVacantesView(View):
         return render(request, 'usuarios/mis_vacantes.html', context)
 
 def index_view(request):
-    """Vista de la página de inicio."""
-    return render(request, 'usuarios/index.html')
+    """Vista de la página de inicio con vacantes publicadas."""
+    # Obtener solo las vacantes publicadas y aprobadas
+    vacantes = Vacante.objects.filter(
+        estado_vacante='publicada',
+        aprobada=True
+    ).select_related('secretaria', 'reclutador', 'categoria').order_by('-fecha_publicacion')[:12]
+
+    # Contar total de vacantes para mostrar estadística
+    total_vacantes = vacantes.count()
+
+    context = {
+        'vacantes': vacantes,
+        'total_vacantes': total_vacantes,
+    }
+    return render(request, 'usuarios/index.html', context)
 
 
 class LoginView(View):

@@ -113,6 +113,8 @@ class InteresadoPerfilForm(forms.ModelForm):
             })
         }
 
+    # En usuarios/forms.py, actualizar los widgets de fecha en ExperienciaLaboralForm y EducacionForm
+
 
 class ExperienciaLaboralForm(forms.ModelForm):
     """Formulario para experiencias laborales."""
@@ -134,12 +136,13 @@ class ExperienciaLaboralForm(forms.ModelForm):
                 'rows': 3,
                 'placeholder': 'Describe tus actividades principales...'
             }),
+            # CAMBIAR ESTOS DOS WIDGETS:
             'fecha_inicio': forms.DateInput(attrs={
-                'class': 'form-control',
+                'class': 'form-control date-picker',
                 'type': 'date'
             }, format='%Y-%m-%d'),
             'fecha_fin': forms.DateInput(attrs={
-                'class': 'form-control',
+                'class': 'form-control date-picker',
                 'type': 'date'
             }, format='%Y-%m-%d'),
             'actual': forms.CheckboxInput(attrs={
@@ -157,7 +160,9 @@ class ExperienciaLaboralForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-
+        # Configurar formato de fecha para input
+        self.fields['fecha_inicio'].input_formats = ['%Y-%m-%d']
+        self.fields['fecha_fin'].input_formats = ['%Y-%m-%d']
 
 
 class EducacionForm(forms.ModelForm):
@@ -175,14 +180,15 @@ class EducacionForm(forms.ModelForm):
                 'class': 'form-control',
                 'placeholder': 'Ej: Universidad Nacional'
             }),
+            # CAMBIAR ESTOS DOS WIDGETS:
             'fecha_inicio': forms.DateInput(attrs={
-                'class': 'form-control',
-                'type': 'month'
-            }),
+                'class': 'form-control date-picker',
+                'type': 'date'
+            }, format='%Y-%m-%d'),
             'fecha_fin': forms.DateInput(attrs={
-                'class': 'form-control',
-                'type': 'month'
-            }),
+                'class': 'form-control date-picker',
+                'type': 'date'
+            }, format='%Y-%m-%d'),
             'descripcion': forms.Textarea(attrs={
                 'class': 'form-control',
                 'rows': 2,
@@ -197,6 +203,11 @@ class EducacionForm(forms.ModelForm):
             'descripcion': 'Descripción'
         }
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Configurar formato de fecha para input
+        self.fields['fecha_inicio'].input_formats = ['%Y-%m-%d']
+        self.fields['fecha_fin'].input_formats = ['%Y-%m-%d']
 
 class HabilidadInteresadoForm(forms.ModelForm):
     """Formulario para habilidades del interesado."""

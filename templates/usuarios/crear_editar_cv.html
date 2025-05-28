@@ -268,11 +268,11 @@
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">Fecha de Inicio</label>
-                            <input type="month" class="form-control" name="fecha_inicio" required>
+                            <input type="date" class="form-control" name="fecha_inicio" required>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">Fecha de Fin</label>
-                            <input type="month" class="form-control" name="fecha_fin">
+                            <input type="date" class="form-control" name="fecha_fin">
                         </div>
                         <div class="col-12">
                             <div class="form-check">
@@ -319,11 +319,12 @@
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">Fecha de Inicio</label>
-                            <input type="month" class="form-control" name="fecha_inicio" required>
+                            <input type="date" class="form-control" name="fecha_inicio" required>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">Fecha de Fin</label>
-                            <input type="month" class="form-control" name="fecha_fin">
+                            <input type="date" class="form-control" name="fecha_fin">
+{#                                <small class="text-muted">Selecciona el primer día del mes</small>#}
                         </div>
                         <div class="col-12">
                             <label class="form-label">Descripción (opcional)</label>
@@ -513,7 +514,25 @@ function editarExperiencia(id, puesto, empresa, fechaInicio, fechaFin, actual, d
     document.querySelector('#experienciaModal .modal-title').textContent = 'Editar Experiencia Laboral';
     new bootstrap.Modal(document.getElementById('experienciaModal')).show();
 }
+document.addEventListener('DOMContentLoaded', function() {
+    // Para campos de fecha completa
+    flatpickr('input[type="date"]', {
+        locale: 'es',
+        dateFormat: 'Y-m-d',
+        allowInput: true,
+        clickOpens: true
+    });
 
+    // Para campos de solo mes/año
+    flatpickr('input[type="month"]', {
+        locale: 'es',
+        plugins: [new monthSelectPlugin({
+            shorthand: true,
+            dateFormat: 'Y-m',
+            altFormat: 'F Y'
+        })]
+    });
+});
 function guardarExperiencia() {
     const form = document.getElementById('experienciaForm');
     const formData = new FormData(form);
