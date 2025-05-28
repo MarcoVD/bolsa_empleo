@@ -111,9 +111,9 @@
                     <span><i class="bi bi-calendar3"></i> Publicado: {{ vacante.fecha_publicacion|timesince }}</span>
                 </div>
                 <div>
-                    <span class="badge bg-secondary">{{ vacante.categoria.nombre }}</span>
-                    <span class="badge bg-info text-dark">{{ vacante.get_tipo_empleo_display }}</span>
-                    <span class="badge bg-success text-white">{{ vacante.get_modalidad_display }}</span>
+                    <span class="badge rounded-pill border border-primary text-black">{{ vacante.categoria.nombre }}</span>
+                    <span class="badge rounded-pill border border-danger text-dark">{{ vacante.get_tipo_empleo_display }}</span>
+                    <span class="badge rounded-pill border border-success text-dark">{{ vacante.get_modalidad_display }}</span>
                     </div>
             </div>
 
