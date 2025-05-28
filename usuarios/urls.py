@@ -15,6 +15,8 @@ urlpatterns = [
     path('publicar-vacante/', views.PublicarVacanteView.as_view(), name='publicar_vacante'),
     path('editar-vacante/<int:vacante_id>/', views.EditarVacanteView.as_view(), name='editar_vacante'),
     path('mis-vacantes/', views.MisVacantesView.as_view(), name='mis_vacantes'),
+    # NUEVA URL PARA DETALLE DE VACANTE
+    path('vacante/<int:vacante_id>/', views.detalle_vacante_view, name='detalle_vacante'),
 
     # URLs para CV
     path('mi-cv/', views.CrearEditarCVView.as_view(), name='crear_editar_cv'),

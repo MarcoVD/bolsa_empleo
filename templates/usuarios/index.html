@@ -1,17 +1,3 @@
-{#{% extends 'base.html' %}#}
-{##}
-{#{% block title %}Inicio - Bolsa de Trabajo{% endblock %}#}
-{##}
-{#{% block content %}#}
-{##}
-{#<div class="text-center my-5">#}
-{#    <h1 class="display-4 ">Bienvenido a la Bolsa de Trabajo</h1>#}
-{#    <p class="lead">De la Secretaría de Movilidad del Estado de México</p>#}
-{#</div>#}
-{##}
-{##}
-{#{% endblock %}#}
-
 {% extends 'base.html' %}
 
 {% block title %}Inicio - Bolsa de Trabajo{% endblock %}
@@ -29,7 +15,7 @@
     <div class="container mb-5">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h4>Vacantes Disponibles</h4>
-        </div>
+            </div>
 
         <div class="row">
             {% for vacante in vacantes %}
@@ -51,7 +37,7 @@
                                         <p class="text-muted mb-1">Salario a convenir</p>
                                     {% endif %}
                                     <p class="small text-muted">Publicado: {{ vacante.fecha_publicacion|timesince }}</p>
-                                    <a href="#" class="btn btn-primary btn-sm">Ver Detalles</a>
+                                    <a href="{% url 'detalle_vacante' vacante_id=vacante.id %}" class="btn btn-primary btn-sm">Ver Detalles</a>
                                 </div>
                             </div>
                             <div class="mt-2">
@@ -65,11 +51,9 @@
             {% endfor %}
         </div>
 
-        <!-- Mensaje para más vacantes si es necesario -->
-        {% if vacantes|length == 12 %}
-            <div class="text-center mt-4">
-                <p class="text-muted">Mostrando las 12 vacantes más recientes</p>
-            </div>
+        {% if vacantes|length == 12 %} <div class="text-center mt-4">
+                <p class="text-muted">Mostrando las {{ vacantes|length }} vacantes más recientes</p>
+                </div>
         {% endif %}
     </div>
 {% else %}
@@ -82,45 +66,33 @@
     </div>
 {% endif %}
 
-{#<style>#}
-{#.vacante-card {#}
-{#    border-radius: 15px;#}
-{#    margin-bottom: 20px;#}
-{#    box-shadow: 0 2px 4px rgba(0,0,0,0.05);#}
-{#    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;#}
-{#}#}
-{##}
-{#.vacante-card:hover {#}
-{#    transform: translateY(-5px);#}
-{#    box-shadow: 0 8px 16px rgba(0,0,0,0.1);#}
-{#}#}
-{##}
-{#.vacante-card .card-title {#}
-{#    color: #007bff;#}
-{#    font-weight: 500;#}
-{#}#}
-{##}
-{#.vacante-card .card-subtitle {#}
-{#    font-size: 0.9rem;#}
-{#}#}
-{##}
-{#.vacante-card .badge {#}
-{#    font-size: 0.75rem;#}
-{#    margin-right: 5px;#}
-{#}#}
-{##}
-{#.btn {#}
-{#    border-radius: 8px;#}
-{#}#}
-{##}
-{#.btn-primary {#}
-{#    background-color: #007bff;#}
-{#    border-color: #007bff;#}
-{#}#}
-{##}
-{#.btn-primary:hover {#}
-{#    background-color: #0056b3;#}
-{#    border-color: #0056b3;#}
-{#}#}
-{#</style>#}
+<style>
+.vacante-card {
+    border-radius: 10px; /* Un poco menos redondeado que el mockup para consistencia */
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.vacante-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+}
+
+.vacante-card .card-title {
+    color: var(--primary); /* Usando tu variable CSS */
+    font-weight: 500;
+}
+
+.vacante-card .card-subtitle {
+    font-size: 0.9rem;
+}
+
+.vacante-card .badge {
+    font-size: 0.75rem;
+    margin-right: 5px;
+}
+
+/* .btn y .btn-primary ya deberían estar definidos en tu CSS global o Bootstrap */
+</style>
 {% endblock %}

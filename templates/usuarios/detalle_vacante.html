@@ -1,0 +1,181 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ vacante.titulo }} - Bolsa de Trabajo{% endblock %}
+
+{% block extra_css %}
+<style>
+    body {
+        /* font-family: 'Inter', sans-serif; */ /* Ya está en base.html o styles.css */
+        background-color: #f8f9fa;
+    }
+    .navbar {
+        border-bottom: 1px solid #e9ecef;
+    }
+    .job-detail-container {
+        margin-top: 20px;
+        margin-bottom: 50px;
+    }
+    .job-header {
+        background-color: #ffffff;
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+        margin-bottom: 30px;
+    }
+    .job-header .company-logo { /* No se usa directamente, pero lo dejo por si se añade logo a la Secretaría */
+        max-width: 80px;
+        max-height: 80px;
+        border-radius: 8px;
+        margin-right: 20px;
+        border: 1px solid #eee;
+    }
+    .job-header h1 {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #343a40;
+    }
+    .job-header .company-name {
+        font-size: 1.2rem;
+        color: var(--primary); /* Usando tu variable CSS */
+        font-weight: 500;
+    }
+    .job-header .job-meta span {
+        margin-right: 15px;
+        color: #6c757d;
+        font-size: 0.9rem;
+    }
+    .job-header .job-meta i {
+        margin-right: 5px;
+    }
+    .job-content-card, .company-info-card, .actions-card {
+        background-color: #ffffff;
+        padding: 25px;
+        border-radius: 15px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+        margin-bottom: 30px;
+    }
+    .job-content-card h5, .company-info-card h5, .actions-card h5 {
+        font-weight: 700;
+        margin-bottom: 20px;
+        color: #495057;
+    }
+    .job-content-card ul {
+        padding-left: 20px;
+    }
+    .job-content-card ul li {
+        margin-bottom: 8px;
+    }
+    .btn {
+        border-radius: 8px;
+        padding: 10px 20px;
+    }
+    /* .btn-primary se hereda de tu CSS principal o Bootstrap */
+    /* .btn-outline-primary se hereda de tu CSS principal o Bootstrap */
+
+    .badge {
+        font-size: 0.8rem;
+        margin-right: 5px;
+        margin-bottom: 5px;
+        padding: 0.5em 0.75em;
+    }
+    .sticky-sidebar {
+        position: -webkit-sticky;
+        position: sticky;
+        top: 90px; /* Ajustar según la altura del navbar si es necesario */
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container job-detail-container">
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="job-header">
+                <div class="d-flex align-items-start mb-3">
+                    {% if vacante.secretaria.logo %}
+                        {% endif %}
+                    <div>
+                        <h1>{{ vacante.titulo }}</h1>
+                        <a href="{{ vacante.secretaria.sitio_web|default:"#" }}" target="_blank" class="company-name">{{ vacante.secretaria.nombre }}</a>
+                    </div>
+                </div>
+                <div class="job-meta mb-3">
+                    <span><i class="bi bi-geo-alt-fill"></i> {{ vacante.ciudad }}, {{ vacante.get_estado_display }}</span>
+                    <span><i class="bi bi-briefcase-fill"></i> {{ vacante.get_tipo_empleo_display }}</span>
+                    {% if vacante.salario_formateado != "No especificado" %}
+                    <span><i class="bi bi-cash-stack"></i> {{ vacante.salario_formateado }}</span>
+                    {% else %}
+                    <span><i class="bi bi-cash-stack"></i> Salario a convenir</span>
+                    {% endif %}
+                    <span><i class="bi bi-calendar3"></i> Publicado: {{ vacante.fecha_publicacion|timesince }}</span>
+                </div>
+                <div>
+                    <span class="badge bg-secondary">{{ vacante.categoria.nombre }}</span>
+                    <span class="badge bg-info text-dark">{{ vacante.get_tipo_empleo_display }}</span>
+                    <span class="badge bg-success text-white">{{ vacante.get_modalidad_display }}</span>
+                    </div>
+            </div>
+
+            <div class="job-content-card">
+                <h5>Descripción del Puesto</h5>
+                <p>{{ vacante.descripcion|linebreaksbr }}</p>
+
+                {% if requisitos and requisitos.descripcion_requisitos %}
+                <h5 class="mt-4">Requisitos y Responsabilidades</h5>
+                <p>{{ requisitos.descripcion_requisitos|linebreaksbr }}</p>
+                {% endif %}
+
+                {% if requisitos and requisitos.educacion_minima %}
+                <h5 class="mt-4">Educación Mínima Requerida</h5>
+                <p>{{ requisitos.educacion_minima }}</p>
+                {% endif %}
+
+                {% if requisitos and requisitos.experiencia_minima %}
+                <h5 class="mt-4">Experiencia Mínima Requerida</h5>
+                <p>{{ requisitos.experiencia_minima }}</p>
+                {% endif %}
+
+                </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="sticky-sidebar">
+                <div class="actions-card text-center">
+                    <h5>¿Te interesa esta vacante?</h5>
+                    <div class="d-grid gap-2">
+                        {% if user.is_authenticated %}
+                            {% if user.rol == 'interesado' %}
+                                <a href="#" class="btn btn-primary btn-lg"><i class="bi bi-send-fill"></i> Postularme Ahora</a>
+                                {% else %}
+                                <button type="button" class="btn btn-primary btn-lg" disabled><i class="bi bi-send-fill"></i> Postularme Ahora</button>
+                            {% endif %}
+                        {% else %}
+                            <a href="{% url 'registro_interesado' %}" class="btn btn-primary btn-lg"><i class="bi bi-send-fill"></i> Postularme Ahora</a>
+                        {% endif %}
+                        <button type="button" class="btn btn-outline-primary"><i class="bi bi-bookmark-plus"></i> Guardar Vacante</button> </div>
+                    </div>
+
+                <div class="company-info-card">
+                    <h5>Sobre {{ vacante.secretaria.nombre }}</h5>
+                    {% if vacante.secretaria.logo %}
+                    <img src="{{ vacante.secretaria.logo.url }}" alt="Logo de {{ vacante.secretaria.nombre }}" class="img-fluid rounded mb-3" style="max-height: 100px; object-fit: contain;">
+                    {% else %}
+                    <img src="https://placehold.co/200x100/6c757d/ffffff?text={{ vacante.secretaria.nombre|slice:':15' }}&font=inter" alt="Banner de la empresa" class="img-fluid rounded mb-3">
+                    {% endif %}
+
+                    {% if vacante.secretaria.descripcion %}
+                    <p class="small">{{ vacante.secretaria.descripcion|truncatewords:50 }}</p>
+                    {% else %}
+                    <p class="small text-muted">No hay descripción disponible para esta secretaría.</p>
+                    {% endif %}
+
+                    {% if vacante.secretaria.sitio_web %}
+                    <a href="{{ vacante.secretaria.sitio_web }}" target="_blank" class="btn btn-sm btn-outline-secondary w-100">Visitar sitio web de la empresa</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
