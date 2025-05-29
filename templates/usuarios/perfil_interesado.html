@@ -73,8 +73,8 @@
                                 <i class="bi bi-geo-alt me-2 mt-1 text-primary"></i>
                                 <div class="flex-grow-1">
                                     <strong class="d-block d-sm-inline small">Ubicación:</strong>
-                                    {% if interesado.ciudad and interesado.estado %}
-                                        <span>{{ interesado.ciudad }}, {{ interesado.estado }}</span>
+                                    {% if interesado.municipio %}
+                                        <span>{{ interesado.get_municipio_display }}, Estado de México</span>
                                     {% else %}
                                         <span class="text-muted">No especificada</span>
                                     {% endif %}
@@ -188,14 +188,24 @@
                             <label for="fecha_nacimiento" class="form-label">Fecha de Nacimiento</label>
                             <input type="date" class="form-control" id="fecha_nacimiento" value="{% if interesado.fecha_nacimiento %}{{ interesado.fecha_nacimiento|date:'Y-m-d' }}{% endif %}">
                         </div>
+{#                        <div class="col-12 col-md-6">#}
+{#                            <label for="ciudad" class="form-label">Ciudad</label>#}
+{#                            <input type="text" class="form-control" id="ciudad" value="{% if interesado.ciudad %}{{ interesado.ciudad }}{% endif %}">#}
+{#                        </div>#}
+{#                        <div class="col-12 col-md-6">#}
+{#                            <label for="estado" class="form-label">Estado</label>#}
+{#                            <input type="text" class="form-control" id="estado" value="{% if interesado.estado %}{{ interesado.estado }}{% endif %}">#}
+{#                        </div>#}
                         <div class="col-12 col-md-6">
-                            <label for="ciudad" class="form-label">Ciudad</label>
-                            <input type="text" class="form-control" id="ciudad" value="{% if interesado.ciudad %}{{ interesado.ciudad }}{% endif %}">
+                            <label for="municipio" class="form-label">Municipio</label>
+                            <select class="form-select" id="municipio" name="municipio">
+                                <option value="">Selecciona un municipio...</option>
+                                {% for value, label in interesado.MUNICIPIOS_ESTADO_MEXICO %}
+                                    <option value="{{ value }}" {% if interesado.municipio == value %}selected{% endif %}>{{ label }}</option>
+                                {% endfor %}
+                            </select>
                         </div>
-                        <div class="col-12 col-md-6">
-                            <label for="estado" class="form-label">Estado</label>
-                            <input type="text" class="form-control" id="estado" value="{% if interesado.estado %}{{ interesado.estado }}{% endif %}">
-                        </div>
+
                         <div class="col-12">
                             <label for="direccion" class="form-label">Dirección</label>
                             <textarea class="form-control" id="direccion" rows="2">{% if interesado.direccion %}{{ interesado.direccion }}{% endif %}</textarea>
@@ -204,6 +214,11 @@
                             <label for="codigo_postal" class="form-label">Código Postal</label>
                             <input type="text" class="form-control" id="codigo_postal" value="{% if interesado.codigo_postal %}{{ interesado.codigo_postal }}{% endif %}">
                         </div>
+
+{#                        <div class="col-12 col-md-6">#}
+{#                            <label for="codigo_postal" class="form-label">Código Postal</label>#}
+{#                            <input type="text" class="form-control" id="codigo_postal" value="{% if interesado.codigo_postal %}{{ interesado.codigo_postal }}{% endif %}">#}
+{#                        </div>#}
                         <div class="col-12 col-md-6">
                             <label for="foto_perfil" class="form-label">Foto de Perfil</label>
                             <input type="file" class="form-control" id="foto_perfil" accept="image/*">
@@ -218,101 +233,4 @@
         </div>
     </div>
 </div>
-
-
-<!--<style>-->
-<!--/* Estilos para la foto de perfil responsive */-->
-<!--.profile-photo-container {-->
-<!--    position: relative;-->
-<!--    display: inline-block;-->
-<!--}-->
-
-<!--.profile-photo,-->
-<!--.profile-photo-placeholder {-->
-<!--    width: 120px;-->
-<!--    height: 120px;-->
-<!--    object-fit: cover;-->
-<!--}-->
-
-<!--.profile-icon {-->
-<!--    font-size: 60px;-->
-<!--    color: #6c757d;-->
-<!--}-->
-
-<!--/* Iconos de estado vacío */-->
-<!--.empty-icon {-->
-<!--    font-size: 48px;-->
-<!--    color: #6c757d;-->
-<!--}-->
-
-<!--.empty-icon-sm {-->
-<!--    font-size: 32px;-->
-<!--    color: #6c757d;-->
-<!--}-->
-
-<!--/* Mejoras para información de contacto */-->
-<!--.contact-info .contact-item {-->
-<!--    border-bottom: 1px solid #f8f9fa;-->
-<!--    padding-bottom: 0.5rem;-->
-<!--}-->
-
-<!--.contact-info .contact-item:last-child {-->
-<!--    border-bottom: none;-->
-<!--    padding-bottom: 0;-->
-<!--}-->
-
-<!--/* Breakpoints para tablet */-->
-<!--@media (min-width: 576px) {-->
-<!--    .profile-photo,-->
-<!--    .profile-photo-placeholder {-->
-<!--        width: 150px;-->
-<!--        height: 150px;-->
-<!--    }-->
-
-<!--    .profile-icon {-->
-<!--        font-size: 80px;-->
-<!--    }-->
-
-<!--    .empty-icon {-->
-<!--        font-size: 48px;-->
-<!--    }-->
-<!--}-->
-
-<!--/* Breakpoints para desktop */-->
-<!--@media (min-width: 992px) {-->
-<!--    .container-fluid {-->
-<!--        max-width: 1200px;-->
-<!--        margin: 0 auto;-->
-<!--    }-->
-<!--}-->
-
-<!--/* Mejoras para el modal en móviles */-->
-<!--@media (max-width: 575.98px) {-->
-<!--    .modal-dialog {-->
-<!--        margin: 0.5rem;-->
-<!--    }-->
-
-<!--    .modal-content {-->
-<!--        border-radius: 0.375rem;-->
-<!--    }-->
-
-<!--    .modal-body {-->
-<!--        padding: 1rem;-->
-<!--    }-->
-<!--}-->
-
-<!--/* Text break para emails largos */-->
-<!--.text-break {-->
-<!--    word-break: break-word;-->
-<!--    overflow-wrap: break-word;-->
-<!--}-->
-
-<!--/* Mejoras para botones en móvil */-->
-<!--@media (max-width: 575.98px) {-->
-<!--    .btn-sm {-->
-<!--        font-size: 0.875rem;-->
-<!--        padding: 0.375rem 0.75rem;-->
-<!--    }-->
-<!--}-->
-<!--</style>-->
 {% endblock %}

@@ -57,9 +57,130 @@ class Usuario(AbstractUser):
     def __str__(self):
         return self.email
 
+# usuarios/models.py - SECCIÓN ACTUALIZADA PARA INTERESADO
 
 class Interesado(models.Model):
     """Modelo para el perfil de un interesado/candidato."""
+
+    # Municipios del Estado de México (misma lista que en Vacante)
+    MUNICIPIOS_ESTADO_MEXICO = (
+        ('acambay', 'Acambay'),
+        ('acolman', 'Acolman'),
+        ('aculco', 'Aculco'),
+        ('almoloya_de_alquisiras', 'Almoloya de Alquisiras'),
+        ('almoloya_de_juarez', 'Almoloya de Juárez'),
+        ('almoloya_del_rio', 'Almoloya del Río'),
+        ('amanalco', 'Amanalco'),
+        ('amatepec', 'Amatepec'),
+        ('amecameca', 'Amecameca'),
+        ('apaxco', 'Apaxco'),
+        ('atenco', 'Atenco'),
+        ('atizapan', 'Atizapán'),
+        ('atizapan_de_zaragoza', 'Atizapán de Zaragoza'),
+        ('atlacomulco', 'Atlacomulco'),
+        ('atlautla', 'Atlautla'),
+        ('axapusco', 'Axapusco'),
+        ('ayapango', 'Ayapango'),
+        ('calimaya', 'Calimaya'),
+        ('capulhuac', 'Capulhuac'),
+        ('coacalco_de_berriozabal', 'Coacalco de Berriozábal'),
+        ('coatepec_harinas', 'Coatepec Harinas'),
+        ('cocotitlan', 'Cocotitlán'),
+        ('coyotepec', 'Coyotepec'),
+        ('cuautitlan', 'Cuautitlán'),
+        ('cuautitlan_izcalli', 'Cuautitlán Izcalli'),
+        ('donato_guerra', 'Donato Guerra'),
+        ('ecatepec_de_morelos', 'Ecatepec de Morelos'),
+        ('ecatzingo', 'Ecatzingo'),
+        ('el_oro', 'El Oro'),
+        ('huehuetoca', 'Huehuetoca'),
+        ('hueypoxtla', 'Hueypoxtla'),
+        ('huixquilucan', 'Huixquilucan'),
+        ('isidro_fabela', 'Isidro Fabela'),
+        ('ixtapaluca', 'Ixtapaluca'),
+        ('ixtapan_de_la_sal', 'Ixtapan de la Sal'),
+        ('ixtapan_del_oro', 'Ixtapan del Oro'),
+        ('ixtlahuaca', 'Ixtlahuaca'),
+        ('jaltenco', 'Jaltenco'),
+        ('jilotepec', 'Jilotepec'),
+        ('jilotzingo', 'Jilotzingo'),
+        ('jiquipilco', 'Jiquipilco'),
+        ('jocotitlan', 'Jocotitlán'),
+        ('joquicingo', 'Joquicingo'),
+        ('juchitepec', 'Juchitepec'),
+        ('la_paz', 'La Paz'),
+        ('lerma', 'Lerma'),
+        ('luvianos', 'Luvianos'),
+        ('malinalco', 'Malinalco'),
+        ('melchor_ocampo', 'Melchor Ocampo'),
+        ('metepec', 'Metepec'),
+        ('mexicaltzingo', 'Mexicaltzingo'),
+        ('morelos', 'Morelos'),
+        ('naucalpan_de_juarez', 'Naucalpan de Juárez'),
+        ('nezahualcoyotl', 'Nezahualcóyotl'),
+        ('nextlalpan', 'Nextlalpan'),
+        ('nicolas_romero', 'Nicolás Romero'),
+        ('nopaltepec', 'Nopaltepec'),
+        ('ocoyoacac', 'Ocoyoacac'),
+        ('ocuilan', 'Ocuilan'),
+        ('otumba', 'Otumba'),
+        ('otzoloapan', 'Otzoloapan'),
+        ('otzolotepec', 'Otzolotepec'),
+        ('ozumba', 'Ozumba'),
+        ('papalotla', 'Papalotla'),
+        ('polotitlan', 'Polotitlán'),
+        ('rayon', 'Rayón'),
+        ('san_antonio_la_isla', 'San Antonio la Isla'),
+        ('san_felipe_del_progreso', 'San Felipe del Progreso'),
+        ('san_martin_de_las_piramides', 'San Martín de las Pirámides'),
+        ('san_mateo_atenco', 'San Mateo Atenco'),
+        ('san_simon_de_guerrero', 'San Simón de Guerrero'),
+        ('santo_tomas', 'Santo Tomás'),
+        ('soyaniquilpan_de_juarez', 'Soyaniquilpan de Juárez'),
+        ('sultepec', 'Sultepec'),
+        ('tecamac', 'Tecámac'),
+        ('tejupilco', 'Tejupilco'),
+        ('temamatla', 'Temamatla'),
+        ('temascalapa', 'Temascalapa'),
+        ('temascalcingo', 'Temascalcingo'),
+        ('temascaltepec', 'Temascaltepec'),
+        ('temoaya', 'Temoaya'),
+        ('tenancingo', 'Tenancingo'),
+        ('tenango_del_aire', 'Tenango del Aire'),
+        ('tenango_del_valle', 'Tenango del Valle'),
+        ('teoloyucan', 'Teoloyucan'),
+        ('teotihuacan', 'Teotihuacán'),
+        ('tepetlaoxtoc', 'Tepetlaoxtoc'),
+        ('tepetlixpa', 'Tepetlixpa'),
+        ('tepotzotlan', 'Tepotzotlán'),
+        ('tequixquiac', 'Tequixquiac'),
+        ('texcaltitlan', 'Texcaltitlán'),
+        ('texcalyacac', 'Texcalyacac'),
+        ('texcoco', 'Texcoco'),
+        ('tezoyuca', 'Tezoyuca'),
+        ('tianguistenco', 'Tianguistenco'),
+        ('timilpan', 'Timilpan'),
+        ('tlalmanalco', 'Tlalmanalco'),
+        ('tlalnepantla_de_baz', 'Tlalnepantla de Baz'),
+        ('tlatlaya', 'Tlatlaya'),
+        ('toluca', 'Toluca'),
+        ('tonanitla', 'Tonanitla'),
+        ('tonatico', 'Tonatico'),
+        ('tultepec', 'Tultepec'),
+        ('tultitlan', 'Tultitlán'),
+        ('valle_de_bravo', 'Valle de Bravo'),
+        ('valle_de_chalco_solidaridad', 'Valle de Chalco Solidaridad'),
+        ('villa_de_allende', 'Villa de Allende'),
+        ('villa_del_carbon', 'Villa del Carbón'),
+        ('villa_guerrero', 'Villa Guerrero'),
+        ('villa_victoria', 'Villa Victoria'),
+        ('xonacatlan', 'Xonacatlán'),
+        ('zacazonapan', 'Zacazonapan'),
+        ('zacualpan', 'Zacualpan'),
+        ('zinacantepec', 'Zinacantepec'),
+        ('zumpahuacan', 'Zumpahuacán'),
+        ('zumpango', 'Zumpango'),
+    )
 
     usuario = models.OneToOneField(Usuario, on_delete=models.CASCADE, related_name='interesado')
     nombre = models.CharField(max_length=50, blank=True)
@@ -68,8 +189,8 @@ class Interesado(models.Model):
     telefono = models.CharField(max_length=15, blank=True, null=True)
     fecha_nacimiento = models.DateField(blank=True, null=True)
     direccion = models.TextField(blank=True, null=True)
-    ciudad = models.CharField(max_length=50, blank=True, null=True)
-    estado = models.CharField(max_length=50, blank=True, null=True)
+    # CAMPOS ACTUALIZADOS: municipio en lugar de ciudad y estado libre
+    municipio = models.CharField(max_length=50, choices=MUNICIPIOS_ESTADO_MEXICO, blank=True, null=True, verbose_name="Municipio")
     codigo_postal = models.CharField(max_length=10, blank=True, null=True)
     foto_perfil = models.ImageField(upload_to='interesados/', blank=True, null=True)
 
@@ -88,6 +209,13 @@ class Interesado(models.Model):
         return "Sin nombre registrado"
 
     @property
+    def ubicacion_completa(self):
+        """Retorna la ubicación completa: municipio, Estado de México"""
+        if self.municipio:
+            return f"{self.get_municipio_display()}, Estado de México"
+        return "Estado de México"
+
+    @property
     def tiene_cv_completo(self):
         """Verifica si el interesado tiene un CV completo."""
         return (
@@ -96,7 +224,6 @@ class Interesado(models.Model):
                 self.apellido_paterno and
                 self.curriculum.resumen_profesional
         )
-
 
 class Secretaria(models.Model):
     """Modelo para las secretarías (organizaciones) que pueden publicar vacantes."""
@@ -162,6 +289,7 @@ class Categoria(models.Model):
         verbose_name = "Categoría"
         verbose_name_plural = "Categorías"
 
+# usuarios/models.py - SECCIÓN ACTUALIZADA PARA VACANTES
 
 class Vacante(models.Model):
     """Modelo para las vacantes de trabajo."""
@@ -171,7 +299,6 @@ class Vacante(models.Model):
         ('proyecto', 'Por Proyecto'),
         ('temporal', 'Temporal'),
         ('practicas', 'Prácticas Profesionales'),
-
     )
 
     MODALIDAD = (
@@ -187,39 +314,124 @@ class Vacante(models.Model):
         ('eliminada', 'Eliminada'),
     )
 
-    ESTADOS_MEXICO = (
-        ('aguascalientes', 'Aguascalientes'),
-        ('baja_california', 'Baja California'),
-        ('baja_california_sur', 'Baja California Sur'),
-        ('campeche', 'Campeche'),
-        ('chiapas', 'Chiapas'),
-        ('chihuahua', 'Chihuahua'),
-        ('ciudad_de_mexico', 'Ciudad de México'),
-        ('coahuila', 'Coahuila'),
-        ('colima', 'Colima'),
-        ('durango', 'Durango'),
-        ('estado_de_mexico', 'Estado de México'),
-        ('guanajuato', 'Guanajuato'),
-        ('guerrero', 'Guerrero'),
-        ('hidalgo', 'Hidalgo'),
-        ('jalisco', 'Jalisco'),
-        ('michoacan', 'Michoacán'),
+    # Municipios del Estado de México
+    MUNICIPIOS_ESTADO_MEXICO = (
+        ('acambay', 'Acambay'),
+        ('acolman', 'Acolman'),
+        ('aculco', 'Aculco'),
+        ('almoloya_de_alquisiras', 'Almoloya de Alquisiras'),
+        ('almoloya_de_juarez', 'Almoloya de Juárez'),
+        ('almoloya_del_rio', 'Almoloya del Río'),
+        ('amanalco', 'Amanalco'),
+        ('amatepec', 'Amatepec'),
+        ('amecameca', 'Amecameca'),
+        ('apaxco', 'Apaxco'),
+        ('atenco', 'Atenco'),
+        ('atizapan', 'Atizapán'),
+        ('atizapan_de_zaragoza', 'Atizapán de Zaragoza'),
+        ('atlacomulco', 'Atlacomulco'),
+        ('atlautla', 'Atlautla'),
+        ('axapusco', 'Axapusco'),
+        ('ayapango', 'Ayapango'),
+        ('calimaya', 'Calimaya'),
+        ('capulhuac', 'Capulhuac'),
+        ('coacalco_de_berriozabal', 'Coacalco de Berriozábal'),
+        ('coatepec_harinas', 'Coatepec Harinas'),
+        ('cocotitlan', 'Cocotitlán'),
+        ('coyotepec', 'Coyotepec'),
+        ('cuautitlan', 'Cuautitlán'),
+        ('cuautitlan_izcalli', 'Cuautitlán Izcalli'),
+        ('donato_guerra', 'Donato Guerra'),
+        ('ecatepec_de_morelos', 'Ecatepec de Morelos'),
+        ('ecatzingo', 'Ecatzingo'),
+        ('el_oro', 'El Oro'),
+        ('huehuetoca', 'Huehuetoca'),
+        ('hueypoxtla', 'Hueypoxtla'),
+        ('huixquilucan', 'Huixquilucan'),
+        ('isidro_fabela', 'Isidro Fabela'),
+        ('ixtapaluca', 'Ixtapaluca'),
+        ('ixtapan_de_la_sal', 'Ixtapan de la Sal'),
+        ('ixtapan_del_oro', 'Ixtapan del Oro'),
+        ('ixtlahuaca', 'Ixtlahuaca'),
+        ('jaltenco', 'Jaltenco'),
+        ('jilotepec', 'Jilotepec'),
+        ('jilotzingo', 'Jilotzingo'),
+        ('jiquipilco', 'Jiquipilco'),
+        ('jocotitlan', 'Jocotitlán'),
+        ('joquicingo', 'Joquicingo'),
+        ('juchitepec', 'Juchitepec'),
+        ('la_paz', 'La Paz'),
+        ('lerma', 'Lerma'),
+        ('luvianos', 'Luvianos'),
+        ('malinalco', 'Malinalco'),
+        ('melchor_ocampo', 'Melchor Ocampo'),
+        ('metepec', 'Metepec'),
+        ('mexicaltzingo', 'Mexicaltzingo'),
         ('morelos', 'Morelos'),
-        ('nayarit', 'Nayarit'),
-        ('nuevo_leon', 'Nuevo León'),
-        ('oaxaca', 'Oaxaca'),
-        ('puebla', 'Puebla'),
-        ('queretaro', 'Querétaro'),
-        ('quintana_roo', 'Quintana Roo'),
-        ('san_luis_potosi', 'San Luis Potosí'),
-        ('sinaloa', 'Sinaloa'),
-        ('sonora', 'Sonora'),
-        ('tabasco', 'Tabasco'),
-        ('tamaulipas', 'Tamaulipas'),
-        ('tlaxcala', 'Tlaxcala'),
-        ('veracruz', 'Veracruz'),
-        ('yucatan', 'Yucatán'),
-        ('zacatecas', 'Zacatecas'),
+        ('naucalpan_de_juarez', 'Naucalpan de Juárez'),
+        ('nezahualcoyotl', 'Nezahualcóyotl'),
+        ('nextlalpan', 'Nextlalpan'),
+        ('nicolas_romero', 'Nicolás Romero'),
+        ('nopaltepec', 'Nopaltepec'),
+        ('ocoyoacac', 'Ocoyoacac'),
+        ('ocuilan', 'Ocuilan'),
+        ('otumba', 'Otumba'),
+        ('otzoloapan', 'Otzoloapan'),
+        ('otzolotepec', 'Otzolotepec'),
+        ('ozumba', 'Ozumba'),
+        ('papalotla', 'Papalotla'),
+        ('polotitlan', 'Polotitlán'),
+        ('rayon', 'Rayón'),
+        ('san_antonio_la_isla', 'San Antonio la Isla'),
+        ('san_felipe_del_progreso', 'San Felipe del Progreso'),
+        ('san_martin_de_las_piramides', 'San Martín de las Pirámides'),
+        ('san_mateo_atenco', 'San Mateo Atenco'),
+        ('san_simon_de_guerrero', 'San Simón de Guerrero'),
+        ('santo_tomas', 'Santo Tomás'),
+        ('soyaniquilpan_de_juarez', 'Soyaniquilpan de Juárez'),
+        ('sultepec', 'Sultepec'),
+        ('tecamac', 'Tecámac'),
+        ('tejupilco', 'Tejupilco'),
+        ('temamatla', 'Temamatla'),
+        ('temascalapa', 'Temascalapa'),
+        ('temascalcingo', 'Temascalcingo'),
+        ('temascaltepec', 'Temascaltepec'),
+        ('temoaya', 'Temoaya'),
+        ('tenancingo', 'Tenancingo'),
+        ('tenango_del_aire', 'Tenango del Aire'),
+        ('tenango_del_valle', 'Tenango del Valle'),
+        ('teoloyucan', 'Teoloyucan'),
+        ('teotihuacan', 'Teotihuacán'),
+        ('tepetlaoxtoc', 'Tepetlaoxtoc'),
+        ('tepetlixpa', 'Tepetlixpa'),
+        ('tepotzotlan', 'Tepotzotlán'),
+        ('tequixquiac', 'Tequixquiac'),
+        ('texcaltitlan', 'Texcaltitlán'),
+        ('texcalyacac', 'Texcalyacac'),
+        ('texcoco', 'Texcoco'),
+        ('tezoyuca', 'Tezoyuca'),
+        ('tianguistenco', 'Tianguistenco'),
+        ('timilpan', 'Timilpan'),
+        ('tlalmanalco', 'Tlalmanalco'),
+        ('tlalnepantla_de_baz', 'Tlalnepantla de Baz'),
+        ('tlatlaya', 'Tlatlaya'),
+        ('toluca', 'Toluca'),
+        ('tonanitla', 'Tonanitla'),
+        ('tonatico', 'Tonatico'),
+        ('tultepec', 'Tultepec'),
+        ('tultitlan', 'Tultitlán'),
+        ('valle_de_bravo', 'Valle de Bravo'),
+        ('valle_de_chalco_solidaridad', 'Valle de Chalco Solidaridad'),
+        ('villa_de_allende', 'Villa de Allende'),
+        ('villa_del_carbon', 'Villa del Carbón'),
+        ('villa_guerrero', 'Villa Guerrero'),
+        ('villa_victoria', 'Villa Victoria'),
+        ('xonacatlan', 'Xonacatlán'),
+        ('zacazonapan', 'Zacazonapan'),
+        ('zacualpan', 'Zacualpan'),
+        ('zinacantepec', 'Zinacantepec'),
+        ('zumpahuacan', 'Zumpahuacán'),
+        ('zumpango', 'Zumpango'),
     )
 
     # Información básica
@@ -233,9 +445,8 @@ class Vacante(models.Model):
     tipo_empleo = models.CharField(max_length=20, choices=TIPOS_EMPLEO)
     modalidad = models.CharField(max_length=15, choices=MODALIDAD, default='presencial')
 
-    # Ubicación
-    estado = models.CharField(max_length=30, choices=ESTADOS_MEXICO)
-    ciudad = models.CharField(max_length=100)
+    # Ubicación - SOLO ESTADO DE MÉXICO
+    municipio = models.CharField(max_length=50, choices=MUNICIPIOS_ESTADO_MEXICO, verbose_name="Municipio")
 
     # Salario
     salario_min = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
@@ -282,6 +493,11 @@ class Vacante(models.Model):
             return self.detalles_salario
         else:
             return "No especificado"
+
+    @property
+    def estado_completo(self):
+        """Retorna 'Estado de México' siempre"""
+        return "Estado de México"
 
     class Meta:
         verbose_name = "Vacante"

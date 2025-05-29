@@ -65,6 +65,7 @@ class CurriculumForm(forms.ModelForm):
             })
         }
 
+# usuarios/forms.py - FORMULARIO ACTUALIZADO PARA INTERESADO
 
 class InteresadoPerfilForm(forms.ModelForm):
     """Formulario para editar la información personal del interesado."""
@@ -73,7 +74,7 @@ class InteresadoPerfilForm(forms.ModelForm):
         model = Interesado
         fields = [
             'nombre', 'apellido_paterno', 'apellido_materno', 'telefono',
-            'fecha_nacimiento', 'direccion', 'ciudad', 'estado', 'codigo_postal'
+            'fecha_nacimiento', 'direccion', 'municipio', 'codigo_postal'
         ]
         widgets = {
             'nombre': forms.TextInput(attrs={
@@ -101,22 +102,30 @@ class InteresadoPerfilForm(forms.ModelForm):
                 'rows': 2,
                 'placeholder': 'Calle, Número, Colonia'
             }),
-            'ciudad': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Ciudad'
-            }),
-            'estado': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Estado'
+            'municipio': forms.Select(attrs={
+                'class': 'form-select'
             }),
             'codigo_postal': forms.TextInput(attrs={
                 'class': 'form-control',
                 'placeholder': 'C.P.'
             })
         }
+        labels = {
+            'nombre': 'Nombre(s)',
+            'apellido_paterno': 'Apellido Paterno',
+            'apellido_materno': 'Apellido Materno (opcional)',
+            'telefono': 'Teléfono',
+            'fecha_nacimiento': 'Fecha de Nacimiento',
+            'direccion': 'Dirección',
+            'municipio': 'Municipio del Estado de México',
+            'codigo_postal': 'Código Postal'
+        }
 
-    # En usuarios/forms.py, actualizar los widgets de fecha en ExperienciaLaboralForm y EducacionForm
-
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Agregar opción vacía al select de municipio
+        municipio_choices = [('', 'Selecciona un municipio...')] + list(self.fields['municipio'].choices)
+        self.fields['municipio'].choices = municipio_choices
 
 class ExperienciaLaboralForm(forms.ModelForm):
     """Formulario para experiencias laborales."""
@@ -342,9 +351,9 @@ class ReclutadorRegistroForm(UserCreationForm):
             )
         return user
 
-# usuarios/forms.py - Agregar estos formularios al archivo existente
-class VacanteForm(forms.ModelForm):
+# usuarios/forms.py - SECCIÓN ACTUALIZADA PARA VACANTES
 
+class VacanteForm(forms.ModelForm):
     """Formulario para crear/editar vacantes. Validar los campos las comas, espacios y numeros negativos """
     def clean_salario_min(self):
         valor = self.cleaned_data.get('salario_min')
@@ -365,7 +374,7 @@ class VacanteForm(forms.ModelForm):
         model = Vacante
         fields = [
             'titulo', 'categoria', 'tipo_empleo', 'descripcion',
-            'estado', 'ciudad', 'salario_min', 'salario_max', 'detalles_salario',
+            'municipio', 'salario_min', 'salario_max', 'detalles_salario',
             'fecha_inicio_estimada', 'fecha_limite', 'max_postulantes', 'modalidad'
         ]
         widgets = {
@@ -380,10 +389,9 @@ class VacanteForm(forms.ModelForm):
                 'rows': 6,
                 'placeholder': 'Describe las funciones, responsabilidades, el equipo de trabajo, la cultura de la empresa, etc.'
             }),
-            'estado': forms.Select(attrs={'class': 'form-select'}),
-            'ciudad': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Ej: Guadalajara, Benito Juárez'
+            'municipio': forms.Select(attrs={
+                'class': 'form-select',
+                'placeholder': 'Selecciona un municipio...'
             }),
             'detalles_salario': forms.TextInput(attrs={
                 'class': 'form-control',
@@ -405,8 +413,7 @@ class VacanteForm(forms.ModelForm):
             'categoria': 'Categoría de la Vacante',
             'tipo_empleo': 'Tipo de Empleo',
             'descripcion': 'Descripción Detallada de la Vacante',
-            'estado': 'Estado',
-            'ciudad': 'Municipio / Alcaldía',
+            'municipio': 'Municipio del Estado de México',
             'detalles_salario': 'Detalles Adicionales del Salario (opcional)',
             'fecha_inicio_estimada': 'Fecha Estimada de Inicio (opcional)',
             'fecha_limite': 'Fecha Límite de Postulación',
@@ -421,14 +428,17 @@ class VacanteForm(forms.ModelForm):
         self.fields['categoria'].required = True
         self.fields['tipo_empleo'].required = True
         self.fields['descripcion'].required = True
-        self.fields['estado'].required = True
-        self.fields['ciudad'].required = True
+        self.fields['municipio'].required = True
         self.fields['fecha_limite'].required = True
         self.fields['max_postulantes'].required = True
 
         # Configurar ayuda para campos de salario
         self.fields['salario_min'].help_text = 'Ingresa el salario mínimo. Ejemplo: 25000.00 o 25,000.00'
         self.fields['salario_max'].help_text = 'Ingresa el salario máximo. Ejemplo: 35000.00 o 35,000.00'
+
+        # Agregar opción vacía al select de municipio
+        municipio_choices = [('', 'Selecciona un municipio...')] + list(self.fields['municipio'].choices)
+        self.fields['municipio'].choices = municipio_choices
 
     def clean(self):
         cleaned_data = super().clean()
@@ -452,6 +462,7 @@ class VacanteForm(forms.ModelForm):
                 )
 
         return cleaned_data
+
 
 
 class RequisitoVacanteForm(forms.ModelForm):

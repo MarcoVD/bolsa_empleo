@@ -64,6 +64,18 @@
                                                 Postulantes: <span class="fw-bold">0</span> / {{ vacante.max_postulantes }}
                                             </p>
                                         </div>
+                                        <div class="col-md-6">
+                                            <p class="mb-1">
+                                                <i class="bi bi-geo-alt"></i> {{ vacante.get_municipio_display }}, Estado de México
+                                            </p>
+                                            <p class="mb-1">
+                                                <i class="bi bi-briefcase"></i> {{ vacante.get_tipo_empleo_display }}
+                                            </p>
+                                            <p class="mb-1">
+                                                <i class="bi bi-people-fill"></i>
+                                                Postulantes: <span class="fw-bold">0</span> / {{ vacante.max_postulantes }}
+                                            </p>
+                                        </div>
                                     </div>
 
                                     {% if vacante.salario_formateado != 'No especificado' %}

@@ -63,17 +63,17 @@ class UsuarioAdmin(BaseUserAdmin):
 
 @admin.register(Secretaria)
 class SecretariaAdmin(admin.ModelAdmin):
-    list_display = ('nombre', 'rfc', 'ciudad', 'activa', 'fecha_registro')
-    list_filter = ('activa', 'ciudad', 'estado')
+    list_display = ('nombre', 'rfc', 'activa', 'fecha_registro')  # Removido 'ciudad'
+    list_filter = ('activa',)  # Removido 'ciudad', 'estado'
     search_fields = ('nombre', 'rfc')
     date_hierarchy = 'fecha_registro'
 
-
 @admin.register(Interesado)
 class InteresadoAdmin(admin.ModelAdmin):
-    list_display = ('nombre', 'apellido_paterno', 'apellido_materno', 'usuario', 'telefono')
-    list_filter = ('ciudad', 'estado')
+    list_display = ('nombre', 'apellido_paterno', 'apellido_materno', 'usuario', 'telefono', 'municipio')
+    list_filter = ('municipio',)  # Cambiado de 'ciudad', 'estado'
     search_fields = ('nombre', 'apellido_paterno', 'apellido_materno', 'usuario__email')
+
 
 
 @admin.register(Reclutador)
@@ -99,41 +99,16 @@ class RequisitoVacanteInline(admin.StackedInline):
 class VacanteAdmin(admin.ModelAdmin):
     list_display = (
         'titulo', 'secretaria', 'reclutador', 'categoria',
-        'estado_vacante', 'tipo_empleo', 'fecha_publicacion', 'fecha_limite'
+        'estado_vacante', 'tipo_empleo', 'fecha_publicacion', 'fecha_limite', 'municipio'  # Agregado municipio
     )
     list_filter = (
         'estado_vacante', 'tipo_empleo', 'modalidad', 'categoria',
-        'secretaria', 'aprobada', 'destacada'
+        'secretaria', 'aprobada', 'destacada', 'municipio'  # Cambiado a municipio
     )
     search_fields = ('titulo', 'descripcion', 'reclutador__nombre', 'secretaria__nombre')
     date_hierarchy = 'fecha_publicacion'
     readonly_fields = ('fecha_publicacion', 'fecha_actualizacion')
     inlines = [RequisitoVacanteInline]
-
-    fieldsets = (
-        ('Información Básica', {
-            'fields': ('titulo', 'descripcion', 'categoria', 'secretaria', 'reclutador')
-        }),
-        ('Condiciones de Trabajo', {
-            'fields': ('tipo_empleo', 'modalidad', 'estado', 'ciudad')
-        }),
-        ('Salario', {
-            'fields': ('salario_min', 'salario_max', 'detalles_salario'),
-            'classes': ('collapse',)
-        }),
-        ('Fechas', {
-            'fields': ('fecha_inicio_estimada', 'fecha_limite', 'fecha_publicacion', 'fecha_actualizacion')
-        }),
-        ('Control', {
-            'fields': ('estado_vacante', 'aprobada', 'destacada', 'max_postulantes')
-        }),
-    )
-
-    def get_readonly_fields(self, request, obj=None):
-        readonly_fields = list(self.readonly_fields)
-        if obj:  # Si estamos editando un objeto existente
-            readonly_fields.extend(['secretaria', 'reclutador'])
-        return readonly_fields
 
 
 @admin.register(RequisitoVacante)
