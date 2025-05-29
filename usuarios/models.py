@@ -163,13 +163,13 @@ class Categoria(models.Model):
 
 class Vacante(models.Model):
     """Modelo para las vacantes de trabajo."""
-
     TIPOS_EMPLEO = (
         ('tiempo_completo', 'Tiempo Completo'),
         ('medio_tiempo', 'Medio Tiempo'),
         ('proyecto', 'Por Proyecto'),
         ('temporal', 'Temporal'),
         ('practicas', 'Prácticas Profesionales'),
+
     )
 
     MODALIDAD = (

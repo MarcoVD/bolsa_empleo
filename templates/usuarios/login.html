@@ -16,7 +16,7 @@
                     {% csrf_token %}
 
                     <div class="mb-3">
-                        <label for="{{ form.username.id_for_label }}" class="form-label">Correo Electrónico</label>
+{#                        <label for="{{ form.username.id_for_label }}" class="form-label">Correo Electrónico</label>#}
                         {{ form.username }}
                         {% if form.username.errors %}
                             <div class="invalid-feedback d-block">
@@ -26,7 +26,7 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="{{ form.password.id_for_label }}" class="form-label">Contraseña</label>
+{#                        <label for="{{ form.password.id_for_label }}" class="form-label">Contraseña</label>#}
                         {{ form.password }}
                         {% if form.password.errors %}
                             <div class="invalid-feedback d-block">

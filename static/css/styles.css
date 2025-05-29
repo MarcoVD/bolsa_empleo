@@ -35,8 +35,7 @@
     --colbotonidentidad: #6E6F72;
 }
 body {
-
-    font-family: 'Muli', san-serif;
+    font-family: 'Mulish', sans-serif; /* Cambiado de Muli a Mulish */
     font-weight: 300;
     color: var(--primary);
     background-color: var(--grey);

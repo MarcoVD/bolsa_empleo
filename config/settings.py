@@ -106,8 +106,11 @@ TIME_ZONE = 'America/Mexico_City'
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
-
-
+USE_THOUSAND_SEPARATOR = True
+DECIMAL_SEPARATOR = '.'
+THOUSAND_SEPARATOR = ','
+# 16,186.20
+# 20,483.20
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 

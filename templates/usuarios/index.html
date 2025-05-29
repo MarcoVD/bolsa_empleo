@@ -3,18 +3,18 @@
 {% block title %}Inicio - Bolsa de Trabajo{% endblock %}
 
 {% block content %}
-<div class="text-center my-5">
+<div class="text-center">
     <h1 class="display-4">Bienvenido a la Bolsa de Trabajo</h1>
-    <p class="lead">De la Secretaría de Movilidad del Estado de México</p>
-    {% if total_vacantes > 0 %}
-        <p class="text-muted">{{ total_vacantes }} vacante{{ total_vacantes|pluralize }} disponible{{ total_vacantes|pluralize }}</p>
-    {% endif %}
+    <p class="lead">de la Secretaría de Movilidad del Estado de México</p>
+{#    {% if total_vacantes > 0 %}#}
+{#        <p class="text-muted">{{ total_vacantes }} vacante{{ total_vacantes|pluralize }} disponible{{ total_vacantes|pluralize }}</p>#}
+{#    {% endif %}#}
 </div>
-
+    <hr class="bg-secondary">
 {% if vacantes %}
     <div class="container mb-5">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h4>Vacantes Disponibles</h4>
+            <h4 class="text-muted">Vacantes Disponibles</h4>
             </div>
 
         <div class="row">
