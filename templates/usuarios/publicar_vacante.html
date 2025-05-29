@@ -218,38 +218,48 @@
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Establecer fecha mínima para los campos de fecha
-    const today = new Date().toISOString().split('T')[0];
-    const fechaLimiteInput = document.getElementById('{{ vacante_form.fecha_limite.id_for_label }}');
-    const fechaInicioInput = document.getElementById('{{ vacante_form.fecha_inicio_estimada.id_for_label }}');
+{#document.addEventListener('DOMContentLoaded', function() {#}
+{#    // Establecer fecha mínima para los campos de fecha#}
+{#    const today = new Date().toISOString().split('T')[0];#}
+{#    const fechaLimiteInput = document.getElementById('{{ vacante_form.fecha_limite.id_for_label }}');#}
+{#    const fechaInicioInput = document.getElementById('{{ vacante_form.fecha_inicio_estimada.id_for_label }}');#}
+{##}
+{#    if (fechaLimiteInput) {#}
+{#        fechaLimiteInput.setAttribute('min', today);#}
+{#    }#}
+{#    if (fechaInicioInput) {#}
+{#        fechaInicioInput.setAttribute('min', today);#}
+{#    }#}
+{##}
+{#    // Validar salarios#}
+{#    const salarioMinInput = document.getElementById('{{ vacante_form.salario_min.id_for_label }}');#}
+{#    const salarioMaxInput = document.getElementById('{{ vacante_form.salario_max.id_for_label }}');#}
+{##}
+{#    function validarSalarios() {#}
+{#        const min = parseFloat(salarioMinInput.value) || 0;#}
+{#        const max = parseFloat(salarioMaxInput.value) || 0;#}
+{##}
+{#        if (min > 0 && max > 0 && min > max) {#}
+{#            salarioMaxInput.setCustomValidity('El salario máximo debe ser mayor al mínimo');#}
+{#        } else {#}
+{#            salarioMaxInput.setCustomValidity('');#}
+{#        }#}
+{#    }#}
+{##}
+{#    if (salarioMinInput && salarioMaxInput) {#}
+{#        salarioMinInput.addEventListener('input', validarSalarios);#}
+{#        salarioMaxInput.addEventListener('input', validarSalarios);#}
+{#    }#}
+{#});#}
 
-    if (fechaLimiteInput) {
-        fechaLimiteInput.setAttribute('min', today);
-    }
-    if (fechaInicioInput) {
-        fechaInicioInput.setAttribute('min', today);
-    }
-
-    // Validar salarios
-    const salarioMinInput = document.getElementById('{{ vacante_form.salario_min.id_for_label }}');
-    const salarioMaxInput = document.getElementById('{{ vacante_form.salario_max.id_for_label }}');
-
-    function validarSalarios() {
-        const min = parseFloat(salarioMinInput.value) || 0;
-        const max = parseFloat(salarioMaxInput.value) || 0;
-
-        if (min > 0 && max > 0 && min > max) {
-            salarioMaxInput.setCustomValidity('El salario máximo debe ser mayor al mínimo');
-        } else {
-            salarioMaxInput.setCustomValidity('');
+document.getElementById('vacanteForm').addEventListener('submit', function() {
+    ['{{ vacante_form.salario_min.id_for_label }}', '{{ vacante_form.salario_max.id_for_label }}'].forEach(function(id) {
+        var input = document.getElementById(id);
+        if (input) {
+            input.value = input.value.replace(/,/g, '').replace(/\$/g, '').trim();
         }
-    }
-
-    if (salarioMinInput && salarioMaxInput) {
-        salarioMinInput.addEventListener('input', validarSalarios);
-        salarioMaxInput.addEventListener('input', validarSalarios);
-    }
+    });
 });
+
 </script>
 {% endblock %}

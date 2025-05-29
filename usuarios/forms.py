@@ -2,6 +2,8 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import get_user_model
+from .fields import CurrencyField
+from .widgets import CurrencyInput
 from .models import Interesado, Reclutador, Secretaria, Vacante, RequisitoVacante, Curriculum, ExperienciaLaboral, Educacion, HabilidadInteresado, IdiomaInteresado, Categoria
 # from .models import Vacante, RequisitoVacante, Categoria
 Usuario = get_user_model()
@@ -342,7 +344,22 @@ class ReclutadorRegistroForm(UserCreationForm):
 
 # usuarios/forms.py - Agregar estos formularios al archivo existente
 class VacanteForm(forms.ModelForm):
-    """Formulario para crear/editar vacantes."""
+
+    """Formulario para crear/editar vacantes. Validar los campos las comas, espacios y numeros negativos """
+    def clean_salario_min(self):
+        valor = self.cleaned_data.get('salario_min')
+        if valor:
+            # Elimina comas y espacios
+            valor_str = str(valor).replace(',', '').replace('$', '').strip()
+            return float(valor_str)
+        return valor
+
+    def clean_salario_max(self):
+        valor = self.cleaned_data.get('salario_max')
+        if valor:
+            valor_str = str(valor).replace(',', '').replace('$', '').strip()
+            return float(valor_str)
+        return valor
 
     class Meta:
         model = Vacante
@@ -368,16 +385,6 @@ class VacanteForm(forms.ModelForm):
                 'class': 'form-control',
                 'placeholder': 'Ej: Guadalajara, Benito Juárez'
             }),
-            'salario_min': forms.NumberInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Ej: 20000',
-                'min': '0'
-            }),
-            'salario_max': forms.NumberInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Ej: 35000',
-                'min': '0'
-            }),
             'detalles_salario': forms.TextInput(attrs={
                 'class': 'form-control',
                 'placeholder': 'Ej: A tratar, Según aptitudes, Más bonos'
@@ -400,8 +407,6 @@ class VacanteForm(forms.ModelForm):
             'descripcion': 'Descripción Detallada de la Vacante',
             'estado': 'Estado',
             'ciudad': 'Municipio / Alcaldía',
-            'salario_min': 'Salario Mínimo (MXN, opcional)',
-            'salario_max': 'Salario Máximo (MXN, opcional)',
             'detalles_salario': 'Detalles Adicionales del Salario (opcional)',
             'fecha_inicio_estimada': 'Fecha Estimada de Inicio (opcional)',
             'fecha_limite': 'Fecha Límite de Postulación',
@@ -410,9 +415,7 @@ class VacanteForm(forms.ModelForm):
         }
 
     def __init__(self, *args, **kwargs):
-
         super().__init__(*args, **kwargs)
-        # self.fields['fecha_nacimiento'].input_formats = ['%Y-%m-%d']
         # Marcar campos obligatorios
         self.fields['titulo'].required = True
         self.fields['categoria'].required = True
@@ -422,6 +425,10 @@ class VacanteForm(forms.ModelForm):
         self.fields['ciudad'].required = True
         self.fields['fecha_limite'].required = True
         self.fields['max_postulantes'].required = True
+
+        # Configurar ayuda para campos de salario
+        self.fields['salario_min'].help_text = 'Ingresa el salario mínimo. Ejemplo: 25000.00 o 25,000.00'
+        self.fields['salario_max'].help_text = 'Ingresa el salario máximo. Ejemplo: 35000.00 o 35,000.00'
 
     def clean(self):
         cleaned_data = super().clean()

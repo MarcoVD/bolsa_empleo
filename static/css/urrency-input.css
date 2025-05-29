@@ -1,0 +1,72 @@
+/* static/css/currency-input.css */
+
+.currency-input {
+    position: relative;
+    text-align: right;
+    font-family: 'Courier New', monospace;
+    font-weight: 500;
+}
+
+.currency-input:focus {
+    text-align: left;
+}
+
+.currency-field-wrapper {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+}
+
+.currency-field-wrapper::before {
+    content: '$';
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6c757d;
+    font-weight: 500;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.currency-field-wrapper .currency-input {
+    padding-left: 25px;
+}
+
+.currency-field-wrapper::after {
+    content: 'MXN';
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6c757d;
+    font-size: 0.85em;
+    font-weight: 500;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.currency-field-wrapper .currency-input {
+    padding-right: 50px;
+}
+
+/* Estilos para validación */
+.currency-input.is-invalid {
+    border-color: #dc3545;
+}
+
+.currency-input.is-valid {
+    border-color: #28a745;
+}
+
+/* Tooltip para ayuda */
+.currency-help {
+    font-size: 0.875em;
+    color: #6c757d;
+    margin-top: 0.25rem;
+}
+
+.currency-help .currency-example {
+    font-weight: 500;
+    color: #495057;
+}
