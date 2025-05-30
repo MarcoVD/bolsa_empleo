@@ -1,3 +1,4 @@
+
 {% extends 'base.html' %}
 
 {% block title %}
@@ -109,26 +110,29 @@
                     </div>
                 </div>
 
-                <!-- Sección 3: Condiciones y Ubicación -->
+                <!-- Sección 3: Condiciones y Ubicación - ACTUALIZADA CON MUNICIPIO -->
                 <div class="card mb-4">
                     <div class="card-header bg-light">
                         <h5 class="mb-0"><i class="bi bi-geo-alt-fill"></i> Condiciones y Ubicación</h5>
                     </div>
                     <div class="card-body">
                         <div class="row g-3">
+                            <!-- Información del Estado (solo informativa) -->
                             <div class="col-md-6">
-                                <label for="{{ vacante_form.estado.id_for_label }}" class="form-label">{{ vacante_form.estado.label }}</label>
-                                {{ vacante_form.estado }}
-                                {% if vacante_form.estado.errors %}
-                                    <div class="invalid-feedback d-block">{{ vacante_form.estado.errors }}</div>
-                                {% endif %}
+                                <label class="form-label">Estado</label>
+                                <div class="form-control-plaintext bg-light p-2 rounded border">
+                                    <i class="bi bi-geo-alt-fill text-primary me-2"></i>
+                                    <strong>Estado de México</strong>
+                                </div>
+                                <small class="form-text text-muted">Todas las vacantes se publican en el Estado de México</small>
                             </div>
 
+                            <!-- Campo de Municipio - AQUÍ ESTÁ EL CAMPO -->
                             <div class="col-md-6">
-                                <label for="{{ vacante_form.ciudad.id_for_label }}" class="form-label">{{ vacante_form.ciudad.label }}</label>
-                                {{ vacante_form.ciudad }}
-                                {% if vacante_form.ciudad.errors %}
-                                    <div class="invalid-feedback d-block">{{ vacante_form.ciudad.errors }}</div>
+                                <label for="{{ vacante_form.municipio.id_for_label }}" class="form-label">{{ vacante_form.municipio.label }}</label>
+                                {{ vacante_form.municipio }}
+                                {% if vacante_form.municipio.errors %}
+                                    <div class="invalid-feedback d-block">{{ vacante_form.municipio.errors }}</div>
                                 {% endif %}
                             </div>
 
@@ -218,40 +222,6 @@
 </div>
 
 <script>
-{#document.addEventListener('DOMContentLoaded', function() {#}
-{#    // Establecer fecha mínima para los campos de fecha#}
-{#    const today = new Date().toISOString().split('T')[0];#}
-{#    const fechaLimiteInput = document.getElementById('{{ vacante_form.fecha_limite.id_for_label }}');#}
-{#    const fechaInicioInput = document.getElementById('{{ vacante_form.fecha_inicio_estimada.id_for_label }}');#}
-{##}
-{#    if (fechaLimiteInput) {#}
-{#        fechaLimiteInput.setAttribute('min', today);#}
-{#    }#}
-{#    if (fechaInicioInput) {#}
-{#        fechaInicioInput.setAttribute('min', today);#}
-{#    }#}
-{##}
-{#    // Validar salarios#}
-{#    const salarioMinInput = document.getElementById('{{ vacante_form.salario_min.id_for_label }}');#}
-{#    const salarioMaxInput = document.getElementById('{{ vacante_form.salario_max.id_for_label }}');#}
-{##}
-{#    function validarSalarios() {#}
-{#        const min = parseFloat(salarioMinInput.value) || 0;#}
-{#        const max = parseFloat(salarioMaxInput.value) || 0;#}
-{##}
-{#        if (min > 0 && max > 0 && min > max) {#}
-{#            salarioMaxInput.setCustomValidity('El salario máximo debe ser mayor al mínimo');#}
-{#        } else {#}
-{#            salarioMaxInput.setCustomValidity('');#}
-{#        }#}
-{#    }#}
-{##}
-{#    if (salarioMinInput && salarioMaxInput) {#}
-{#        salarioMinInput.addEventListener('input', validarSalarios);#}
-{#        salarioMaxInput.addEventListener('input', validarSalarios);#}
-{#    }#}
-{#});#}
-
 document.getElementById('vacanteForm').addEventListener('submit', function() {
     ['{{ vacante_form.salario_min.id_for_label }}', '{{ vacante_form.salario_max.id_for_label }}'].forEach(function(id) {
         var input = document.getElementById(id);
@@ -260,6 +230,5 @@ document.getElementById('vacanteForm').addEventListener('submit', function() {
         }
     });
 });
-
 </script>
 {% endblock %}
