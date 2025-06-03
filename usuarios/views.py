@@ -145,6 +145,68 @@ class CrearEditarCVView(View):
         return render(request, 'usuarios/crear_editar_cv.html', context)
 
 
+# usuarios/views.py - Agregar esta nueva vista
+@login_required
+def actualizar_perfil_ajax(request):
+    """Vista AJAX para actualizar perfil del interesado."""
+    if request.method != 'POST' or request.user.rol != 'interesado':
+        return JsonResponse({'success': False, 'error': 'Método no permitido'})
+
+    try:
+        interesado = request.user.interesado
+
+        # Actualizar campos de texto
+        interesado.nombre = request.POST.get('nombre', '')
+        interesado.apellido_paterno = request.POST.get('apellido_paterno', '')
+        interesado.apellido_materno = request.POST.get('apellido_materno', '')
+        interesado.telefono = request.POST.get('telefono', '')
+        interesado.municipio = request.POST.get('municipio', '')
+        interesado.codigo_postal = request.POST.get('codigo_postal', '')
+
+        # Fecha de nacimiento
+        fecha_nacimiento = request.POST.get('fecha_nacimiento')
+        if fecha_nacimiento:
+            interesado.fecha_nacimiento = fecha_nacimiento
+
+        # Validar y guardar foto de perfil
+        if 'foto_perfil' in request.FILES:
+            foto = request.FILES['foto_perfil']
+
+            # Validar tipo de archivo
+            if not foto.name.lower().endswith(('.jpg', '.jpeg')):
+                return JsonResponse({
+                    'success': False,
+                    'error': 'Solo se permiten archivos JPG'
+                })
+
+            # Validar tamaño (5MB máximo)
+            if foto.size > 5 * 1024 * 1024:
+                return JsonResponse({
+                    'success': False,
+                    'error': 'El archivo es demasiado grande. Máximo 5MB'
+                })
+
+            interesado.foto_perfil = foto
+
+        interesado.save()
+
+        return JsonResponse({
+            'success': True,
+            'message': 'Perfil actualizado exitosamente',
+            'data': {
+                'nombre_completo': interesado.nombre_completo,
+                'telefono': interesado.telefono or 'No especificado',
+                'ubicacion': interesado.ubicacion_completa,
+                'foto_url': interesado.foto_perfil.url if interesado.foto_perfil else None
+            }
+        })
+
+    except Exception as e:
+        return JsonResponse({
+            'success': False,
+            'error': str(e)
+        })
+
 @login_required
 def editar_experiencia_ajax(request, experiencia_id):
     """Vista AJAX para editar experiencia laboral."""
@@ -743,7 +805,6 @@ class PerfilInteresadoView(View):
             'tiene_cv': tiene_cv
         }
         return render(request, 'usuarios/perfil_interesado.html', context)
-
 
 @method_decorator(login_required, name='dispatch')
 class DashboardReclutadorView(View):

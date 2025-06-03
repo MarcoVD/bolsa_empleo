@@ -1,6 +1,11 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}Mi Perfil - Bolsa de Trabajo{% endblock %}
+
+{% block extra_js %}
+    <script src="{% static 'js/perfil-interesado.js' %}"></script>
+{% endblock %}
 
 {% block content %}
 <div class="container-fluid px-2 px-sm-3">
@@ -72,13 +77,12 @@
                             <div class="d-flex align-items-start">
                                 <i class="bi bi-geo-alt me-2 mt-1 text-primary"></i>
                                 <div class="flex-grow-1">
-                                    <strong class="d-block d-sm-inline small">Municipio:</strong>
+                                    <strong class="d-block d-sm-inline small">Ubicación:</strong>
                                     {% if interesado.municipio %}
-                                        <span>{{ interesado.get_municipio_display }}, Estado de México</span>
+                                        <span>{{ interesado.ubicacion_completa }}</span>
                                     {% else %}
                                         <span class="text-muted">No especificada</span>
                                     {% endif %}
-
                                 </div>
                             </div>
                         </div>
@@ -86,6 +90,7 @@
                 </div>
             </div>
         </div>
+{#    fin iformacion de contacto#}
 
         <!-- Columna del contenido principal -->
         <div class="col-12 col-lg-8 order-2">
@@ -193,35 +198,32 @@
     <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header bg-primary">
-                <h5 class="modal-title h6 h-md-5" id="editarPerfilModalLabel">Editar Perfil</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <h5 class="modal-title h6 h-md-5 text-white" id="editarPerfilModalLabel">Editar Perfil</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id="editarPerfilForm">
+                <form id="editarPerfilForm" enctype="multipart/form-data">
+                    {% csrf_token %}
                     <div class="row g-3">
                         <div class="col-12">
                             <label for="nombre" class="form-label">Nombre(s)</label>
-                            <input type="text" class="form-control" id="nombre" value="{{ interesado.nombre }}" required>
+                            <input type="text" class="form-control" id="nombre" name="nombre" value="{{ interesado.nombre }}" required>
                         </div>
                         <div class="col-12 col-md-6">
                             <label for="apellido_paterno" class="form-label">Apellido Paterno</label>
-                            <input type="text" class="form-control" id="apellido_paterno" value="{{ interesado.apellido_paterno }}" required>
+                            <input type="text" class="form-control" id="apellido_paterno" name="apellido_paterno" value="{{ interesado.apellido_paterno }}" required>
                         </div>
                         <div class="col-12 col-md-6">
                             <label for="apellido_materno" class="form-label">Apellido Materno</label>
-                            <input type="text" class="form-control" id="apellido_materno" value="{% if interesado.apellido_materno %}{{ interesado.apellido_materno }}{% endif %}">
+                            <input type="text" class="form-control" id="apellido_materno" name="apellido_materno" value="{% if interesado.apellido_materno %}{{ interesado.apellido_materno }}{% endif %}">
                         </div>
                         <div class="col-12 col-md-6">
                             <label for="telefono" class="form-label">Teléfono</label>
-                            <input type="tel" class="form-control" id="telefono" value="{% if interesado.telefono %}{{ interesado.telefono }}{% endif %}">
+                            <input type="tel" class="form-control" id="telefono" name="telefono" value="{% if interesado.telefono %}{{ interesado.telefono }}{% endif %}">
                         </div>
                         <div class="col-12 col-md-6">
                             <label for="fecha_nacimiento" class="form-label">Fecha de Nacimiento</label>
-                            <input type="date" class="form-control" id="fecha_nacimiento" value="{% if interesado.fecha_nacimiento %}{{ interesado.fecha_nacimiento|date:'Y-m-d' }}{% endif %}">
-                        </div>
-                        <div class="col-12 col-md-6">
-                            <label for="codigo_postal" class="form-label">Código Postal</label>
-                            <input type="text" class="form-control" id="codigo_postal" value="{% if interesado.codigo_postal %}{{ interesado.codigo_postal }}{% endif %}">
+                            <input type="date" class="form-control" id="fecha_nacimiento" name="fecha_nacimiento" value="{% if interesado.fecha_nacimiento %}{{ interesado.fecha_nacimiento|date:'Y-m-d' }}{% endif %}">
                         </div>
                         <div class="col-12 col-md-6">
                             <label for="municipio" class="form-label">Municipio</label>
@@ -232,19 +234,27 @@
                                 {% endfor %}
                             </select>
                         </div>
-
                         <div class="col-12 col-md-6">
+                            <label for="codigo_postal" class="form-label">Código Postal</label>
+                            <input type="text" class="form-control" id="codigo_postal" name="codigo_postal" value="{% if interesado.codigo_postal %}{{ interesado.codigo_postal }}{% endif %}" placeholder="Ej: 50000">
+                        </div>
+                        <div class="col-12">
                             <label for="foto_perfil" class="form-label">Foto de Perfil</label>
-                            <input type="file" class="form-control" id="foto_perfil" accept="image/*">
+                            <input type="file" class="form-control" id="foto_perfil" name="foto_perfil" accept=".jpg,.jpeg">
+                            <div class="form-text">Solo archivos JPG. Máximo 5MB.</div>
                         </div>
                     </div>
                 </form>
             </div>
             <div class="modal-footer flex-column flex-sm-row">
                 <button type="button" class="btn btn-secondary w-100 w-sm-auto mb-2 mb-sm-0 me-sm-2" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-primary w-100 w-sm-auto" onclick="alert('Perfil actualizado (Simulación)')">Guardar Cambios</button>
+                <button type="button" class="btn btn-primary w-100 w-sm-auto" id="guardarPerfilBtn">
+                    <span class="btn-text">Guardar Cambios</span>
+                    <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                </button>
             </div>
         </div>
     </div>
+
 </div>
 {% endblock %}
