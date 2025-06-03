@@ -8,7 +8,8 @@ from django.views.generic import View
 from django.db import transaction
 from django.http import JsonResponse, Http404, HttpResponse
 from django.template.loader import render_to_string
-import weasyprint
+# import weasyprint
+from weasyprint import HTML
 from io import BytesIO
 from django.forms import modelformset_factory
 from django.contrib.auth import authenticate, login, logout
@@ -523,7 +524,6 @@ def previsualizar_cv(request):
         return redirect('crear_editar_cv')
 
 
-@login_required
 def descargar_cv_pdf(request):
     """Vista para generar y descargar CV en PDF."""
     if request.user.rol != 'interesado':
@@ -552,14 +552,20 @@ def descargar_cv_pdf(request):
     html_string = render_to_string('usuarios/cv_pdf_template.html', context)
 
     # Generar PDF
-    pdf_file = weasyprint.HTML(string=html_string).write_pdf()
+    try:
+        html_doc = HTML(string=html_string)
+        pdf_bytes = html_doc.write_pdf()
 
-    # Preparar respuesta
-    response = HttpResponse(pdf_file, content_type='application/pdf')
-    filename = f"CV_{interesado.nombre}_{interesado.apellido_paterno}.pdf"
-    response['Content-Disposition'] = f'attachment; filename="{filename}"'
+        # Preparar respuesta
+        response = HttpResponse(pdf_bytes, content_type='application/pdf')
+        filename = f"CV_{interesado.nombre}_{interesado.apellido_paterno}.pdf"
+        response['Content-Disposition'] = f'attachment; filename="{filename}"'
 
-    return response
+        return response
+    except Exception as e:
+        messages.error(request, f'Error al generar PDF: {str(e)}')
+        return redirect('perfil_interesado')
+
 
 @method_decorator(login_required, name='dispatch')
 class PublicarVacanteView(View):
