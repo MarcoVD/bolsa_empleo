@@ -208,13 +208,12 @@ class Interesado(models.Model):
 
     @property
     def ubicacion_completa(self):
-        """Retorna la ubicación completa: municipio, Estado de México"""
-        if self.municipio:
-            ubicacion = f"{self.get_municipio_display()}, Estado de México"
-            if self.codigo_postal:
-                ubicacion += f" C.P. {self.codigo_postal}, {ubicacion}"
-            return ubicacion
-        return "Estado de México"
+        if self.codigo_postal and self.municipio:
+            return f'C.P. {self.codigo_postal}, {self.get_municipio_display()}, Estado de México'
+        elif self.municipio:
+            return f'{self.get_municipio_display()}, Estado de México'
+        else:
+            return ''
 
     @property
     def tiene_cv_completo(self):
