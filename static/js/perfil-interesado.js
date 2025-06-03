@@ -129,48 +129,48 @@ function actualizarInformacionPerfil(data) {
         }
     }
 }
-
-aqui
-
-
+// static/js/perfil-interesado.js - Función mostrarMensaje actualizada - toast
 function mostrarMensaje(mensaje, tipo) {
     // Crear contenedor de toasts si no existe
-    let toastContainer = document.querySelector('.toast-container');
+    let toastContainer = document.getElementById('toast-container');
     if (!toastContainer) {
         toastContainer = document.createElement('div');
-        toastContainer.className = 'toast-container position-fixed top-0 end-0 p-3';
+        toastContainer.id = 'toast-container';
+        toastContainer.className = 'toast-container position-fixed bottom-0 start-0 p-3';
         toastContainer.style.zIndex = '1055';
         document.body.appendChild(toastContainer);
     }
 
     // Crear toast
     const toastId = 'toast-' + Date.now();
-    const toastHTML = `
-        <div id="${toastId}" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-            <div class="toast-header ${tipo === 'success' ? 'bg-success text-white' : 'bg-danger text-white'}">
-                <i class="bi bi-${tipo === 'success' ? 'check-circle-fill' : 'exclamation-triangle-fill'} me-2"></i>
-                <strong class="me-auto">${tipo === 'success' ? 'Éxito' : 'Error'}</strong>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
-            </div>
+    const toastDiv = document.createElement('div');
+    toastDiv.id = toastId;
+    toastDiv.className = `toast align-items-center text-bg-${tipo === 'success' ? 'success' : 'danger'} border-0`;
+    toastDiv.setAttribute('role', 'alert');
+    toastDiv.setAttribute('aria-live', 'assertive');
+    toastDiv.setAttribute('aria-atomic', 'true');
+
+    toastDiv.innerHTML = `
+        <div class="d-flex">
             <div class="toast-body">
+                <i class="bi bi-${tipo === 'success' ? 'check-circle' : 'exclamation-circle'} me-2"></i>
                 ${mensaje}
             </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
         </div>
     `;
 
-    toastContainer.insertAdjacentHTML('beforeend', toastHTML);
+    toastContainer.appendChild(toastDiv);
 
-    // Inicializar y mostrar toast
-    const toastElement = document.getElementById(toastId);
-    const toast = new bootstrap.Toast(toastElement, {
+    // Mostrar toast
+    const toast = new bootstrap.Toast(toastDiv, {
         autohide: true,
         delay: 4000
     });
-
     toast.show();
 
-    // Remover elemento después de ocultar
-    toastElement.addEventListener('hidden.bs.toast', function() {
-        toastElement.remove();
+    // Remover del DOM después de que se oculte
+    toastDiv.addEventListener('hidden.bs.toast', function() {
+        toastDiv.remove();
     });
 }
