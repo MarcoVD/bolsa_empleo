@@ -734,8 +734,13 @@ class PerfilInteresadoView(View):
             return redirect('index')
 
         interesado = request.user.interesado
+
+        # Verificar si existe CV
+        tiene_cv = hasattr(interesado, 'curriculum')
+
         context = {
-            'interesado': interesado
+            'interesado': interesado,
+            'tiene_cv': tiene_cv
         }
         return render(request, 'usuarios/perfil_interesado.html', context)
 
