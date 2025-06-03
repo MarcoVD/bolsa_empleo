@@ -1,0 +1,205 @@
+<!-- templates/usuarios/cv_pdf_template.html -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CV - {{ interesado.nombre_completo }}</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 2cm;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #9F2241;
+            padding-bottom: 20px;
+        }
+
+        .header h1 {
+            color: #9F2241;
+            margin: 0;
+            font-size: 28px;
+        }
+
+        .contact-info {
+            margin-top: 10px;
+            font-size: 14px;
+        }
+
+        .contact-info span {
+            margin: 0 15px;
+        }
+
+        .section {
+            margin-bottom: 25px;
+        }
+
+        .section-title {
+            background-color: #9F2241;
+            color: white;
+            padding: 8px 15px;
+            margin: 0 0 15px 0;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .item {
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .item:last-child {
+            border-bottom: none;
+        }
+
+        .item-title {
+            font-weight: bold;
+            color: #9F2241;
+            margin-bottom: 5px;
+        }
+
+        .item-subtitle {
+            color: #666;
+            font-style: italic;
+            margin-bottom: 5px;
+        }
+
+        .item-date {
+            color: #888;
+            font-size: 12px;
+            margin-bottom: 8px;
+        }
+
+        .skills-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .skill-badge {
+            background-color: #f0f0f0;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            border: 1px solid #ddd;
+        }
+
+        .languages-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .language-item {
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+        }
+
+        .language-name {
+            font-weight: bold;
+            color: #9F2241;
+        }
+
+        .language-levels {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Encabezado -->
+    <div class="header">
+        <h1>{{ interesado.nombre_completo }}</h1>
+        <div class="contact-info">
+            <span>📧 {{ interesado.usuario.email }}</span>
+            {% if interesado.telefono %}<span>📞 {{ interesado.telefono }}</span>{% endif %}
+            {% if interesado.municipio %}<span>📍 {{ interesado.ubicacion_completa }}</span>{% endif %}
+        </div>
+    </div>
+
+    <!-- Resumen Profesional -->
+    {% if curriculum.resumen_profesional %}
+    <div class="section">
+        <h2 class="section-title">RESUMEN PROFESIONAL</h2>
+        <p>{{ curriculum.resumen_profesional }}</p>
+    </div>
+    {% endif %}
+
+    <!-- Experiencia Laboral -->
+    {% if experiencias %}
+    <div class="section">
+        <h2 class="section-title">EXPERIENCIA LABORAL</h2>
+        {% for experiencia in experiencias %}
+        <div class="item">
+            <div class="item-title">{{ experiencia.puesto }}</div>
+            <div class="item-subtitle">{{ experiencia.empresa }}</div>
+            <div class="item-date">{{ experiencia.periodo_trabajo }}</div>
+            <div>{{ experiencia.descripcion }}</div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Educación -->
+    {% if educaciones %}
+    <div class="section">
+        <h2 class="section-title">EDUCACIÓN Y FORMACIÓN</h2>
+        {% for educacion in educaciones %}
+        <div class="item">
+            <div class="item-title">{{ educacion.titulo }}</div>
+            <div class="item-subtitle">{{ educacion.institucion }}</div>
+            <div class="item-date">{{ educacion.periodo_estudio }}</div>
+            {% if educacion.descripcion %}
+            <div>{{ educacion.descripcion }}</div>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Habilidades -->
+    {% if habilidades %}
+    <div class="section">
+        <h2 class="section-title">HABILIDADES</h2>
+        <div class="skills-container">
+            {% for habilidad in habilidades %}
+            <span class="skill-badge">{{ habilidad.habilidad.nombre }} - {{ habilidad.get_nivel_display }}</span>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Idiomas -->
+    {% if idiomas %}
+    <div class="section">
+        <h2 class="section-title">IDIOMAS</h2>
+        <div class="languages-grid">
+            {% for idioma in idiomas %}
+            <div class="language-item">
+                <div class="language-name">{{ idioma.idioma }}</div>
+                <div class="language-levels">
+                    Lectura: {{ idioma.get_nivel_lectura_display }} |
+                    Escritura: {{ idioma.get_nivel_escritura_display }} |
+                    Conversación: {{ idioma.get_nivel_conversacion_display }}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</body>
+</html>

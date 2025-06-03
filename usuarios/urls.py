@@ -22,6 +22,7 @@ urlpatterns = [
     path('mi-cv/', views.CrearEditarCVView.as_view(), name='crear_editar_cv'),
     path('mi-cv/previsualizar/', views.previsualizar_cv, name='previsualizar_cv'),
     path('ajax/actualizar-perfil/', views.actualizar_perfil_ajax, name='actualizar_perfil_ajax'),
+    path('cv/descargar-pdf/', views.descargar_cv_pdf, name='descargar_cv_pdf'),
 
     # URLs AJAX para CV (solo las que existen en views.py)
     path('ajax/experiencia/agregar/', views.agregar_experiencia_ajax, name='agregar_experiencia_ajax'),

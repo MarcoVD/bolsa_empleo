@@ -6,9 +6,15 @@ from django.contrib import messages
 from django.utils.decorators import method_decorator
 from django.views.generic import View
 from django.db import transaction
-from django.http import JsonResponse, Http404
+from django.http import JsonResponse, Http404, HttpResponse
+from django.template.loader import render_to_string
+import weasyprint
+from io import BytesIO
 from django.forms import modelformset_factory
 from django.contrib.auth import authenticate, login, logout
+from django.http import HttpResponse
+
+
 
 from .models import (
     Usuario, Interesado, Reclutador, Secretaria, # Añadido por si se usan directamente en vistas
@@ -517,7 +523,44 @@ def previsualizar_cv(request):
         return redirect('crear_editar_cv')
 
 
-# usuarios/views.py
+@login_required
+def descargar_cv_pdf(request):
+    """Vista para generar y descargar CV en PDF."""
+    if request.user.rol != 'interesado':
+        messages.error(request, 'No tienes permiso para acceder a esta página.')
+        return redirect('index')
+
+    interesado = request.user.interesado
+
+    try:
+        curriculum = interesado.curriculum
+    except Curriculum.DoesNotExist:
+        messages.warning(request, 'Primero debes crear tu CV.')
+        return redirect('crear_editar_cv')
+
+    # Preparar datos para el PDF
+    context = {
+        'interesado': interesado,
+        'curriculum': curriculum,
+        'experiencias': curriculum.experiencias.all(),
+        'educaciones': curriculum.educaciones.all(),
+        'habilidades': curriculum.habilidades.all(),
+        'idiomas': curriculum.idiomas.all(),
+    }
+
+    # Renderizar HTML
+    html_string = render_to_string('usuarios/cv_pdf_template.html', context)
+
+    # Generar PDF
+    pdf_file = weasyprint.HTML(string=html_string).write_pdf()
+
+    # Preparar respuesta
+    response = HttpResponse(pdf_file, content_type='application/pdf')
+    filename = f"CV_{interesado.nombre}_{interesado.apellido_paterno}.pdf"
+    response['Content-Disposition'] = f'attachment; filename="{filename}"'
+
+    return response
+
 @method_decorator(login_required, name='dispatch')
 class PublicarVacanteView(View):
     """Vista para publicar una nueva vacante."""
