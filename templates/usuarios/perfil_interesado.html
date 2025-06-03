@@ -72,7 +72,7 @@
                             <div class="d-flex align-items-start">
                                 <i class="bi bi-geo-alt me-2 mt-1 text-primary"></i>
                                 <div class="flex-grow-1">
-                                    <strong class="d-block d-sm-inline small">Ubicación:</strong>
+                                    <strong class="d-block d-sm-inline small">Municipio:</strong>
                                     {% if interesado.municipio %}
                                         <span>{{ interesado.get_municipio_display }}, Estado de México</span>
                                     {% else %}
@@ -89,29 +89,59 @@
         <!-- Columna del contenido principal -->
         <div class="col-12 col-lg-8 order-2">
             <!-- Card de currículum -->
+            <!-- Card de currículum - Sección actualizada -->
             <div class="card mb-3 mb-md-4">
                 <div class="card-header d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center py-2 py-md-3">
                     <h5 class="mb-2 mb-sm-0 h6 h-md-5">
                         <i class="bi bi-file-earmark-person"></i> Mi Currículum
                     </h5>
-                    <a href="{% url 'crear_editar_cv' %}" class="btn btn-sm text-white bg-primary w-sm-auto">
-                        <i class="bi bi-plus-circle"></i>
-                        <span class="d-none d-sm-inline">Crear/Editar mi CV</span>
-                        <span class="d-sm-none">Crear CV</span>
-                    </a>
+                    {% if tiene_cv %}
+{#                        <a href="{% url 'crear_editar_cv' %}" class="btn btn-sm text-white bg-primary w-sm-auto">#}
+{#                            <i class="bi bi-pencil-square"></i>#}
+{#                            <span class="d-none d-sm-inline">Editar mi CV</span>#}
+{#                            <span class="d-sm-none">Editar CV</span>#}
+{#                        </a>#}
+                    {% else %}
+                        <a href="{% url 'crear_editar_cv' %}" class="btn btn-sm btn-success w-sm-auto">
+                            <i class="bi bi-plus-circle"></i>
+                            <span class="d-none d-sm-inline">Crear mi CV</span>
+                            <span class="d-sm-none">Crear CV</span>
+                        </a>
+                    {% endif %}
                 </div>
                 <div class="card-body text-center p-3 p-md-4">
-                    <div class="empty-state py-3 py-md-5">
-                        <i class="bi bi-file-earmark-text empty-icon mb-3"></i>
-                        <p class="mb-3">Aún no has creado tu currículum.</p>
-<!--                        <a href="{% url 'crear_editar_cv' %}" class="btn btn-success">-->
-<!--                            <i class="bi bi-plus-circle"></i>-->
-<!--                            <span class="d-none d-sm-inline">Crear mi CV Ahora</span>-->
-<!--                            <span class="d-sm-none">Crear CV</span>-->
-<!--                        </a>-->
-                    </div>
+                    {% if tiene_cv %}
+                        <div class="cv-exists py-3 py-md-4">
+                            <i class="bi bi-check-circle-fill text-success mb-3" style="font-size: 3rem;"></i>
+                            <p class="mb-3 text-success fw-bold">Tu CV está creado y listo</p>
+                            <div class="d-flex justify-content-center gap-2">
+                                <a href="{% url 'previsualizar_cv' %}" class="btn btn-outline-primary btn-sm" target="_blank">
+                                    <i class="bi bi-eye"></i>
+                                    <span class="d-none d-sm-inline">Ver CV</span>
+                                    <span class="d-sm-none">Ver</span>
+                                </a>
+                                <a href="{% url 'crear_editar_cv' %}" class="btn btn-primary btn-sm">
+                                    <i class="bi bi-pencil-square"></i>
+                                    <span class="d-none d-sm-inline">Actualizar CV</span>
+                                    <span class="d-sm-none">Actualizar</span>
+                                </a>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="empty-state py-3 py-md-5">
+                            <i class="bi bi-file-earmark-text empty-icon mb-3"></i>
+                            <p class="mb-3">Aún no has creado tu currículum.</p>
+                            <p class="small text-muted mb-3">Crea tu CV para poder postularte a vacantes</p>
+                            <a href="{% url 'crear_editar_cv' %}" class="btn btn-success">
+                                <i class="bi bi-plus-circle"></i>
+                                <span class="d-none d-sm-inline">Crear mi CV Ahora</span>
+                                <span class="d-sm-none">Crear CV</span>
+                            </a>
+                        </div>
+                    {% endif %}
                 </div>
             </div>
+            {#fin card curriculum#}
 
             <!-- Cards de vacantes y postulaciones -->
             <div class="row g-3 g-md-4">
@@ -188,14 +218,6 @@
                             <label for="fecha_nacimiento" class="form-label">Fecha de Nacimiento</label>
                             <input type="date" class="form-control" id="fecha_nacimiento" value="{% if interesado.fecha_nacimiento %}{{ interesado.fecha_nacimiento|date:'Y-m-d' }}{% endif %}">
                         </div>
-{#                        <div class="col-12 col-md-6">#}
-{#                            <label for="ciudad" class="form-label">Ciudad</label>#}
-{#                            <input type="text" class="form-control" id="ciudad" value="{% if interesado.ciudad %}{{ interesado.ciudad }}{% endif %}">#}
-{#                        </div>#}
-{#                        <div class="col-12 col-md-6">#}
-{#                            <label for="estado" class="form-label">Estado</label>#}
-{#                            <input type="text" class="form-control" id="estado" value="{% if interesado.estado %}{{ interesado.estado }}{% endif %}">#}
-{#                        </div>#}
                         <div class="col-12 col-md-6">
                             <label for="municipio" class="form-label">Municipio</label>
                             <select class="form-select" id="municipio" name="municipio">
@@ -214,11 +236,10 @@
                             <label for="codigo_postal" class="form-label">Código Postal</label>
                             <input type="text" class="form-control" id="codigo_postal" value="{% if interesado.codigo_postal %}{{ interesado.codigo_postal }}{% endif %}">
                         </div>
-
-{#                        <div class="col-12 col-md-6">#}
-{#                            <label for="codigo_postal" class="form-label">Código Postal</label>#}
-{#                            <input type="text" class="form-control" id="codigo_postal" value="{% if interesado.codigo_postal %}{{ interesado.codigo_postal }}{% endif %}">#}
-{#                        </div>#}
+                        <div class="col-12 col-md-6">
+                            <label for="codigo_postal" class="form-label">Código Postal</label>
+                            <input type="text" class="form-control" id="codigo_postal" value="{% if interesado.codigo_postal %}{{ interesado.codigo_postal }}{% endif %}">
+                        </div>
                         <div class="col-12 col-md-6">
                             <label for="foto_perfil" class="form-label">Foto de Perfil</label>
                             <input type="file" class="form-control" id="foto_perfil" accept="image/*">
