@@ -58,7 +58,6 @@ class Usuario(AbstractUser):
         return self.email
 
 # usuarios/models.py - SECCIÓN ACTUALIZADA PARA INTERESADO
-
 class Interesado(models.Model):
     """Modelo para el perfil de un interesado/candidato."""
 
@@ -188,8 +187,7 @@ class Interesado(models.Model):
     apellido_materno = models.CharField(max_length=50, blank=True, null=True)
     telefono = models.CharField(max_length=15, blank=True, null=True)
     fecha_nacimiento = models.DateField(blank=True, null=True)
-    direccion = models.TextField(blank=True, null=True)
-    # CAMPOS ACTUALIZADOS: municipio en lugar de ciudad y estado libre
+    # CAMPO ELIMINADO: direccion
     municipio = models.CharField(max_length=50, choices=MUNICIPIOS_ESTADO_MEXICO, blank=True, null=True, verbose_name="Municipio")
     codigo_postal = models.CharField(max_length=10, blank=True, null=True)
     foto_perfil = models.ImageField(upload_to='interesados/', blank=True, null=True)
@@ -212,7 +210,10 @@ class Interesado(models.Model):
     def ubicacion_completa(self):
         """Retorna la ubicación completa: municipio, Estado de México"""
         if self.municipio:
-            return f"{self.get_municipio_display()}, Estado de México"
+            ubicacion = f"{self.get_municipio_display()}, Estado de México"
+            if self.codigo_postal:
+                ubicacion += f" C.P. {self.codigo_postal}, {ubicacion}"
+            return ubicacion
         return "Estado de México"
 
     @property

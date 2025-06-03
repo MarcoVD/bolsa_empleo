@@ -78,6 +78,7 @@
                                     {% else %}
                                         <span class="text-muted">No especificada</span>
                                     {% endif %}
+
                                 </div>
                             </div>
                         </div>
@@ -219,6 +220,10 @@
                             <input type="date" class="form-control" id="fecha_nacimiento" value="{% if interesado.fecha_nacimiento %}{{ interesado.fecha_nacimiento|date:'Y-m-d' }}{% endif %}">
                         </div>
                         <div class="col-12 col-md-6">
+                            <label for="codigo_postal" class="form-label">Código Postal</label>
+                            <input type="text" class="form-control" id="codigo_postal" value="{% if interesado.codigo_postal %}{{ interesado.codigo_postal }}{% endif %}">
+                        </div>
+                        <div class="col-12 col-md-6">
                             <label for="municipio" class="form-label">Municipio</label>
                             <select class="form-select" id="municipio" name="municipio">
                                 <option value="">Selecciona un municipio...</option>
@@ -228,18 +233,6 @@
                             </select>
                         </div>
 
-                        <div class="col-12">
-                            <label for="direccion" class="form-label">Dirección</label>
-                            <textarea class="form-control" id="direccion" rows="2">{% if interesado.direccion %}{{ interesado.direccion }}{% endif %}</textarea>
-                        </div>
-                        <div class="col-12 col-md-6">
-                            <label for="codigo_postal" class="form-label">Código Postal</label>
-                            <input type="text" class="form-control" id="codigo_postal" value="{% if interesado.codigo_postal %}{{ interesado.codigo_postal }}{% endif %}">
-                        </div>
-                        <div class="col-12 col-md-6">
-                            <label for="codigo_postal" class="form-label">Código Postal</label>
-                            <input type="text" class="form-control" id="codigo_postal" value="{% if interesado.codigo_postal %}{{ interesado.codigo_postal }}{% endif %}">
-                        </div>
                         <div class="col-12 col-md-6">
                             <label for="foto_perfil" class="form-label">Foto de Perfil</label>
                             <input type="file" class="form-control" id="foto_perfil" accept="image/*">

@@ -66,6 +66,7 @@ class CurriculumForm(forms.ModelForm):
         }
 
 # usuarios/forms.py - FORMULARIO ACTUALIZADO PARA INTERESADO
+# usuarios/forms.py - InteresadoPerfilForm actualizado
 
 class InteresadoPerfilForm(forms.ModelForm):
     """Formulario para editar la información personal del interesado."""
@@ -74,7 +75,7 @@ class InteresadoPerfilForm(forms.ModelForm):
         model = Interesado
         fields = [
             'nombre', 'apellido_paterno', 'apellido_materno', 'telefono',
-            'fecha_nacimiento', 'direccion', 'municipio', 'codigo_postal'
+            'fecha_nacimiento', 'municipio', 'codigo_postal'
         ]
         widgets = {
             'nombre': forms.TextInput(attrs={
@@ -97,17 +98,12 @@ class InteresadoPerfilForm(forms.ModelForm):
                 'class': 'form-control',
                 'type': 'date'
             }, format='%Y-%m-%d'),
-            'direccion': forms.Textarea(attrs={
-                'class': 'form-control',
-                'rows': 2,
-                'placeholder': 'Calle, Número, Colonia'
-            }),
             'municipio': forms.Select(attrs={
                 'class': 'form-select'
             }),
             'codigo_postal': forms.TextInput(attrs={
                 'class': 'form-control',
-                'placeholder': 'C.P.'
+                'placeholder': 'Ej: 50000'
             })
         }
         labels = {
@@ -116,7 +112,6 @@ class InteresadoPerfilForm(forms.ModelForm):
             'apellido_materno': 'Apellido Materno (opcional)',
             'telefono': 'Teléfono',
             'fecha_nacimiento': 'Fecha de Nacimiento',
-            'direccion': 'Dirección',
             'municipio': 'Municipio del Estado de México',
             'codigo_postal': 'Código Postal'
         }

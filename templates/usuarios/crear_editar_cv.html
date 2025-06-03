@@ -61,25 +61,18 @@
                             <div class="invalid-feedback d-block">{{ perfil_form.fecha_nacimiento.errors }}</div>
                         {% endif %}
                     </div>
-                    <div class="col-12">
-                        <label for="{{ perfil_form.direccion.id_for_label }}" class="form-label">{{ perfil_form.direccion.label }}</label>
-                        {{ perfil_form.direccion }}
-                        {% if perfil_form.direccion.errors %}
-                            <div class="invalid-feedback d-block">{{ perfil_form.direccion.errors }}</div>
+                    <div class="col-md-6">
+                        <label for="{{ perfil_form.municipio.id_for_label }}" class="form-label">{{ perfil_form.municipio.label }}</label>
+                        {{ perfil_form.municipio }}
+                        {% if perfil_form.municipio.errors %}
+                            <div class="invalid-feedback d-block">{{ perfil_form.municipio.errors }}</div>
                         {% endif %}
                     </div>
                     <div class="col-md-6">
-                        <label for="{{ perfil_form.ciudad.id_for_label }}" class="form-label">{{ perfil_form.ciudad.label }}</label>
-                        {{ perfil_form.ciudad }}
-                        {% if perfil_form.ciudad.errors %}
-                            <div class="invalid-feedback d-block">{{ perfil_form.ciudad.errors }}</div>
-                        {% endif %}
-                    </div>
-                    <div class="col-md-6">
-                        <label for="{{ perfil_form.estado.id_for_label }}" class="form-label">{{ perfil_form.estado.label }}</label>
-                        {{ perfil_form.estado }}
-                        {% if perfil_form.estado.errors %}
-                            <div class="invalid-feedback d-block">{{ perfil_form.estado.errors }}</div>
+                        <label for="{{ perfil_form.codigo_postal.id_for_label }}" class="form-label">{{ perfil_form.codigo_postal.label }}</label>
+                        {{ perfil_form.codigo_postal }}
+                        {% if perfil_form.codigo_postal.errors %}
+                            <div class="invalid-feedback d-block">{{ perfil_form.codigo_postal.errors }}</div>
                         {% endif %}
                     </div>
                 </div>
