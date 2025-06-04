@@ -71,6 +71,8 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
+// static/js/perfil-interesado.js - Función actualizarInformacionPerfil corregida
+
 function actualizarInformacionPerfil(data) {
     // Actualizar nombre en el perfil
     const nombreElement = document.querySelector('.card-body h4');
@@ -82,33 +84,66 @@ function actualizarInformacionPerfil(data) {
     const contactInfo = document.querySelector('.contact-info');
     if (contactInfo) {
         // Actualizar teléfono
-        const telefonoSpan = contactInfo.querySelector('.contact-item:nth-child(2) span:last-child');
-        if (telefonoSpan && data.telefono) {
-            telefonoSpan.textContent = data.telefono;
+        const telefonoItem = contactInfo.querySelector('.contact-item:nth-child(2)');
+        if (telefonoItem && data.telefono) {
+            const telefonoSpan = telefonoItem.querySelector('span:last-child');
+            if (telefonoSpan) {
+                telefonoSpan.textContent = data.telefono;
+            }
         }
 
-        // Actualizar ubicación
-        const ubicacionSpan = contactInfo.querySelector('.contact-item:nth-child(3) span:first-of-type');
-        if (ubicacionSpan && data.ubicacion) {
-            const ubicacionSinCP = data.ubicacion.split(' C.P.')[0];
-            ubicacionSpan.textContent = ubicacionSinCP;
+        // Actualizar ubicación - CORREGIDO PARA EVITAR DUPLICACIÓN
+        const ubicacionItem = contactInfo.querySelector('.contact-item:nth-child(3)');
+        if (ubicacionItem && data.ubicacion) {
+            const ubicacionContainer = ubicacionItem.querySelector('div.flex-grow-1');
 
-            // Manejar código postal
-            const cpElement = ubicacionSpan.nextElementSibling;
-            if (data.ubicacion.includes('C.P.')) {
-                const cp = data.ubicacion.split('C.P. ')[1];
-                if (cpElement && cpElement.classList.contains('text-muted')) {
-                    cpElement.textContent = `C.P. ${cp}`;
+            if (ubicacionContainer) {
+                // Limpiar todo el contenido de ubicación para evitar duplicados
+                ubicacionContainer.innerHTML = '';
+
+                // Crear el contenido de ubicación completo
+                const strongElement = document.createElement('strong');
+                strongElement.className = 'd-block d-sm-inline small';
+                strongElement.textContent = 'Ubicación:';
+
+                const ubicacionSpan = document.createElement('span');
+
+                // Manejar diferentes formatos de ubicación
+                if (data.ubicacion.startsWith('C.P.')) {
+                    // Formato: "C.P. 56616, Valle de Chalco Solidaridad, Estado de México"
+                    ubicacionSpan.textContent = ` ${data.ubicacion}`;
+                    ubicacionContainer.appendChild(strongElement);
+                    ubicacionContainer.appendChild(ubicacionSpan);
+                } else if (data.ubicacion.includes(' C.P. ')) {
+                    // Formato: "Valle de Chalco Solidaridad, Estado de México C.P. 56616"
+                    const parts = data.ubicacion.split(' C.P. ');
+                    const ubicacionSinCP = parts[0];
+                    const codigoPostal = parts[1];
+
+                    if (codigoPostal && codigoPostal !== 'undefined') {
+                        ubicacionSpan.textContent = ` ${ubicacionSinCP}`;
+
+                        // Crear elemento del código postal
+                        const cpElement = document.createElement('small');
+                        cpElement.className = 'd-block text-muted';
+                        cpElement.textContent = `C.P. ${codigoPostal}`;
+
+                        // Añadir elementos al contenedor
+                        ubicacionContainer.appendChild(strongElement);
+                        ubicacionContainer.appendChild(ubicacionSpan);
+                        ubicacionContainer.appendChild(cpElement);
+                    } else {
+                        // Si el código postal está undefined, solo mostrar la ubicación
+                        ubicacionSpan.textContent = ` ${ubicacionSinCP}`;
+                        ubicacionContainer.appendChild(strongElement);
+                        ubicacionContainer.appendChild(ubicacionSpan);
+                    }
                 } else {
-                    // Crear elemento de código postal si no existe
-                    const newCpElement = document.createElement('small');
-                    newCpElement.className = 'd-block text-muted';
-                    newCpElement.textContent = `C.P. ${cp}`;
-                    ubicacionSpan.parentNode.appendChild(newCpElement);
+                    // Solo ubicación sin código postal
+                    ubicacionSpan.textContent = ` ${data.ubicacion}`;
+                    ubicacionContainer.appendChild(strongElement);
+                    ubicacionContainer.appendChild(ubicacionSpan);
                 }
-            } else if (cpElement && cpElement.classList.contains('text-muted')) {
-                // Remover código postal si no existe
-                cpElement.remove();
             }
         }
     }
@@ -129,6 +164,7 @@ function actualizarInformacionPerfil(data) {
         });
     }
 }
+
 
 function mostrarMensaje(mensaje, tipo) {
     // Crear contenedor de toasts si no existe

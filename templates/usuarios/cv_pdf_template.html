@@ -25,6 +25,11 @@
             border-bottom: 2px solid #9F2241;
             padding-bottom: 20px;
         }
+        .txt_justificado{
+            text-align: justify;
+            text-justify: inter-word;
+        }
+
 
         .header h1 {
             color: #9F2241;
@@ -135,7 +140,7 @@
     {% if curriculum.resumen_profesional %}
     <div class="section">
         <h2 class="section-title">RESUMEN PROFESIONAL</h2>
-        <p>{{ curriculum.resumen_profesional }}</p>
+        <p class="txt_justificado">{{ curriculum.resumen_profesional }}</p>
     </div>
     {% endif %}
 
@@ -144,7 +149,7 @@
     <div class="section">
         <h2 class="section-title">EXPERIENCIA LABORAL</h2>
         {% for experiencia in experiencias %}
-        <div class="item">
+        <div class="item txt_justificado">
             <div class="item-title">{{ experiencia.puesto }}</div>
             <div class="item-subtitle">{{ experiencia.empresa }}</div>
             <div class="item-date">{{ experiencia.periodo_trabajo }}</div>
@@ -159,7 +164,7 @@
     <div class="section">
         <h2 class="section-title">EDUCACIÓN Y FORMACIÓN</h2>
         {% for educacion in educaciones %}
-        <div class="item">
+        <div class="item txt_justificado">
             <div class="item-title">{{ educacion.titulo }}</div>
             <div class="item-subtitle">{{ educacion.institucion }}</div>
             <div class="item-date">{{ educacion.periodo_estudio }}</div>

@@ -182,11 +182,6 @@
                         <span class="d-none d-sm-inline">Descargar PDF</span>
                         <span class="d-sm-none">PDF</span>
                     </a>
-{#                    <a href="{% url 'crear_editar_cv' %}" class="btn btn-primary btn-sm">#}
-{#                        <i class="bi bi-pencil-square"></i>#}
-{#                        <span class="d-none d-sm-inline">Actualizar CV</span>#}
-{#                        <span class="d-sm-none">Actualizar</span>#}
-{#                    </a>#}
                 </div>
             </div>
         {% else %}
@@ -308,7 +303,7 @@
 
                         <div class="col-12 col-md-6">
                             <label for="fecha_nacimiento" class="form-label">Fecha de Nacimiento</label>
-                            <input type="date" class="form-control" id="fecha_nacimiento" name="fecha_nacimiento" value="{% if interesado.fecha_nacimiento %}{{ interesado.fecha_nacimiento|date:'Y-m-d' }}{% endif %}">
+                            <input type="date" class="form-control" id="fecha_nacimiento" name="fecha_nacimiento" value="{% if interesado.fecha_nacimiento %}{ interesado.fecha_nacimiento|date:'Y-m-d' }{% endif %}">
                         </div>
 
                         <div class="col-12 col-md-6">
@@ -369,13 +364,11 @@
                         <h6><i class="bi bi-scissors"></i> Recortar Imagen</h6>
                         <p>Ajusta el área de recorte para tu foto de perfil.</p>
                     </div>
-
                     <div class="row">
                         <div class="col-lg-8">
                             <div class="image-cropper-container">
                                 <img id="cropperImage" src="" alt="Imagen a recortar" style="max-width: 100%; display: none;">
                             </div>
-
                             <div class="cropper-controls">
                                 <button type="button" class="btn btn-outline-secondary btn-sm" id="resetCropButton">
                                     <i class="bi bi-arrow-clockwise"></i> Reiniciar
@@ -393,7 +386,6 @@
                             <div class="text-center">
                                 <h6>Vista Previa</h6>
                                 <div class="crop-preview" id="cropPreview"></div>
-{#                                <small class="text-muted">160x160 píxeles</small>#}
                             </div>
                         </div>
                     </div>

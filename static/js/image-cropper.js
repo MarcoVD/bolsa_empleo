@@ -267,40 +267,42 @@ class ImageCropper {
         });
     }
 
-    updateAllProfileImages(imageUrl) {
-        // Actualizar imagen en el card principal del perfil
-        const mainProfileImages = document.querySelectorAll('.profile-photo');
-        const mainProfilePlaceholders = document.querySelectorAll('.profile-photo-placeholder');
+    // static/js/image-cropper.js - Función updateAllProfileImages corregida
 
-        // Actualizar imágenes existentes
-        mainProfileImages.forEach(img => {
-            img.src = imageUrl;
-        });
+updateAllProfileImages(imageUrl) {
+    // Actualizar imagen en el card principal del perfil
+    const mainProfileImages = document.querySelectorAll('.profile-photo');
+    const mainProfilePlaceholders = document.querySelectorAll('.profile-photo-placeholder');
 
-        // Reemplazar placeholders con imágenes
-        mainProfilePlaceholders.forEach(placeholder => {
-            const imgElement = document.createElement('img');
-            imgElement.src = imageUrl;
-            imgElement.alt = 'Foto de perfil';
-            imgElement.className = 'profile-photo';
-            placeholder.parentNode.replaceChild(imgElement, placeholder);
-        });
+    // Actualizar imágenes existentes
+    mainProfileImages.forEach(img => {
+        img.src = imageUrl;
+    });
 
-        // También actualizar en el modal si está abierto
-        const modalPreview = document.getElementById('photoPreview');
-        const modalPlaceholder = document.getElementById('photoPlaceholder');
+    // Reemplazar placeholders con imágenes
+    mainProfilePlaceholders.forEach(placeholder => {
+        const imgElement = document.createElement('img');
+        imgElement.src = imageUrl;
+        imgElement.alt = 'Foto de perfil';
+        imgElement.className = 'profile-photo';
+        placeholder.parentNode.replaceChild(imgElement, placeholder);
+    });
 
-        if (modalPreview) {
-            modalPreview.src = imageUrl;
-        } else if (modalPlaceholder) {
-            const imgElement = document.createElement('img');
-            imgElement.src = imageUrl;
-            imgElement.alt = 'Foto de perfil';
-            imgElement.className = 'profile-photo';
-            imgElement.id = 'photoPreview';
-            modalPlaceholder.parentNode.replaceChild(imgElement, modalPlaceholder);
-        }
+    // También actualizar en el modal si está abierto
+    const modalPreview = document.getElementById('photoPreview');
+    const modalPlaceholder = document.getElementById('photoPlaceholder');
+
+    if (modalPreview) {
+        modalPreview.src = imageUrl;
+    } else if (modalPlaceholder) {
+        const imgElement = document.createElement('img');
+        imgElement.src = imageUrl;
+        imgElement.alt = 'Foto de perfil';
+        imgElement.className = 'profile-photo';
+        imgElement.id = 'photoPreview';
+        modalPlaceholder.parentNode.replaceChild(imgElement, modalPlaceholder);
     }
+}
 
     getCroppedFile() {
         return this.croppedBlob;
