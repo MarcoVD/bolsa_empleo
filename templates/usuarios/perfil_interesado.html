@@ -111,7 +111,7 @@
                                 <i class="bi bi-envelope me-2 mt-1 text-primary"></i>
                                 <div class="flex-grow-1">
                                     <strong class="d-block d-sm-inline small">Email:</strong>
-                                    <span class="text-break">{{ user.email }}</span>
+                                    <span class="text-break text-muted">{{ user.email }}</span>
                                 </div>
                             </div>
                         </div>
@@ -122,7 +122,7 @@
                                 <div class="flex-grow-1">
                                     <strong class="d-block d-sm-inline small">Teléfono:</strong>
                                     {% if interesado.telefono %}
-                                        <span>{{ interesado.telefono }}</span>
+                                        <span class="text-muted">{{ interesado.telefono }}</span>
                                     {% else %}
                                         <span class="text-muted">No especificado</span>
                                     {% endif %}
@@ -136,7 +136,7 @@
                                 <div class="flex-grow-1">
                                     <strong class="d-block d-sm-inline small">Ubicación:</strong>
                                     {% if interesado.municipio %}
-                                        <span>{{ interesado.ubicacion_completa }}</span>
+                                        <span class="text-muted">{{ interesado.ubicacion_completa }}</span>
                                     {% else %}
                                         <span class="text-muted">No especificada</span>
                                     {% endif %}
@@ -244,7 +244,6 @@
     </div>
 </div>
 
-<!-- Modal para editar perfil (responsive) -->
 <!-- Modal para editar perfil con cropper integrado -->
 <div class="modal fade" id="editarPerfilModal" tabindex="-1" aria-labelledby="editarPerfilModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
