@@ -101,7 +101,7 @@
                     </div>
                 </div>
                 <div class="job-meta mb-3">
-                    <span><i class="bi bi-geo-alt-fill"></i> {{ vacante.ciudad }}, {{ vacante.get_estado_display }}</span>
+                    <span><i class="bi bi-geo-alt-fill"></i> Estado de México, {{ vacante.get_municipio_display}} </span>
                     <span><i class="bi bi-briefcase-fill"></i> {{ vacante.get_tipo_empleo_display }}</span>
                     {% if vacante.salario_formateado != "No especificado" %}
                     <span><i class="bi bi-cash-stack"></i> {{ vacante.salario_formateado }}</span>
