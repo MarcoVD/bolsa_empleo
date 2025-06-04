@@ -1,9 +1,65 @@
-{% extends 'base.html' %}
-{% load static %}
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/image-cropper.css' %}">
+    <!-- Cropper.js CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css">
+    <style>
+        /* Estilos específicos para foto circular responsive */
+        .profile-photo-container {
+            width: 160px;
+            height: 160px;
+            margin: 0 auto 1rem auto;
+            position: relative;
+            border-radius: 50%;
+            overflow: hidden;
+            background-color: #f8f9fa;
+            border: 3px solid #dee2e6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
-{% block title %}Mi Perfil - Bolsa de Trabajo{% endblock %}
+        .profile-photo {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+        }
+
+        .profile-photo-placeholder {
+            font-size: 4rem;
+            color: #6c757d;
+        }
+
+        @media (max-width: 576px) {
+            .profile-photo-container {
+                width: 120px;
+                height: 120px;
+            }
+
+            .profile-photo-placeholder {
+                font-size: 3rem;
+            }
+        }
+
+        /* Espaciado responsive */
+        .empty-icon {
+            font-size: 2.5rem !important;
+            color: #6c757d;
+        }
+
+        @media (max-width: 576px) {
+            .empty-icon {
+                font-size: 2rem !important;
+            }
+        }
+    </style>
+{% endblock %}
 
 {% block extra_js %}
+    <!-- Cropper.js JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
+    <!-- Scripts personalizados -->
+    <script src="{% static 'js/image-cropper.js' %}"></script>
     <script src="{% static 'js/perfil-interesado.js' %}"></script>
 {% endblock %}
 
@@ -192,39 +248,67 @@
 </div>
 
 <!-- Modal para editar perfil (responsive) -->
+<!-- Modal para editar perfil con cropper integrado -->
 <div class="modal fade" id="editarPerfilModal" tabindex="-1" aria-labelledby="editarPerfilModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-        <!-- Eliminado 'modal-lg' para que use el tamaño por defecto (mediano) -->
+    <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
         <div class="modal-content">
-            <div class="modal-header bg-primary text-white"> <!-- Agregado text-white al header -->
-                <h5 class="modal-title" id="editarPerfilModalLabel">Editar Perfil</h5>
-                <!-- Simplificado a h5, que es el tamaño estándar para títulos de modal -->
+            <div class="modal-header bg-primary">
+                <h5 class="modal-title h6 h-md-5 text-white" id="editarPerfilModalLabel">Editar Perfil</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id="editarPerfilForm" enctype="multipart/form-data">
+                <form id="editarPerfilForm" enctype="multipart/form-data" data-update-url="{% url 'actualizar_perfil_ajax' %}">
                     {% csrf_token %}
+
+                    <!-- Preview de foto -->
+                    <div class="text-center mb-4">
+                        <div class="profile-photo-container mx-auto" id="photoPreviewContainer">
+                            {% if interesado.foto_perfil %}
+                                <img src="{{ interesado.foto_perfil.url }}" alt="Foto de perfil" class="profile-photo" id="photoPreview">
+                            {% else %}
+                                <i class="bi bi-person-circle profile-photo-placeholder" id="photoPlaceholder"></i>
+                            {% endif %}
+                        </div>
+                        <small class="text-muted">Foto de perfil 160x160px (circular)</small>
+                    </div>
+
                     <div class="row g-3">
+                        <div class="col-12">
+                            <label for="foto_perfil" class="form-label">Foto de Perfil</label>
+                            <div class="d-flex gap-2">
+                                <input type="file" class="form-control" id="foto_perfil" name="foto_perfil" accept=".jpg,.jpeg" style="display: none;">
+                                <button type="button" class="btn btn-outline-primary flex-grow-1" data-bs-toggle="modal" data-bs-target="#cropperModal">
+                                    <i class="bi bi-camera"></i> Seleccionar y Recortar Imagen
+                                </button>
+                            </div>
+                            <div class="form-text">Solo archivos JPG. La imagen será recortada a 160x160px</div>
+                        </div>
+
                         <div class="col-12">
                             <label for="nombre" class="form-label">Nombre(s)</label>
                             <input type="text" class="form-control" id="nombre" name="nombre" value="{{ interesado.nombre }}" required>
                         </div>
+
                         <div class="col-12 col-md-6">
                             <label for="apellido_paterno" class="form-label">Apellido Paterno</label>
                             <input type="text" class="form-control" id="apellido_paterno" name="apellido_paterno" value="{{ interesado.apellido_paterno }}" required>
                         </div>
+
                         <div class="col-12 col-md-6">
                             <label for="apellido_materno" class="form-label">Apellido Materno</label>
                             <input type="text" class="form-control" id="apellido_materno" name="apellido_materno" value="{% if interesado.apellido_materno %}{{ interesado.apellido_materno }}{% endif %}">
                         </div>
+
                         <div class="col-12 col-md-6">
                             <label for="telefono" class="form-label">Teléfono</label>
                             <input type="tel" class="form-control" id="telefono" name="telefono" value="{% if interesado.telefono %}{{ interesado.telefono }}{% endif %}">
                         </div>
+
                         <div class="col-12 col-md-6">
                             <label for="fecha_nacimiento" class="form-label">Fecha de Nacimiento</label>
                             <input type="date" class="form-control" id="fecha_nacimiento" name="fecha_nacimiento" value="{% if interesado.fecha_nacimiento %}{{ interesado.fecha_nacimiento|date:'Y-m-d' }}{% endif %}">
                         </div>
+
                         <div class="col-12 col-md-6">
                             <label for="municipio" class="form-label">Municipio</label>
                             <select class="form-select" id="municipio" name="municipio">
@@ -234,14 +318,10 @@
                                 {% endfor %}
                             </select>
                         </div>
+
                         <div class="col-12 col-md-6">
                             <label for="codigo_postal" class="form-label">Código Postal</label>
                             <input type="text" class="form-control" id="codigo_postal" name="codigo_postal" value="{% if interesado.codigo_postal %}{{ interesado.codigo_postal }}{% endif %}" placeholder="Ej: 50000">
-                        </div>
-                        <div class="col-12">
-                            <label for="foto_perfil" class="form-label">Foto de Perfil</label>
-                            <input type="file" class="form-control" id="foto_perfil" name="foto_perfil" accept=".jpg,.jpeg">
-                            <div class="form-text">Solo archivos JPG. Máximo 5MB.</div>
                         </div>
                     </div>
                 </form>
@@ -252,6 +332,70 @@
                     <span class="btn-text">Guardar Cambios</span>
                     <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
                 </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal del Cropper -->
+<div class="modal fade" id="cropperModal" tabindex="-1" aria-labelledby="cropperModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="cropperModalLabel">Recortar Imagen de Perfil</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body cropper-modal-body">
+
+                <!-- Paso 1: Seleccionar imagen -->
+                <div id="selectStep" class="cropper-step active">
+                    <div class="cropper-instructions">
+                        <h6><i class="bi bi-info-circle"></i> Instrucciones</h6>
+                        <p>Selecciona una imagen JPG para tu foto de perfil. Podrás recortarla en el siguiente paso.</p>
+                    </div>
+
+                    <div class="drop-zone" id="dropZone">
+                        <i class="bi bi-cloud-upload"></i>
+                        <p class="mb-2"><strong>Haz clic para seleccionar</strong> o arrastra una imagen aquí</p>
+                        <p class="small text-muted">Solo archivos JPG • Máximo 5MB</p>
+                    </div>
+                </div>
+
+                <!-- Paso 2: Recortar imagen -->
+                <div id="cropStep" class="cropper-step">
+                    <div class="cropper-instructions">
+                        <h6><i class="bi bi-scissors"></i> Recortar Imagen</h6>
+                        <p>Ajusta el área de recorte para tu foto de perfil. La imagen final será de 160x160 píxeles.</p>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-8">
+                            <div class="image-cropper-container">
+                                <img id="cropperImage" src="" alt="Imagen a recortar" style="max-width: 100%; display: none;">
+                            </div>
+
+                            <div class="cropper-controls">
+                                <button type="button" class="btn btn-outline-secondary btn-sm" id="resetCropButton">
+                                    <i class="bi bi-arrow-clockwise"></i> Reiniciar
+                                </button>
+                                <button type="button" class="btn btn-outline-danger btn-sm" id="cancelCropButton">
+                                    <i class="bi bi-x-circle"></i> Cancelar
+                                </button>
+                                <button type="button" class="btn btn-success btn-sm" id="cropButton">
+                                    <i class="bi bi-check-circle"></i> Recortar y Usar
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4">
+                            <div class="text-center">
+                                <h6>Vista Previa</h6>
+                                <div class="crop-preview" id="cropPreview"></div>
+                                <small class="text-muted">160x160 píxeles</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
