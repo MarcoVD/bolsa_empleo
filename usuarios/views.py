@@ -287,7 +287,6 @@ def agregar_experiencia_ajax(request):
             'error': str(e)
         })
 
-
 @login_required
 def agregar_educacion_ajax(request):
     """Vista AJAX para agregar educación."""

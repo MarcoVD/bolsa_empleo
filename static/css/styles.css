@@ -395,10 +395,10 @@ h6 {
 }
 */
 /*!* Footer *!*/
-/*footer {*/
-/*    border-top: 1px solid #e9ecef;*/
-/*    margin-top: 50px;*/
-/*}*/
+footer {
+    border-top: 1px solid #e9ecef;
+    margin-top: 50px;
+}
 
 /*!* Estilos para avatares *!*/
 /*.avatar-circle {*/
@@ -443,17 +443,17 @@ h6 {
 /*    border-bottom: 1px solid #6c757d;*/
 /*}*/
 
-/*.footer {*/
-/*            background-color: #f8f9fa;*/
-/*            padding: 20px 0;*/
-/*        }*/
+.footer {
+            background-color: #f8f9fa;
+            padding: 20px 0;
+        }
 
-/*        .footer-bottom {*/
-/*            background-color: #4a192c;*/
-/*            color: white;*/
-/*            text-align: center;*/
-/*            padding: 5px 0;*/
-/*        }*/
+        .footer-bottom {
+            background-color: #4a192c;
+            color: white;
+            text-align: center;
+            padding: 5px 0;
+        }
 
 /*        @media (max-width: 768px) {*/
 /*            .custom-icon {*/
@@ -481,3 +481,52 @@ h6 {
 /*                width: 300px;*/
 /*            }*/
 /*        }*/
+
+profile-photo-container {
+        width: 160px;
+        height: 160px;
+        margin: 0 auto 1rem auto;
+        position: relative;
+        border-radius: 50%;
+        overflow: hidden;
+        background-color: #f8f9fa;
+        border: 3px solid #dee2e6;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .profile-photo {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+    }
+
+    .profile-photo-placeholder {
+        font-size: 4rem;
+        color: #6c757d;
+    }
+
+    @media (max-width: 576px) {
+        .profile-photo-container {
+            width: 120px;
+            height: 120px;
+        }
+
+        .profile-photo-placeholder {
+            font-size: 3rem;
+        }
+    }
+
+    /* Espaciado responsive */
+    .empty-icon {
+        font-size: 2.5rem !important;
+        color: #6c757d;
+    }
+
+    @media (max-width: 576px) {
+        .empty-icon {
+            font-size: 2rem !important;
+        }
+    }

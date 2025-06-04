@@ -6,3 +6,4 @@ psycopg2-binary==2.9.10
 python-dotenv==1.1.0
 sqlparse==0.5.3
 weasyprint==62.3
+
