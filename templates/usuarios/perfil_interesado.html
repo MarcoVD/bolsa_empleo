@@ -1,3 +1,5 @@
+{% extends 'base.html' %}
+{% load static %}
 {% block extra_css %}
     <link rel="stylesheet" href="{% static 'css/image-cropper.css' %}">
     <!-- Cropper.js CSS -->
@@ -269,7 +271,7 @@
                                 <i class="bi bi-person-circle profile-photo-placeholder" id="photoPlaceholder"></i>
                             {% endif %}
                         </div>
-                        <small class="text-muted">Foto de perfil 160x160px (circular)</small>
+{#                        <small class="text-muted">Foto de perfil 160x160px (circular)</small>#}
                     </div>
 
                     <div class="row g-3">
@@ -278,10 +280,10 @@
                             <div class="d-flex gap-2">
                                 <input type="file" class="form-control" id="foto_perfil" name="foto_perfil" accept=".jpg,.jpeg" style="display: none;">
                                 <button type="button" class="btn btn-outline-primary flex-grow-1" data-bs-toggle="modal" data-bs-target="#cropperModal">
-                                    <i class="bi bi-camera"></i> Seleccionar y Recortar Imagen
+                                    <i class="bi bi-camera"></i> Cargar foto de Perfil
                                 </button>
                             </div>
-                            <div class="form-text">Solo archivos JPG. La imagen será recortada a 160x160px</div>
+                            <div class="form-text">Sube una imagen en formato JPG o JPEG para seguir.</div>
                         </div>
 
                         <div class="col-12">
@@ -356,8 +358,8 @@
 
                     <div class="drop-zone" id="dropZone">
                         <i class="bi bi-cloud-upload"></i>
-                        <p class="mb-2"><strong>Haz clic para seleccionar</strong> o arrastra una imagen aquí</p>
-                        <p class="small text-muted">Solo archivos JPG • Máximo 5MB</p>
+                        <p class="mb-2"><strong>Seleccione </strong> o arrastre una imagen en formato compatible</p>
+                        <p class="small text-muted">Formatos permitidos: JPG y JPEG.• Tamaño Máximo 5MB</p>
                     </div>
                 </div>
 
@@ -365,7 +367,7 @@
                 <div id="cropStep" class="cropper-step">
                     <div class="cropper-instructions">
                         <h6><i class="bi bi-scissors"></i> Recortar Imagen</h6>
-                        <p>Ajusta el área de recorte para tu foto de perfil. La imagen final será de 160x160 píxeles.</p>
+                        <p>Ajusta el área de recorte para tu foto de perfil.</p>
                     </div>
 
                     <div class="row">
@@ -391,7 +393,7 @@
                             <div class="text-center">
                                 <h6>Vista Previa</h6>
                                 <div class="crop-preview" id="cropPreview"></div>
-                                <small class="text-muted">160x160 píxeles</small>
+{#                                <small class="text-muted">160x160 píxeles</small>#}
                             </div>
                         </div>
                     </div>

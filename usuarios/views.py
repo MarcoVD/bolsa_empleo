@@ -152,7 +152,8 @@ class CrearEditarCVView(View):
         return render(request, 'usuarios/crear_editar_cv.html', context)
 
 
-# usuarios/views.py - Agregar esta nueva vista
+# usuarios/views.py - Vista actualizada para manejar guardado automático de imagen
+
 @login_required
 def actualizar_perfil_ajax(request):
     """Vista AJAX para actualizar perfil del interesado."""
@@ -162,20 +163,24 @@ def actualizar_perfil_ajax(request):
     try:
         interesado = request.user.interesado
 
-        # Actualizar campos de texto
-        interesado.nombre = request.POST.get('nombre', '')
-        interesado.apellido_paterno = request.POST.get('apellido_paterno', '')
-        interesado.apellido_materno = request.POST.get('apellido_materno', '')
-        interesado.telefono = request.POST.get('telefono', '')
-        interesado.municipio = request.POST.get('municipio', '')
-        interesado.codigo_postal = request.POST.get('codigo_postal', '')
+        # Verificar si solo se está actualizando la foto
+        only_photo = 'foto_perfil' in request.FILES and len(request.POST) <= 2  # Solo CSRF y posiblemente un campo más
 
-        # Fecha de nacimiento
-        fecha_nacimiento = request.POST.get('fecha_nacimiento')
-        if fecha_nacimiento:
-            interesado.fecha_nacimiento = fecha_nacimiento
+        if not only_photo:
+            # Actualizar campos de texto solo si no es actualización de foto únicamente
+            interesado.nombre = request.POST.get('nombre', interesado.nombre)
+            interesado.apellido_paterno = request.POST.get('apellido_paterno', interesado.apellido_paterno)
+            interesado.apellido_materno = request.POST.get('apellido_materno', interesado.apellido_materno)
+            interesado.telefono = request.POST.get('telefono', interesado.telefono)
+            interesado.municipio = request.POST.get('municipio', interesado.municipio)
+            interesado.codigo_postal = request.POST.get('codigo_postal', interesado.codigo_postal)
 
-        # Validar y guardar foto de perfil
+            # Fecha de nacimiento
+            fecha_nacimiento = request.POST.get('fecha_nacimiento')
+            if fecha_nacimiento:
+                interesado.fecha_nacimiento = fecha_nacimiento
+
+        # Validar y procesar foto de perfil
         if 'foto_perfil' in request.FILES:
             foto = request.FILES['foto_perfil']
 
@@ -193,13 +198,15 @@ def actualizar_perfil_ajax(request):
                     'error': 'El archivo es demasiado grande. Máximo 5MB'
                 })
 
+            # Para imágenes ya recortadas (blob), no necesitan procesamiento adicional
+            # Ya vienen en el tamaño correcto de 160x160px
             interesado.foto_perfil = foto
 
         interesado.save()
 
         return JsonResponse({
             'success': True,
-            'message': 'Perfil actualizado exitosamente',
+            'message': 'Perfil actualizado exitosamente' if not only_photo else 'Imagen guardada exitosamente',
             'data': {
                 'nombre_completo': interesado.nombre_completo,
                 'telefono': interesado.telefono or 'No especificado',
