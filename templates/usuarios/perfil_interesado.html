@@ -84,7 +84,9 @@
                         {% if interesado.foto_perfil %}
                             <img src="{{ interesado.foto_perfil.url }}"
                                  alt="Foto de perfil"
-                                 class="profile-photo img-fluid rounded-circle">
+                                 class="profile-photo img-fluid rounded-circle clickeable-photo"
+                                 data-bs-toggle="modal"
+                                 data-bs-target="#cropperModal">
                         {% else %}
                             <div class="profile-photo-placeholder bg-light rounded-circle d-inline-flex justify-content-center align-items-center">
                                 <i class="bi bi-person-fill profile-icon"></i>
