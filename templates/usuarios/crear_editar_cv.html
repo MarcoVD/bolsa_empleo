@@ -3,17 +3,59 @@
 {% block title %}Mi Currículum Vitae - Bolsa de Trabajo{% endblock %}
 
 {% block content %}
+    <style>
+.cv-container {
+    max-width: 960px;
+    margin-top: 20px;
+    margin-bottom: 50px;
+}
+
+.card {
+    border-radius: 15px;
+    margin-bottom: 25px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+}
+
+.card-header {
+    background-color: #e9ecef;
+    border-bottom: 1px solid #dee2e6;
+    font-weight: 500;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+}
+
+.form-label {
+    font-weight: 500;
+}
+
+.form-control, .form-select {
+    border-radius: 8px;
+}
+
+.btn {
+    border-radius: 8px;
+}
+
+.experiencia-item, .educacion-item, .idioma-item {
+    transition: background-color 0.2s;
+}
+
+.experiencia-item:hover, .educacion-item:hover, .idioma-item:hover {
+    background-color: #f8f9fa;
+}
+.footer {
+    display: none !important;
+}
+
+.footer-bottom {
+    display: none !important;
+}
+</style>
+
 <div class="container cv-container">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1>Mi Currículum Vitae</h1>
-{#        <div>#}
-{#            <a href="{% url 'previsualizar_cv' %}" class="btn btn-outline-primary me-2 text-primary" target="_blank">#}
-{#                <i class="bi bi-eye"></i> Previsualizar CV#}
-{#            </a>#}
-{#            <button type="submit" form="cvForm" class="btn btn-primary">#}
-{#                <i class="bi bi-save"></i> Guardar Cambios#}
-{#            </button>#}
-{#        </div>#}
+
     </div>
 
     <form id="cvForm" method="post">
@@ -22,19 +64,23 @@
         <!-- Información de Contacto -->
         <div class="card mb-4">
             <div class="card-header">
-                <h5><i class="bi bi-person-fill"></i> Información de Contacto</h5>
+                <h5><i class="bi bi-person-fill"></i> Información personal</h5>
             </div>
             <div class="card-body">
                 <div class="row g-3">
                     <div class="col-md-6">
                         <label for="{{ perfil_form.nombre.id_for_label }}" class="form-label">{{ perfil_form.nombre.label }}</label>
+{#                        <label for="{{ perfil_form.nombre.id_for_label }}" class="form-label">{{ perfil_form.nombre }}</label>#}
+
                         {{ perfil_form.nombre }}
                         {% if perfil_form.nombre.errors %}
                             <div class="invalid-feedback d-block">{{ perfil_form.nombre.errors }}</div>
                         {% endif %}
                     </div>
+
                     <div class="col-md-6">
                         <label for="{{ perfil_form.apellido_paterno.id_for_label }}" class="form-label">{{ perfil_form.apellido_paterno.label }}</label>
+
                         {{ perfil_form.apellido_paterno }}
                         {% if perfil_form.apellido_paterno.errors %}
                             <div class="invalid-feedback d-block">{{ perfil_form.apellido_paterno.errors }}</div>
@@ -82,7 +128,7 @@
         <!-- Resumen Profesional -->
         <div class="card mb-4">
             <div class="card-header">
-                <h5><i class="bi bi-file-person"></i> Resumen Profesional original</h5>
+                <h5><i class="bi bi-file-person"></i> Resumen Profesional</h5>
             </div>
             <div class="card-body text-justify">
                 <label for="{{ curriculum_form.resumen_profesional.id_for_label }}" class="form-label">{{ curriculum_form.resumen_profesional.label }}</label>
@@ -433,47 +479,6 @@
     </div>
 </div>
 
-<style>
-.cv-container {
-    max-width: 960px;
-    margin-top: 20px;
-    margin-bottom: 50px;
-}
-
-.card {
-    border-radius: 15px;
-    margin-bottom: 25px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-}
-
-.card-header {
-    background-color: #e9ecef;
-    border-bottom: 1px solid #dee2e6;
-    font-weight: 500;
-    border-top-left-radius: 15px;
-    border-top-right-radius: 15px;
-}
-
-.form-label {
-    font-weight: 500;
-}
-
-.form-control, .form-select {
-    border-radius: 8px;
-}
-
-.btn {
-    border-radius: 8px;
-}
-
-.experiencia-item, .educacion-item, .idioma-item {
-    transition: background-color 0.2s;
-}
-
-.experiencia-item:hover, .educacion-item:hover, .idioma-item:hover {
-    background-color: #f8f9fa;
-}
-</style>
 
 <script>
 // Variables globales para controlar edición

@@ -88,7 +88,7 @@ class InteresadoPerfilForm(forms.ModelForm):
             }),
             'apellido_materno': forms.TextInput(attrs={
                 'class': 'form-control',
-                'placeholder': 'Ingrese su apellido materno (opcional)'
+                'placeholder': 'Ingrese su apellido materno'
             }),
             'telefono': forms.TextInput(attrs={
                 'class': 'form-control',

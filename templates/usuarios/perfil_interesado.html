@@ -5,7 +5,8 @@
     <!-- Cropper.js CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css">
     <style>
-        /* Estilos específicos para foto circular responsive */
+        /* Estilos para hover de foto de perfil */
+
         .profile-photo-container {
             width: 160px;
             height: 160px;
@@ -18,6 +19,8 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
         }
 
         .profile-photo {
@@ -25,13 +28,47 @@
             height: 100%;
             object-fit: cover;
             object-position: center;
+            transition: opacity 0.3s ease;
         }
 
         .profile-photo-placeholder {
-            font-size: 4rem;
+            font-size: 3rem;
             color: #6c757d;
+            transition: opacity 0.3s ease;
         }
-        .footer {
+
+        .photo-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            border-radius: 50%;
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        .profile-photo-container:hover .photo-overlay {
+            opacity: 1;
+        }
+
+.clickeable-photo:hover {
+    transform: scale(1.05);
+    opacity: 0.8;
+}
+
+.profile-photo-placeholder.clickeable-photo:hover {
+    background-color: #e3f2fd !important;
+    border: 2px solid #2196f3;
+}
+/* Ocultar el footer completamente en esta página */
+.footer {
     display: none !important;
 }
 
@@ -49,7 +86,6 @@
                 font-size: 3rem;
             }
         }
-
         /* Espaciado responsive */
         .empty-icon {
             font-size: 2.5rem !important;
@@ -71,8 +107,8 @@
     <script src="{% static 'js/image-cropper.js' %}"></script>
     <script src="{% static 'js/perfil-interesado.js' %}"></script>
 {% endblock %}
-
 {% block content %}
+
 <div class="container-fluid px-2 px-sm-3">
     <div class="row g-3 g-md-4">
         <!-- Columna del perfil -->
@@ -88,11 +124,14 @@
                                  data-bs-toggle="modal"
                                  data-bs-target="#cropperModal">
                         {% else %}
-                            <div class="profile-photo-placeholder bg-light rounded-circle d-inline-flex justify-content-center align-items-center">
+                            <div class="profile-photo-placeholder bg-light rounded-circle d-inline-flex justify-content-center align-items-center clickeable-photo"
+                                 data-bs-toggle="modal"
+                                 data-bs-target="#cropperModal">
                                 <i class="bi bi-person-fill profile-icon"></i>
                             </div>
                         {% endif %}
                     </div>
+{#                end div#}
                     <h4 class="h5 h-md-4 mb-2">{{ interesado.nombre_completo }}</h4>
                     <button class="btn btn-outline-primary btn-sm w-100 w-sm-auto"
                             data-bs-toggle="modal"
@@ -119,7 +158,7 @@
                             <div class="d-flex align-items-start">
                                 <i class="bi bi-envelope me-2 mt-1 text-primary"></i>
                                 <div class="flex-grow-1">
-                                    <strong class="d-block d-sm-inline small">Email:</strong>
+                                    <strong class="d-block d-sm-inline small"></strong>
                                     <span class="text-break text-muted">{{ user.email }}</span>
                                 </div>
                             </div>
@@ -129,7 +168,7 @@
                             <div class="d-flex align-items-start">
                                 <i class="bi bi-telephone me-2 mt-1 text-primary"></i>
                                 <div class="flex-grow-1">
-                                    <strong class="d-block d-sm-inline small">Teléfono:</strong>
+                                    <strong class="d-block d-sm-inline small"></strong>
                                     {% if interesado.telefono %}
                                         <span class="text-muted">{{ interesado.telefono }}</span>
                                     {% else %}
@@ -143,7 +182,7 @@
                             <div class="d-flex align-items-start">
                                 <i class="bi bi-geo-alt me-2 mt-1 text-primary"></i>
                                 <div class="flex-grow-1">
-                                    <strong class="d-block d-sm-inline small">Ubicación:</strong>
+                                    <strong class="d-block d-sm-inline small"></strong>
                                     {% if interesado.municipio %}
                                         <span class="text-muted">{{ interesado.ubicacion_completa }}</span>
                                     {% else %}

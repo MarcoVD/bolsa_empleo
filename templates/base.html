@@ -24,7 +24,7 @@
 <body class="d-flex flex-column min-vh-100">
     <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
         <div class="container"  id="navbarNav">
-         <a class="navbar-brand" href="{% url 'index' %}">
+         <a class="navbar-brand" href="#">
             <img src="{% static 'img/Mobilidad1.png' %}" alt="Logo Mobilidad" height="" class="me-2 logo-movilidad">
         </a>
             <div class="collapse navbar-collapse" id="navbarNav">
@@ -32,7 +32,7 @@
                     {% if user.is_authenticated %}
                         {% if user.rol == 'interesado' %}
                             <li class="nav-item">
-                                <a class="nav-link" href="#">Buscar Vacantes</a>
+                                <a class="nav-link" href="#">Buscar Empleo</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="#">Mi CV</a>
