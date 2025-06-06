@@ -90,6 +90,9 @@ function showCropStep() {
 }
 
 // Función para el botón "Recortar y Usar" (modificada para cerrar modal y guardar automáticamente)
+// Agregar/modificar en el script del perfil_interesado.html o en tu archivo JS
+
+// Función para el botón "Recortar y Usar" - SIMPLIFICADA
 document.getElementById('cropButton').addEventListener('click', function() {
     if (window.cropper) {
         // Obtener la imagen recortada
@@ -108,9 +111,9 @@ document.getElementById('cropButton').addEventListener('click', function() {
                 formData.append('foto_perfil', blob, 'profile_photo.jpg');
                 formData.append('csrfmiddlewaretoken', document.querySelector('[name=csrfmiddlewaretoken]').value);
 
-                // Actualizar preview inmediatamente
+                // Actualizar preview inmediatamente en la página principal
                 const imageUrl = canvas.toDataURL('image/jpeg', 0.9);
-                updateMainPhotoPreview(imageUrl);
+                updateMainProfilePhoto(imageUrl);
 
                 // Cerrar modal del cropper
                 const cropperModal = bootstrap.Modal.getInstance(document.getElementById('cropperModal'));
@@ -119,10 +122,37 @@ document.getElementById('cropButton').addEventListener('click', function() {
                 }
 
                 // Guardar automáticamente
-                saveProfilePhotoDirectly(formData);
+                saveProfilePhoto(formData);
+
+                // Limpiar el input file
+                document.getElementById('foto_perfil').value = '';
 
             }, 'image/jpeg', 0.9);
         }
+    }
+});
+
+// Función para resetear el cropper
+document.getElementById('resetCropButton').addEventListener('click', function() {
+    if (window.cropper) {
+        window.cropper.reset();
+    }
+});
+
+// Función para cancelar
+document.getElementById('cancelCropButton').addEventListener('click', function() {
+    const cropperModal = bootstrap.Modal.getInstance(document.getElementById('cropperModal'));
+    if (cropperModal) {
+        cropperModal.hide();
+    }
+
+    // Limpiar el input file
+    document.getElementById('foto_perfil').value = '';
+
+    // Destruir cropper
+    if (window.cropper) {
+        window.cropper.destroy();
+        window.cropper = null;
     }
 });
 

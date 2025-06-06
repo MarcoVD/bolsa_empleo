@@ -1,9 +1,17 @@
 {% extends 'base.html' %}
+
 {% load static %}
 {% block extra_css %}
     <link rel="stylesheet" href="{% static 'css/image-cropper.css' %}">
     <!-- Cropper.js CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css">
+
+<script>
+    const ACTUALIZAR_FOTO_URL = "{% url 'actualizar_foto_perfil_ajax' %}";
+</script>
+<script src="{% static 'js/perfil-interesado.js' %}"></script>
+
+
     <style>
         /* Estilos para hover de foto de perfil */
 
@@ -22,6 +30,9 @@
             cursor: pointer;
             transition: all 0.3s ease;
         }
+{#        .profile-photo-container {#}
+{#    transition: transform 0.2s ease;#}
+{#}#}
 
         .profile-photo {
             width: 100%;
@@ -53,39 +64,49 @@
             color: white;
             font-size: 1.5rem;
         }
-
+.photo-overlay {
+    background: rgba(0, 0, 0, 0.4);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 2;
+}
+        {#.profile-photo-container:hover .photo-overlay {#}
+        {#    opacity: 1;#}
+{#        {#}
+{#        #}#}
         .profile-photo-container:hover .photo-overlay {
             opacity: 1;
         }
 
-.clickeable-photo:hover {
-    transform: scale(1.05);
-    opacity: 0.8;
-}
+        .profile-photo-container .profile-photo,
+        .profile-photo-container .profile-photo-placeholder {
+            position: relative;
+            z-index: 1;
+        }
 
-.profile-photo-placeholder.clickeable-photo:hover {
-    background-color: #e3f2fd !important;
-    border: 2px solid #2196f3;
-}
-/* Ocultar el footer completamente en esta página */
-.footer {
-    display: none !important;
-}
+        .clickeable-photo:hover {
+            transform: scale(1.05);
+            opacity: 0.8;
+        }
 
-.footer-bottom {
-    display: none !important;
-}
+        .profile-photo-placeholder.clickeable-photo:hover {
+            background-color: #e3f2fd !important;
+            border: 2px solid #2196f3;
+        }
 
-        @media (max-width: 576px) {
-            .profile-photo-container {
-                width: 120px;
-                height: 120px;
-            }
+        /* Ocultar el footer completamente en esta página */
+        .footer {
+            display: none !important;
+        }
 
+        .footer-bottom {
+            display: none !important;
+        }
             .profile-photo-placeholder {
                 font-size: 3rem;
             }
         }
+
         /* Espaciado responsive */
         .empty-icon {
             font-size: 2.5rem !important;
@@ -97,6 +118,13 @@
                 font-size: 2rem !important;
             }
         }
+
+        @media (max-width: 576px) {
+            .profile-photo-container {
+                width: 120px;
+                height: 120px;
+            }
+
     </style>
 {% endblock %}
 
@@ -116,10 +144,11 @@
             <!-- Card de foto y datos básicos -->
             <!-- Reemplazar la sección de la foto de perfil en perfil_interesado.html -->
 
-<!-- Card de foto y datos básicos -->
+                <!-- Card de foto y datos básicos - SIMPLIFICADO -->
                 <div class="card mb-3 mb-md-4">
                     <div class="card-body text-center p-3 p-md-4">
-                        <div class="profile-photo-container mb-3 position-relative" style="cursor: pointer;" id="profilePhotoClick">
+                        <!-- Contenedor de foto clickeable -->
+                        <div class="profile-photo-container mb-3 position-relative" style="cursor: pointer;" id="photoContainer">
                             {% if interesado.foto_perfil %}
                                 <img src="{{ interesado.foto_perfil.url }}"
                                      alt="Foto de perfil"
@@ -130,17 +159,16 @@
                                 </div>
                             {% endif %}
 
-                            <!-- Overlay que aparece al hacer hover -->
-                            <div class="photo-overlay position-absolute top-0 start-0 w-100 h-100 rounded-circle d-flex align-items-center justify-content-center" style="background-color: rgba(0,0,0,0.7); opacity: 0; transition: opacity 0.3s;">
-                                <i class="bi bi-camera-fill text-white" style="font-size: 2rem;"></i>
+                            <!-- Overlay para indicar que es clickeable -->
+                            <div class="photo-overlay position-absolute top-0 start-0 w-100 h-100 rounded-circle d-flex align-items-center justify-content-center">
+                                <i class="bi bi-camera-fill text-white" style="font-size: 1.5rem; opacity: 0.8;"></i>
                             </div>
                         </div>
 
-                        <h4 class="h5 h-md-4 mb-2">{{ interesado.nombre_completo }}</h4>
-                        <small class="text-muted">Haz clic en tu foto para cambiarla</small>
-
                         <!-- Input oculto para seleccionar archivo -->
                         <input type="file" id="foto_perfil" name="foto_perfil" accept=".jpg,.jpeg" style="display: none;">
+                        <h4 class="h5 h-md-4 mb-2">{{ interesado.nombre_completo }}</h4>
+{#                        <small class="text-muted">Haz clic en tu foto para cambiarla</small>#}
                     </div>
                 </div>
 
@@ -196,7 +224,7 @@
                 </div>
             </div>
         </div>
-{#    fin iformacion de contacto#}
+{#    fin informacion de contacto#}
 
         <!-- Columna del contenido principal -->
         <div class="col-12 col-lg-8 order-2">
