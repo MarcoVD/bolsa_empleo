@@ -1,10 +1,11 @@
 # usuarios/models.py
 from django.db import models
-from django.contrib.auth.models import AbstractUser, BaseUserManager
+from django.contrib.auth.models import User, AbstractUser, BaseUserManager
 from django.utils.translation import gettext_lazy as _
 from django.contrib.humanize.templatetags.humanize import intcomma # Para formatear con comas
 from django.utils.translation import gettext_lazy as _
-
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 class UserManager(BaseUserManager):
     """Define una clase gestora de usuario para crear usuarios con email."""

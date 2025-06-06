@@ -69,18 +69,18 @@ function loadImageInCropper(imageSrc) {
 
     // Inicializar nuevo cropper
     window.cropper = new Cropper(cropperImage, {
-        aspectRatio: 1,
-        viewMode: 1,
-        dragMode: 'move',
-        autoCropArea: 0.8,
+        aspectRatio: 1,      // Forzar relación de aspecto cuadrada
+        viewMode: 1,         // Restringe el cropper al tamaño del lienzo. No permite que se arrastre el área de recorte fuera del lienzo.
+        dragMode: 'move',    // Mover la imagen dentro del área de recorte
+        autoCropArea: 0.8,   // Área de auto-recorte (80% de la imagen)
         restore: false,
-        guides: false,
-        center: false,
+        guides: true,        // Muestra las guías de recorte
+        center: true,        // Centra el marcador de recorte
         highlight: false,
         cropBoxMovable: true,
         cropBoxResizable: true,
         toggleDragModeOnDblclick: false,
-        preview: '#cropPreview'
+        preview: '#cropPreview' // Actualiza la previsualización en tiempo real
     });
 }
 
