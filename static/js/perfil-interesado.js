@@ -1,75 +1,251 @@
 // static/js/perfil-interesado.js - Simplificado ya que el cropper maneja el guardado automático
+
+// Agregar este JavaScript al final de perfil_interesado.html o en un archivo separado
+
 document.addEventListener('DOMContentLoaded', function() {
-    const guardarBtn = document.getElementById('guardarPerfilBtn');
-    const form = document.getElementById('editarPerfilForm');
-    const modal = document.getElementById('editarPerfilModal');
+    const profilePhotoContainer = document.getElementById('profilePhotoClick');
+    const fileInput = document.getElementById('foto_perfil');
+    const photoOverlay = document.querySelector('.photo-overlay');
 
-    if (!guardarBtn || !form || !modal) return;
+    // Efecto hover en la foto
+    profilePhotoContainer.addEventListener('mouseenter', function() {
+        photoOverlay.style.opacity = '1';
+    });
 
-    guardarBtn.addEventListener('click', function() {
-        // Validar campos requeridos
-        const nombre = form.querySelector('#nombre').value.trim();
-        const apellidoPaterno = form.querySelector('#apellido_paterno').value.trim();
+    profilePhotoContainer.addEventListener('mouseleave', function() {
+        photoOverlay.style.opacity = '0';
+    });
 
-        if (!nombre || !apellidoPaterno) {
-            mostrarMensaje('Nombre y apellido paterno son obligatorios', 'error');
-            return;
-        }
+    // Click en la foto abre selector de archivo
+    profilePhotoContainer.addEventListener('click', function() {
+        fileInput.click();
+    });
 
-        // Mostrar spinner
-        const btnText = guardarBtn.querySelector('.btn-text');
-        const spinner = guardarBtn.querySelector('.spinner-border');
+    // Cuando se selecciona un archivo
+    fileInput.addEventListener('change', function(e) {
+        if (e.target.files && e.target.files[0]) {
+            const file = e.target.files[0];
 
-        btnText.textContent = 'Guardando...';
-        spinner.classList.remove('d-none');
-        guardarBtn.disabled = true;
-
-        // Crear FormData solo con datos del formulario (sin imagen, ya se guardó automáticamente)
-        const formData = new FormData();
-        formData.append('csrfmiddlewaretoken', document.querySelector('[name=csrfmiddlewaretoken]').value);
-        formData.append('nombre', form.querySelector('#nombre').value);
-        formData.append('apellido_paterno', form.querySelector('#apellido_paterno').value);
-        formData.append('apellido_materno', form.querySelector('#apellido_materno').value);
-        formData.append('telefono', form.querySelector('#telefono').value);
-        formData.append('fecha_nacimiento', form.querySelector('#fecha_nacimiento').value);
-        formData.append('municipio', form.querySelector('#municipio').value);
-        formData.append('codigo_postal', form.querySelector('#codigo_postal').value);
-
-        // Obtener URL
-        const updateUrl = form.dataset.updateUrl || '/ajax/actualizar-perfil/';
-
-        // Enviar petición AJAX
-        fetch(updateUrl, {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                // Actualizar información en la página
-                actualizarInformacionPerfil(data.data);
-
-                // Mostrar mensaje de éxito
-                mostrarMensaje('Perfil actualizado exitosamente', 'success');
-
-                // Cerrar modal
-                bootstrap.Modal.getInstance(modal).hide();
-            } else {
-                mostrarMensaje('Error: ' + (data.error || 'No se pudo actualizar el perfil'), 'error');
+            // Validar tipo de archivo
+            if (!file.type.match(/^image\/(jpeg|jpg)$/)) {
+                showErrorMessage('Por favor selecciona una imagen en formato JPG');
+                return;
             }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            mostrarMensaje('Error de conexión. Inténtalo nuevamente.', 'error');
-        })
-        .finally(() => {
-            // Restaurar botón
-            btnText.textContent = 'Guardar Cambios';
-            spinner.classList.add('d-none');
-            guardarBtn.disabled = false;
-        });
+
+            // Validar tamaño (5MB máximo)
+            if (file.size > 5 * 1024 * 1024) {
+                showErrorMessage('La imagen no debe superar los 5MB');
+                return;
+            }
+
+            // Cargar imagen y procesar
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                loadImageInCropper(event.target.result);
+
+                // Mostrar modal del cropper directamente
+                const cropperModal = new bootstrap.Modal(document.getElementById('cropperModal'));
+                cropperModal.show();
+
+                // Ir directamente al paso de recorte
+                showCropStep();
+            };
+            reader.readAsDataURL(file);
+        }
     });
 });
+
+function loadImageInCropper(imageSrc) {
+    const cropperImage = document.getElementById('cropperImage');
+
+    // Destruir cropper anterior si existe
+    if (window.cropper) {
+        window.cropper.destroy();
+    }
+
+    // Cargar nueva imagen
+    cropperImage.src = imageSrc;
+    cropperImage.style.display = 'block';
+
+    // Inicializar nuevo cropper
+    window.cropper = new Cropper(cropperImage, {
+        aspectRatio: 1,
+        viewMode: 1,
+        dragMode: 'move',
+        autoCropArea: 0.8,
+        restore: false,
+        guides: false,
+        center: false,
+        highlight: false,
+        cropBoxMovable: true,
+        cropBoxResizable: true,
+        toggleDragModeOnDblclick: false,
+        preview: '#cropPreview'
+    });
+}
+
+function showCropStep() {
+    document.getElementById('selectStep').classList.remove('active');
+    document.getElementById('cropStep').classList.add('active');
+}
+
+// Función para el botón "Recortar y Usar" (modificada para cerrar modal y guardar automáticamente)
+document.getElementById('cropButton').addEventListener('click', function() {
+    if (window.cropper) {
+        // Obtener la imagen recortada
+        const canvas = window.cropper.getCroppedCanvas({
+            width: 160,
+            height: 160,
+            imageSmoothingEnabled: true,
+            imageSmoothingQuality: 'high'
+        });
+
+        if (canvas) {
+            // Convertir a blob
+            canvas.toBlob(function(blob) {
+                // Crear FormData para envío inmediato
+                const formData = new FormData();
+                formData.append('foto_perfil', blob, 'profile_photo.jpg');
+                formData.append('csrfmiddlewaretoken', document.querySelector('[name=csrfmiddlewaretoken]').value);
+
+                // Actualizar preview inmediatamente
+                const imageUrl = canvas.toDataURL('image/jpeg', 0.9);
+                updateMainPhotoPreview(imageUrl);
+
+                // Cerrar modal del cropper
+                const cropperModal = bootstrap.Modal.getInstance(document.getElementById('cropperModal'));
+                if (cropperModal) {
+                    cropperModal.hide();
+                }
+
+                // Guardar automáticamente
+                saveProfilePhotoDirectly(formData);
+
+            }, 'image/jpeg', 0.9);
+        }
+    }
+});
+
+// Función para actualizar solo la foto principal (sin modal)
+function updateMainPhotoPreview(imageUrl) {
+    const mainPhotoContainer = document.querySelector('.profile-photo-container');
+    const existingImg = mainPhotoContainer.querySelector('.profile-photo');
+    const placeholder = mainPhotoContainer.querySelector('.profile-photo-placeholder');
+
+    if (existingImg) {
+        existingImg.src = imageUrl;
+    } else {
+        // Crear nueva imagen si no existe
+        const newImg = document.createElement('img');
+        newImg.src = imageUrl;
+        newImg.alt = 'Foto de perfil';
+        newImg.className = 'profile-photo img-fluid rounded-circle';
+
+        // Ocultar placeholder y agregar imagen
+        if (placeholder) {
+            placeholder.style.display = 'none';
+        }
+
+        mainPhotoContainer.insertBefore(newImg, mainPhotoContainer.firstChild);
+    }
+}
+
+// Función para guardar la foto directamente
+function saveProfilePhotoDirectly(formData) {
+    // Mostrar indicador de carga
+    showSaveIndicator();
+
+    // URL para actualizar solo la foto (necesitarás crear esta vista)
+    const updateUrl = "{% url 'actualizar_foto_perfil_ajax' %}"; // Nueva URL específica para foto
+
+    fetch(updateUrl, {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        hideSaveIndicator();
+
+        if (data.success) {
+            showSuccessMessage('Foto de perfil actualizada correctamente');
+
+            // Actualizar con la URL real del servidor
+            if (data.photo_url) {
+                updateMainPhotoPreview(data.photo_url);
+            }
+        } else {
+            showErrorMessage('Error al guardar la foto: ' + (data.error || 'Error desconocido'));
+        }
+    })
+    .catch(error => {
+        hideSaveIndicator();
+        console.error('Error:', error);
+        showErrorMessage('Error de conexión al guardar la foto');
+    });
+}
+
+// Funciones auxiliares (mantener las mismas del código anterior)
+function showSaveIndicator() {
+    let indicator = document.getElementById('saveIndicator');
+    if (!indicator) {
+        indicator = document.createElement('div');
+        indicator.id = 'saveIndicator';
+        indicator.className = 'position-fixed top-0 end-0 m-3 alert alert-info d-flex align-items-center';
+        indicator.style.zIndex = '9999';
+        indicator.innerHTML = `
+            <div class="spinner-border spinner-border-sm me-2" role="status"></div>
+            Guardando foto...
+        `;
+        document.body.appendChild(indicator);
+    }
+    indicator.style.display = 'flex';
+}
+
+function hideSaveIndicator() {
+    const indicator = document.getElementById('saveIndicator');
+    if (indicator) {
+        indicator.style.display = 'none';
+    }
+}
+
+function showSuccessMessage(message) {
+    const toast = document.createElement('div');
+    toast.className = 'position-fixed top-0 end-0 m-3 alert alert-success alert-dismissible';
+    toast.style.zIndex = '9999';
+    toast.innerHTML = `
+        <i class="bi bi-check-circle-fill me-2"></i>
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    document.body.appendChild(toast);
+
+    setTimeout(() => {
+        if (toast.parentNode) {
+            toast.parentNode.removeChild(toast);
+        }
+    }, 3000);
+}
+
+function showErrorMessage(message) {
+    const toast = document.createElement('div');
+    toast.className = 'position-fixed top-0 end-0 m-3 alert alert-danger alert-dismissible';
+    toast.style.zIndex = '9999';
+    toast.innerHTML = `
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    document.body.appendChild(toast);
+
+    setTimeout(() => {
+        if (toast.parentNode) {
+            toast.parentNode.removeChild(toast);
+        }
+    }, 5000);
+}
 
 // static/js/perfil-interesado.js - Función actualizarInformacionPerfil corregida
 
@@ -164,6 +340,46 @@ function actualizarInformacionPerfil(data) {
         });
     }
 }
+// JavaScript actualizado para perfil_interesado.html
+
+// Función para guardar la foto directamente (ACTUALIZADA)
+function saveProfilePhotoDirectly(formData) {
+    // Mostrar indicador de carga
+    showSaveIndicator();
+
+    // URL para actualizar solo la foto
+    const updateUrl = "{% url 'actualizar_foto_perfil_ajax' %}";
+
+    fetch(updateUrl, {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        hideSaveIndicator();
+
+        if (data.success) {
+            showSuccessMessage('Foto de perfil actualizada correctamente');
+
+            // Actualizar con la URL real del servidor
+            if (data.photo_url) {
+                updateMainPhotoPreview(data.photo_url);
+            }
+        } else {
+            showErrorMessage('Error al guardar la foto: ' + (data.error || 'Error desconocido'));
+        }
+    })
+    .catch(error => {
+        hideSaveIndicator();
+        console.error('Error:', error);
+        showErrorMessage('Error de conexión al guardar la foto');
+    });
+}
+
+// El resto del JavaScript se mantiene igual...
 
 
 function mostrarMensaje(mensaje, tipo) {

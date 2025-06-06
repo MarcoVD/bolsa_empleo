@@ -30,7 +30,7 @@ urlpatterns = [
          name='editar_experiencia_ajax'),
     path('ajax/experiencia/eliminar/<int:experiencia_id>/', views.eliminar_experiencia_ajax,
          name='eliminar_experiencia_ajax'),
-
+    path('ajax/actualizar-foto-perfil/', views.actualizar_foto_perfil_ajax, name='actualizar_foto_perfil_ajax'),
     path('ajax/educacion/agregar/', views.agregar_educacion_ajax, name='agregar_educacion_ajax'),
     path('ajax/educacion/eliminar/<int:educacion_id>/', views.eliminar_educacion_ajax, name='eliminar_educacion_ajax'),
 

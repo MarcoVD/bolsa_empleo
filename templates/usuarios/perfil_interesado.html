@@ -114,34 +114,35 @@
         <!-- Columna del perfil -->
         <div class="col-12 col-lg-4 order-1">
             <!-- Card de foto y datos básicos -->
-            <div class="card mb-3 mb-md-4">
-                <div class="card-body text-center p-3 p-md-4">
-                    <div class="profile-photo-container mb-3">
-                        {% if interesado.foto_perfil %}
-                            <img src="{{ interesado.foto_perfil.url }}"
-                                 alt="Foto de perfil"
-                                 class="profile-photo img-fluid rounded-circle clickeable-photo"
-                                 data-bs-toggle="modal"
-                                 data-bs-target="#cropperModal">
-                        {% else %}
-                            <div class="profile-photo-placeholder bg-light rounded-circle d-inline-flex justify-content-center align-items-center clickeable-photo"
-                                 data-bs-toggle="modal"
-                                 data-bs-target="#cropperModal">
-                                <i class="bi bi-person-fill profile-icon"></i>
+            <!-- Reemplazar la sección de la foto de perfil en perfil_interesado.html -->
+
+<!-- Card de foto y datos básicos -->
+                <div class="card mb-3 mb-md-4">
+                    <div class="card-body text-center p-3 p-md-4">
+                        <div class="profile-photo-container mb-3 position-relative" style="cursor: pointer;" id="profilePhotoClick">
+                            {% if interesado.foto_perfil %}
+                                <img src="{{ interesado.foto_perfil.url }}"
+                                     alt="Foto de perfil"
+                                     class="profile-photo img-fluid rounded-circle">
+                            {% else %}
+                                <div class="profile-photo-placeholder bg-light rounded-circle d-inline-flex justify-content-center align-items-center">
+                                    <i class="bi bi-person-fill profile-icon"></i>
+                                </div>
+                            {% endif %}
+
+                            <!-- Overlay que aparece al hacer hover -->
+                            <div class="photo-overlay position-absolute top-0 start-0 w-100 h-100 rounded-circle d-flex align-items-center justify-content-center" style="background-color: rgba(0,0,0,0.7); opacity: 0; transition: opacity 0.3s;">
+                                <i class="bi bi-camera-fill text-white" style="font-size: 2rem;"></i>
                             </div>
-                        {% endif %}
+                        </div>
+
+                        <h4 class="h5 h-md-4 mb-2">{{ interesado.nombre_completo }}</h4>
+                        <small class="text-muted">Haz clic en tu foto para cambiarla</small>
+
+                        <!-- Input oculto para seleccionar archivo -->
+                        <input type="file" id="foto_perfil" name="foto_perfil" accept=".jpg,.jpeg" style="display: none;">
                     </div>
-{#                end div#}
-                    <h4 class="h5 h-md-4 mb-2">{{ interesado.nombre_completo }}</h4>
-                    <button class="btn btn-outline-primary btn-sm w-100 w-sm-auto"
-                            data-bs-toggle="modal"
-                            data-bs-target="#editarPerfilModal">
-                        <i class="bi bi-pencil-square"></i>
-                        <span class="d-none d-sm-inline">Editar Perfil</span>
-                        <span class="d-sm-none">Editar</span>
-                    </button>
                 </div>
-            </div>
 
             <!-- Card de información de contacto -->
             <div class="card mb-3 mb-md-4">
@@ -442,3 +443,6 @@
     </div>
 </div>
 {% endblock %}
+<script>
+const updateUrl = "{% url 'actualizar_foto_perfil_ajax' %}";
+</script>

@@ -22,33 +22,36 @@
 </head>
 
 <body class="d-flex flex-column min-vh-100">
-    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
-        <div class="container"  id="navbarNav">
-         <a class="navbar-brand" href="#">
+ <!-- Reemplazar la sección del navbar en base.html para usuarios interesados -->
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+    <div class="container" id="navbarNav">
+        <a class="navbar-brand" href="{% url 'index' %}">
             <img src="{% static 'img/Mobilidad1.png' %}" alt="Logo Mobilidad" height="" class="me-2 logo-movilidad">
         </a>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    {% if user.is_authenticated %}
-                        {% if user.rol == 'interesado' %}
-                            <li class="nav-item">
-                                <a class="nav-link" href="#">Buscar Empleo</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#">Mi CV</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#">Mis Postulaciones</a>
-                            </li>
-                        {% elif user.rol == 'reclutador' %}
-                            <li class="nav-item">
-                                <a class="nav-link" href="{% url 'dashboard_reclutador' %}">Dashboard</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#">Mis Vacantes</a>
-                            </li>
-                        {% endif %}
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                {% if user.is_authenticated %}
+                    {% if user.rol == 'interesado' %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'index' %}">Buscar Empleos</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'perfil_interesado' %}">Mi Cuenta</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Mis Postulaciones</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'logout' %}">Cerrar Sesión</a>
+                        </li>
 
+                    {% elif user.rol == 'reclutador' %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'dashboard_reclutador' %}">Dashboard</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Mis Vacantes</a>
+                        </li>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 Mi Cuenta
@@ -60,18 +63,19 @@
                                 <li><a class="dropdown-item" href="{% url 'logout' %}">Cerrar Sesión</a></li>
                             </ul>
                         </li>
-                    {% else %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'login' %}">Iniciar Sesión</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'registro_interesado' %}">Registrarse</a>
-                        </li>
                     {% endif %}
-                </ul>
-            </div>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'login' %}">Iniciar Sesión</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'registro_interesado' %}">Registrarse</a>
+                    </li>
+                {% endif %}
+            </ul>
         </div>
-    </nav>
+    </div>
+</nav>
 
     <div class="container mt-4">
         {% if messages %}

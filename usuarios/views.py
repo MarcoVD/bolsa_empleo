@@ -11,10 +11,19 @@ from django.template.loader import render_to_string
 # import weasyprint
 from weasyprint import HTML
 from io import BytesIO
+from PIL import Image
 from django.forms import modelformset_factory
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponse
-
+from django.http import JsonResponse
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_http_methods
+from django.views.decorators.csrf import csrf_exempt
+from django.core.files.storage import default_storage
+from django.core.files.base import ContentFile
+import io
+import os
+import uuid
 
 
 from .models import (
@@ -220,6 +229,169 @@ def actualizar_perfil_ajax(request):
             'success': False,
             'error': str(e)
         })
+
+
+@login_required
+@require_http_methods(["POST"])
+def actualizar_foto_perfil_ajax(request):
+    """
+    Vista AJAX específica para actualizar solo la foto de perfil del interesado
+    """
+    try:
+        # Verificar que el usuario sea un interesado
+        if not hasattr(request.user, 'interesado'):
+            return JsonResponse({
+                'success': False,
+                'error': 'Usuario no autorizado'
+            }, status=403)
+
+        interesado = request.user.interesado
+
+        # Verificar que se envió una foto
+        if 'foto_perfil' not in request.FILES:
+            return JsonResponse({
+                'success': False,
+                'error': 'No se recibió ninguna imagen'
+            }, status=400)
+
+        foto_file = request.FILES['foto_perfil']
+
+        # Validar tipo de archivo
+        if not foto_file.content_type.startswith('image/'):
+            return JsonResponse({
+                'success': False,
+                'error': 'El archivo debe ser una imagen'
+            }, status=400)
+
+        # Validar tamaño del archivo (5MB máximo)
+        if foto_file.size > 5 * 1024 * 1024:  # 5MB
+            return JsonResponse({
+                'success': False,
+                'error': 'La imagen no debe superar los 5MB'
+            }, status=400)
+
+        # Procesar la imagen
+        try:
+            # Abrir la imagen con PIL para procesarla
+            image = Image.open(foto_file)
+
+            # Convertir a RGB si es necesario (para JPEGs)
+            if image.mode in ('RGBA', 'P'):
+                image = image.convert('RGB')
+
+            # Redimensionar si es muy grande (máximo 800x800 antes de guardar)
+            max_size = (800, 800)
+            image.thumbnail(max_size, Image.Resampling.LANCZOS)
+
+            # Guardar la imagen procesada en memoria
+            output = io.BytesIO()
+            image.save(output, format='JPEG', quality=85, optimize=True)
+            output.seek(0)
+
+            # Generar nombre único para el archivo
+            filename = f"perfil_{interesado.id}_{uuid.uuid4().hex[:8]}.jpg"
+
+            # Eliminar foto anterior si existe
+            if interesado.foto_perfil:
+                try:
+                    # Eliminar archivo físico anterior
+                    if default_storage.exists(interesado.foto_perfil.name):
+                        default_storage.delete(interesado.foto_perfil.name)
+                except Exception as e:
+                    # Log el error pero continúa (no es crítico)
+                    print(f"Error al eliminar foto anterior: {e}")
+
+            # Guardar nueva foto
+            foto_content = ContentFile(output.getvalue(), name=filename)
+            interesado.foto_perfil.save(filename, foto_content, save=True)
+
+            # Construir URL completa de la foto
+            foto_url = request.build_absolute_uri(interesado.foto_perfil.url)
+
+            return JsonResponse({
+                'success': True,
+                'message': 'Foto de perfil actualizada correctamente',
+                'photo_url': foto_url,
+                'photo_name': filename
+            })
+
+        except Exception as e:
+            return JsonResponse({
+                'success': False,
+                'error': f'Error al procesar la imagen: {str(e)}'
+            }, status=500)
+
+    except Exception as e:
+        return JsonResponse({
+            'success': False,
+            'error': f'Error interno del servidor: {str(e)}'
+        }, status=500)
+
+
+# Alternativa más simple si no quieres usar PIL
+@login_required
+@require_http_methods(["POST"])
+def actualizar_foto_perfil_simple(request):
+    """
+    Versión simplificada sin procesamiento de imagen con PIL
+    """
+    try:
+        if not hasattr(request.user, 'interesado'):
+            return JsonResponse({
+                'success': False,
+                'error': 'Usuario no autorizado'
+            }, status=403)
+
+        interesado = request.user.interesado
+
+        if 'foto_perfil' not in request.FILES:
+            return JsonResponse({
+                'success': False,
+                'error': 'No se recibió ninguna imagen'
+            }, status=400)
+
+        foto_file = request.FILES['foto_perfil']
+
+        # Validaciones básicas
+        if not foto_file.content_type.startswith('image/'):
+            return JsonResponse({
+                'success': False,
+                'error': 'El archivo debe ser una imagen'
+            }, status=400)
+
+        if foto_file.size > 5 * 1024 * 1024:  # 5MB
+            return JsonResponse({
+                'success': False,
+                'error': 'La imagen no debe superar los 5MB'
+            }, status=400)
+
+        # Eliminar foto anterior si existe
+        if interesado.foto_perfil:
+            try:
+                if default_storage.exists(interesado.foto_perfil.name):
+                    default_storage.delete(interesado.foto_perfil.name)
+            except Exception:
+                pass  # Continuar aunque falle la eliminación
+
+        # Guardar nueva foto directamente
+        interesado.foto_perfil = foto_file
+        interesado.save()
+
+        # Construir URL completa
+        foto_url = request.build_absolute_uri(interesado.foto_perfil.url)
+
+        return JsonResponse({
+            'success': True,
+            'message': 'Foto de perfil actualizada correctamente',
+            'photo_url': foto_url
+        })
+
+    except Exception as e:
+        return JsonResponse({
+            'success': False,
+            'error': f'Error al guardar la foto: {str(e)}'
+        }, status=500)
+
 
 @login_required
 def editar_experiencia_ajax(request, experiencia_id):
